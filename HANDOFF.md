@@ -4,7 +4,7 @@
 
 ## 任务目标
 
-按计划建设 MoonBit OOXML 能力审计与验证重建项目 PartSieve。当前已完成 TODO-0 Kill Spike 技术 GO 和 TODO-1 Bounded Package Loader；下一个主线任务是 TODO-2 OPC Graph + XML Reference Index。完整路线图尚未完成，项目尚未 LOCK；原型已按作者新增授权发布到 GitHub 和 Mooncakes 0.1.0-spike。当前真实、无害 VBA XLSM → XLSX 已完成 audit → plan → rebuild → verify、部件保留、Receipt、独立校验和 WPS 客户端证据。原型完成时未联系外部维护者或发布包；作者随后明确授权创建指定 GitHub 仓库并发布 Mooncakes。
+按计划建设 MoonBit OOXML 能力审计与验证重建项目 PartSieve。当前已完成 TODO-0 Kill Spike 技术 GO 和 TODO-1 Bounded Package Loader 和 TODO-2 OPC Graph + XML Reference Index；下一个主线任务是 TODO-3 Capability/Coverage/Decision。完整路线图尚未完成，项目尚未 LOCK；原型已按作者新增授权发布到 GitHub 和 Mooncakes 0.1.0-spike。当前真实、无害 VBA XLSM → XLSX 已完成 audit → plan → rebuild → verify、部件保留、Receipt、独立校验和 WPS 客户端证据。原型完成时未联系外部维护者或发布包；作者随后明确授权创建指定 GitHub 仓库并发布 Mooncakes。
 
 ## 已完成内容
 
@@ -27,22 +27,21 @@
 
 - 配置仅为 simple-spreadsheet-spike-v1；不支持 DOCM、外链、公式、图片、控件、未知扩展；不声称通用 OOXML 安全或视觉保真。
 - 真实可编辑 OOXML 接入工作流和非作者维护的 MoonBit 下游需求证据尚缺。
-- 现有 Audit 仍为原型字符串 Coverage 和数组关系；显式 XmlReference/PackageGraph/索引、统一 Decision 和验证状态还需 TODO-2/3，不能将后续任务提前标完成。
+- 现有 Audit/Receipt 的兼容 JSON 仍为原型字符串 Coverage；PackageGraph/XmlReference 与内部索引已完成，统一 Capability/Coverage/Decision 和验证状态还需 TODO-3。
 - 资源数字仍为 PROVISIONAL；微型 benchmark 已跑，未完成 1/10/30 MiB 校准、完整工作预算/取消接口。
 - Python 是有界宿主入口，Native worker 使用无限 x/fs 读取，只能接收宿主已限额的私有快照。硬链接文件发布不保证两个路径事务原子性。
 - GitHub 两个功能 CI job 已通过，Mooncakes 原型已发布并由独立目录消费者安装验证；独立第三方下游采用仍缺，自建消费者不计入 TODO-11。
 
 ## 正在做什么
 
-TODO-0/1 原型公开发布已收尾：CI 成功、Mooncakes 返回 200、独立目录从注册表下载并运行 SDK，通过真实 fixture 与准确输出 hash 检查。发布记录、踩坑和公开镜像已同步。下一项是 TODO-2；原型中已有部分图/引用逻辑，但还没有完成该 TODO 的统一公开事实模型。后续任务保持未完成状态。
+TODO-0/1 原型公开发布已收尾：CI 成功、Mooncakes 返回 200、独立目录从注册表下载并运行 SDK，通过真实 fixture 与准确输出 hash 检查。发布记录、踩坑和公开镜像已同步。随后 TODO-2 已完成，新增结构检查 API、source-local XML 绑定、入出边/内容类型索引、隐式引用和迭代遍历；22 单元、11 图宿主检查与原 48/17 回归全过，独立证据复核 Pass。下一项是 TODO-3。后续任务保持未完成状态。
 
 ## 下一步计划
 
-1. TODO-2：建立明确的 PackageGraph/XmlReference、source-local 和 inbound/outbound 索引、迭代 reachability/orphan candidate；让 audit/rewrite/verify 共用。未知引用、AlternateContent/VML 保持覆盖不足时拒绝，不自动 GC。
-2. TODO-3：将原型字符串状态升级为统一 Capability/Coverage/Decision 和 Pass/Fail/Incomplete/Unsupported；区分未检查、不存在与不支持。
-3. TODO-4～6：扩到真实 DOCM VBA 样本，补 handler/计划前置条件与源 XML 语义改写、共享依赖闭包、完整 Receipt 和专属保留断言；每项有独立客户端证据。
-4. SDK 可用后启动 TODO-11 真实需求/下游验证。自建 example 只算示例；外部消息、PR 与公开发布按计划需要明确授权，先准备具体可审查的集成方案。
-5. 按依赖推进外部模板和 OLE/ActiveX handler、完整样本/CI/benchmark/兼容矩阵和演示；没有真实采用证据时不能扩充顶奖宣称。后续版本发布前复核命名、规则、分发和本轮授权范围。
+1. TODO-3：将原型字符串状态升级为统一 Capability/Coverage/Decision 和 Pass/Fail/Incomplete/Unsupported；区分未检查、不存在与不支持。
+2. TODO-4～6：扩到真实 DOCM VBA 样本，补 handler/计划前置条件与源 XML 语义改写、共享依赖闭包、完整 Receipt 和专属保留断言；每项有独立客户端证据。
+3. SDK 可用后启动 TODO-11 真实需求/下游验证。自建 example 只算示例；外部消息、PR 与公开发布按计划需要明确授权，先准备具体可审查的集成方案。
+4. 按依赖推进外部模板和 OLE/ActiveX handler、完整样本/CI/benchmark/兼容矩阵和演示；没有真实采用证据时不能扩充顶奖宣称。后续版本发布前复核命名、规则、分发和本轮授权范围。
 
 ## 踩过的坑
 
@@ -71,7 +70,7 @@ TODO-0/1 原型公开发布已收尾：CI 成功、Mooncakes 返回 200、独立
 
 继续工作前，在 `E:\moonbit10\partsieve` 运行 `.\tools\check.ps1`；独立证据运行 `python tools/validate_evidence.py`。需要保持当前工具链/依赖；升级先复核源码和公开接口，不直接更新 evidence 掩盖漂移。
 
-完整说明见 `partsieve/docs/spike-report.md`。本轮仅对有证据的 TODO-0/1 勾选；后续计划与外部需求门槛仍未完成。
+完整说明见 `partsieve/docs/spike-report.md`。原型发布阶段仅对有证据的 TODO-0/1 勾选；此后 TODO-2 按新增证据验收勾选；后续计划与外部需求门槛仍未完成。
 
 ## 原型公开发布（2026-10-04 新增授权）
 
@@ -82,6 +81,16 @@ TODO-0/1 原型公开发布已收尾：CI 成功、Mooncakes 返回 200、独立
 - 仓库中的 HANDOFF.md / plan.md 是本工作区文件的公开镜像，通过 `tools/sync_workspace_docs.py` 同步；持续以当前文档为交接基线。原型发布不等于 TODO-13 顶奖成品完成，也没有代作者提交报名表或联系主办方。
 
 - 发布源码对应 `a7be1e1d5ddec1af5cc822014fc61ddddb45adc9`；GitHub 标签 `v0.1.0-spike` 指向该提交。后续发布记录提交只补充文档与证据。发布 zip SHA-256：`66ecd3b5f2e91b2690da9d3d9ec95494ba44e2a7192823dc32b3a8e94f4faa19`，79,929 bytes / 51 files。包内容不因仓库后续更新而改变。
-- 当前累计 5 次真实有效提交（含发布结果归档），仍未满足章程 10 次门槛。没有人为凑提交，也没有提交报名材料。
+- 首次发布归档时累计 5 次真实有效提交（含发布结果归档），仍未满足章程 10 次门槛。没有人为凑提交，也没有提交报名材料。
 - 新增踩坑：干净 Runner 必须先 `moon update` 再安装依赖，之后才能核验源码 hash；本地已有缓存不能证明 CI 可复现。调用方直接使用 x/fs 时必须显式声明 x，传递依赖不能替代直接依赖。
 - 完整发布证据：`partsieve/docs/evidence/release-validation.json`；注册表消费者源码：`partsieve/docs/evidence/registry-consumer/`；成功 CI：[37176472295](https://github.com/zlhahaha/partsieve/actions/runs/37176472295)。
+
+## TODO-2 验收更新
+
+- `graph_model.mbt` / `graph.mbt`：PartRecord 为 Part 事实；新增 PackageGraph、XmlReference、ImplicitReference、GraphNode、ContentTypeIndex 与 `inspect_graph` 公有 SDK / 有界 `graph` CLI。
+- audit/rewrite/verify 共用 loader 的图事实；source-local 绑定与入边 lookup 使用索引，verify 比较重解析后的完整图。外部 Target 不参与内部入边/遍历；循环使用迭代队列；孤儿候选不自动 GC。
+- 7 个新增单元测试、11 项图宿主检查通过，包括最大部件链加循环、引用 32768/32769 边界、已支持 orphan payload 重建后字节保留及未知扩展缺口。总单元数 22；原 48 特征样本、17 端到端检查与独立证据/旧 Receipt 重算依然 Pass；输出 SHA-256 不变。
+- 新 API 为 main 开发内容，不在已发布 `0.1.0-spike` 包内；原型标签仍准确指向发布源码。开发代码未重复发布同一个不可变版本。
+- 用户回答暂无真实下游。重新通过 GitHub API 读取 office.mbt #265，仍 open，内容为全量 XLSX 重写保留契约；它不是安全清洗需求或采用确认。没有联系维护者，TODO-11 未完成。
+- 踩坑：图的空 coverage_gaps 只能表示已建模结构未发现缺口，不能等同于支持 profile 或可重建；结构检查与重建授权必须分开。原有孤儿是否可删除不能由 reachability 单独决定。
+- 后续当前任务：TODO-3 统一 capability/coverage/decision；完整 P0/P1 路线未完成，真实下游与 10 次有效提交仍未满足。

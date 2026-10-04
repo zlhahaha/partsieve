@@ -7,6 +7,9 @@ let drawing_ns = "http://schemas.openxmlformats.org/drawingml/2006/main"
 ///|
 fn validate_profile(pkg : Package) -> Unit raise {
   let report = pkg.audit
+  guard pkg.graph.graph.coverage_gaps.length() == 0 else {
+    raise Refused("graph coverage gap: " + pkg.graph.graph.coverage_gaps[0])
+  }
   let allowed_rels = [
     office_rel + "officeDocument",
     office_rel + "worksheet",
@@ -21,7 +24,7 @@ fn validate_profile(pkg : Package) -> Unit raise {
     guard !r.external && allowed_rels.contains(r.kind) else {
       raise Refused("external or unsupported relationship capability")
     }
-    let target = report.parts.filter(fn(p) { p.name == r.resolved })[0]
+    let target = report.parts[pkg.graph.part_index[r.resolved]]
     let expected = if r.kind == office_rel + "officeDocument" {
       target.content_type == xlsx_ct || target.content_type == xlsm_ct
     } else if r.kind == vba_rel {
@@ -63,7 +66,7 @@ fn validate_profile(pkg : Package) -> Unit raise {
     guard report.format == "XLSM" else {
       raise Refused("VBA in non-macro main type")
     }
-    let incoming = report.relationships.filter(fn(r) { r.resolved == f.part })
+    let incoming = graph_incoming(pkg.graph, f.part)
     guard incoming.length() == 1 &&
       incoming[0].kind == vba_rel &&
       incoming[0].source == report.main_part else {
@@ -282,11 +285,9 @@ fn validate_profile(pkg : Package) -> Unit raise {
             a.name.local_name == "id" else {
             raise Refused("unsupported source XML relationship reference")
           }
-          let match_rel = report.relationships.filter(fn(r) {
-            r.source == p.name && r.id == a.value
-          })
-          guard match_rel.length() == 1 &&
-            match_rel[0].kind == office_rel + "worksheet" else {
+          guard graph_relationship(pkg.graph, p.name, a.value)
+            is Some(match_rel) &&
+            match_rel.kind == office_rel + "worksheet" else {
             raise Refused("dangling or wrongly-bound source XML reference")
           }
         }

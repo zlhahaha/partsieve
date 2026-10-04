@@ -57,7 +57,7 @@ def worker(command, input_path, extra=None):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=["audit", "plan", "rebuild", "verify"])
+    parser.add_argument("command", choices=["audit", "graph", "plan", "rebuild", "verify"])
     parser.add_argument("input", type=Path)
     parser.add_argument("--json", action="store_true", help="JSON is always used by the spike")
     parser.add_argument("--policy", default="passive-office-v1", choices=["passive-office-v1"])
@@ -72,7 +72,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix="partsieve-") as private_dir:
         snapshot = Path(private_dir) / "input.zip"
         snapshot.write_bytes(data)
-        if args.command in ("audit", "plan") or args.dry_run:
+        if args.command in ("audit", "graph", "plan") or args.dry_run:
             result = worker("plan" if args.dry_run else args.command, snapshot)
         elif args.command == "verify":
             if args.original is None:

@@ -3,7 +3,7 @@
   "fixtures": [
     {
       "name": "real-vba-control",
-      "sha256": "97f4df4f3dcae044b6d250ef79ed06bf00ca7fcf4c91eb50c8a6fba909e2d1ef",
+      "sha256": "941f09367f01e130e84727c39fb369f11accb6c5ba03ec370f71d34a900f8ec3",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "AcceptedWithinProfile",
@@ -18,7 +18,7 @@
     },
     {
       "name": "duplicate-name",
-      "sha256": "64799112fca492dbe8207e3c2def42804037cd5aa8c8bee44a9d29a42510a17d",
+      "sha256": "11891b45f7ba147153a068177f331669d8509da1e6e85f37c025fc00421b2881",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -28,7 +28,7 @@
     },
     {
       "name": "case-alias",
-      "sha256": "932a54c68d6fd1089a5438448a22c9fc26b163ce98b55417dec03d82c880ff01",
+      "sha256": "20cbe010dd621821516f09994de76031b54ab8e9eaa29d541439282f944701c4",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -48,7 +48,7 @@
     },
     {
       "name": "zip-truncated",
-      "sha256": "d245bbe7f6fcbb9cd9c5c7b831102ce169ec278e16051e45718a990ebfc57e51",
+      "sha256": "5da17394af376c1542efceb3ca4abdfff68f655342ac068713c876c3818b658f",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -58,7 +58,7 @@
     },
     {
       "name": "local-central-name-disagreement",
-      "sha256": "f3f1c633bd74c9cac76d1485f15fc1fd211ab2da240181fc6a7cf526c51f14b2",
+      "sha256": "24efb21c3ecca438a8ca59685618360188a08090d116bfcc03ccc971c6c9fd78",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -68,7 +68,7 @@
     },
     {
       "name": "local-central-size-disagreement",
-      "sha256": "8895e4de54baa667a5dd3d275b325c25a4cb2455d48fa6b3275e06669d851935",
+      "sha256": "1f3e27ddda9933c5139064ac441d725e81dd12d488601f6a1bb41d5c3a647173",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -78,7 +78,7 @@
     },
     {
       "name": "declared-uncompressed-size-understates-actual",
-      "sha256": "8dd5019642fecd4a5e919aa6816bf6befc84cdb515cbe30f22a2484d0a9d2fa9",
+      "sha256": "1a02169fd6000262c99537b61d04a4080a51ae9a91b8768e37787454b8e20186",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -88,7 +88,7 @@
     },
     {
       "name": "payload-crc-mismatch",
-      "sha256": "bd86dc55b68b5e8c1bae292a3e31aceea339b84fca2f361f3f2a52aaa02ffa2e",
+      "sha256": "6213187c9928d3c6bc4302f4965fa9c6e18673658111cbaebb706d328d76d871",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -98,7 +98,7 @@
     },
     {
       "name": "invalid-utf8",
-      "sha256": "961939c38a4969aa4704ebb95b9db423f13bb745d473865f85b50f88dfcb6472",
+      "sha256": "60d3e4c8b9b2268442359388a06b58592acf625259957619c6c996a58e03448d",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -108,7 +108,7 @@
     },
     {
       "name": "malformed-xml",
-      "sha256": "f14b9eb659d10cc70987e072e0f12ec013637780587d2378a60102153eae835b",
+      "sha256": "0d22fcd1f329f5a7ab9445e1a521cea8b53997ebcdb18972e7e990d5f7c58f38",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -118,7 +118,7 @@
     },
     {
       "name": "metadata-unknown-root-attribute",
-      "sha256": "84009c2ae4db916f3faec45e70a8810ac9ed06cb546afe99905ac5b79d4fdb37",
+      "sha256": "f11a6634fef58715264dab39fcb57da2c127dec39e39986ad480a891d1b654e2",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -128,7 +128,7 @@
     },
     {
       "name": "metadata-non-whitespace-text",
-      "sha256": "426dcb1d4000d53d38681e20a28f8ce172a0113c5bbd55c93fb03836e6ba86ec",
+      "sha256": "edd94f9ee5379f9026617d847a0efc39a9ef8fca87337b7e7ac0483d5801892f",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -138,7 +138,7 @@
     },
     {
       "name": "dtd-entity",
-      "sha256": "a19bcff19df74ef3297605242737861c30d654510ab68f406e301fdff129ed4f",
+      "sha256": "6eba7060108d7dae8e8a0485b3a22d862e76b674ac2be166a2fc49a904c3dc10",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -148,7 +148,7 @@
     },
     {
       "name": "duplicate-local-id",
-      "sha256": "de74b5bf4428070a4ab696d81cdc4c743cfb95aadb649fe421a7db996eca8c3c",
+      "sha256": "539eed8d5efd67f5c57b14f1b3c5a88659e3a137121d5393985f99362eacd097",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -158,7 +158,7 @@
     },
     {
       "name": "missing-target",
-      "sha256": "14e65eef38801b4da96e81a3402c1ddaa9598f6439390ea06af9527ff68b3144",
+      "sha256": "2e51d1daeba9d275cb40b1170ed6f3da3170b31f7fd5bccb70e87ceb48d742d3",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -168,7 +168,7 @@
     },
     {
       "name": "traversal-target",
-      "sha256": "b40e9be5f1eb8c680efb0b28bf4383688c8bd1736aa722e373dff1b0396ff15e",
+      "sha256": "43bd126685d836e73743117a87758f36ad547307242d71bb697abb519232f9fa",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -178,7 +178,7 @@
     },
     {
       "name": "percent-encoding-target",
-      "sha256": "e4b14b2a9bd0325f188668c9c0de37224226bbc4d6bdf91656176c81c334382d",
+      "sha256": "d586a75b77a7e44a2e625affb52e7a7359a37881a41382503f0168a037702974",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -188,17 +188,17 @@
     },
     {
       "name": "external-workbook",
-      "sha256": "76435297432e65bbcadf4fb74a842ab382e6fb6430c29bb4934791a54df75cb5",
+      "sha256": "289458d6de6842a1971a5213c487032be53aac7a55f5106b2763a2ee66372e06",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
       "actual_exit": 3,
       "status": "Unsupported",
-      "reason": "external or unsupported relationship capability"
+      "reason": "graph coverage gap: unsupported relationship semantics: xl/workbook.xml#rId2"
     },
     {
       "name": "external-target",
-      "sha256": "f58602a409101b1817a80a6b346550b1b10822236e0377d471abeb43ffc999e1",
+      "sha256": "83c15f83df8b02b833d7b78cac18099f13bebab244925ba48f99fd9ed430bf8e",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -208,47 +208,47 @@
     },
     {
       "name": "activex",
-      "sha256": "ef1f9b93cf7f863422f1c2465eae7ce3d9026c71c2798766bf9b3dfbdd99beac",
+      "sha256": "0f65f1c2272edced27946e91e1bdc64d9c6ff4578e50b7827557f271d5d96d20",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
       "actual_exit": 3,
       "status": "Unsupported",
-      "reason": "external or unsupported relationship capability"
+      "reason": "graph coverage gap: unsupported relationship semantics: xl/workbook.xml#rId2"
     },
     {
       "name": "ole",
-      "sha256": "838c9e33a9ef3eaa7880714e474e7d3b5df89072307329c15736c0d0b5cc4f38",
+      "sha256": "806b59345b8793c44d1a32879857eb827809ca7adb907a317c98aaf7b363cb67",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
       "actual_exit": 3,
       "status": "Unsupported",
-      "reason": "external or unsupported relationship capability"
+      "reason": "graph coverage gap: unsupported relationship semantics: xl/workbook.xml#rId2"
     },
     {
       "name": "unknown-relation",
-      "sha256": "a4dceba5e5781c14f68454b8e5270084291c70aadd81dbee2e3202321ee65898",
+      "sha256": "d300933dbdbde2315bab3f29f1a42c3aa6431a1a562de9f46b374fdda01e16dd",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
       "actual_exit": 3,
       "status": "Unsupported",
-      "reason": "external or unsupported relationship capability"
+      "reason": "graph coverage gap: unsupported relationship semantics: xl/workbook.xml#rId2"
     },
     {
       "name": "dangling-source-id",
-      "sha256": "83c974f9f15f090df486d43fe357db5d985fd21912e78b01bf65f4423a63a3b1",
+      "sha256": "a013c19ed18ac4b422d6438ce3fb7798ef4dbfa7ff76bcaeff788a1acbd709cf",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
       "actual_exit": 3,
       "status": "Unsupported",
-      "reason": "dangling or wrongly-bound source XML reference"
+      "reason": "dangling source-local XML relationship reference"
     },
     {
       "name": "wrong-source-binding",
-      "sha256": "5537b519e3bade300a8fdc38e4c9425981d8e95ec3be7096154aeb73216e942f",
+      "sha256": "324beab9f8ec5bd24a75bdda4634a1409757fe1eee5889061def74e82e649701",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -258,7 +258,7 @@
     },
     {
       "name": "missing-source-id",
-      "sha256": "d6d999506fbfd1d250340e0dd4a9c478eb3d12605b45b0f7568957525fbcdd9f",
+      "sha256": "0c22069dcf56c6e6054904ecc0ef7dd3cdc3ca9a0c10cc250be2843f6bd312e7",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -268,7 +268,7 @@
     },
     {
       "name": "wrong-source-element-placement",
-      "sha256": "8136bebad6a6a76fc75dae2b789da4e81f6727b9a7018cd6ede69f55502f7d78",
+      "sha256": "49235b1377e920c26b9679bb5a35a050cede2aae4ff14470855caad5aa021b74",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -278,7 +278,7 @@
     },
     {
       "name": "formula",
-      "sha256": "8a9a562334d8eddf2e86b0bb18bb84e66a74ceca3d8aa3d0026c8f17febf47ef",
+      "sha256": "494580b83c3c7d1d80295799c8d1d9092fe67370070537b5ba6b5dd2bc9f4c8a",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -288,27 +288,27 @@
     },
     {
       "name": "alternate-content",
-      "sha256": "f76d3674403555771a602ef515c78ab3d4189b0cee53beca48758ddeabf3a754",
+      "sha256": "16a6ccf2b2d0df2432c450300692725abd181832bb208b564357d1150f632b2c",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
       "actual_exit": 3,
       "status": "Unsupported",
-      "reason": "unsupported worksheet element placement"
+      "reason": "graph coverage gap: opaque XML namespace/extension (including AlternateContent or VML): xl/worksheets/sheet1.xml"
     },
     {
       "name": "unknown-extension",
-      "sha256": "eb3806e4ee845774fe7da318c2720f537f8e684f7d65e3ba5861e2608ce5c10a",
+      "sha256": "ac78e6c866635a92268c8450e143b8bba65b59733e466fadebec51f6c24fcdc4",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
       "actual_exit": 3,
       "status": "Unsupported",
-      "reason": "unsupported worksheet element placement"
+      "reason": "graph coverage gap: opaque XML namespace/extension (including AlternateContent or VML): xl/worksheets/sheet1.xml"
     },
     {
       "name": "undefined-prefix",
-      "sha256": "1599c43a3e287f9afba7f16111e453efbd8d9c31c9253f931c12679e1a2f5c0e",
+      "sha256": "f0e18603d7a5e39a995c469617a510af3b2cce67da327cde6ba75894422301dd",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -318,7 +318,7 @@
     },
     {
       "name": "renamed-vba",
-      "sha256": "e012111e25d50aff979b53e16d28b80b0734b1c60039d1b885380c8788f14d10",
+      "sha256": "9936686100320ee4cee9c8b17e8d5c55a91ae7a23a7ec24dbd02386e140588f5",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "AcceptedWithinProfile",
@@ -328,7 +328,7 @@
     },
     {
       "name": "orphan-vba",
-      "sha256": "f8fd2c3b11dc6fe37376588d76a1157d6b1eb2847572ed688b7efe5f68fe0d43",
+      "sha256": "b41a9285da9b3ecd292e80c5c8fab7f38a3fa1945eb310ca970248626dac4319",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -338,7 +338,7 @@
     },
     {
       "name": "shared-vba",
-      "sha256": "b5f91b185cc2763e9b7c3f7bc0ed1af3ab7725e8bbe2bc66f5e1e35281290b38",
+      "sha256": "6451d74329a038990197eed7d3a0febef68888e245306da5068322a201a36cb2",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -348,7 +348,7 @@
     },
     {
       "name": "unknown-orphan",
-      "sha256": "03a37cfde2d2d9f80ca9f7b6ec977b6b08abbcb0a76ca8510268f09333238bba",
+      "sha256": "d735043c61754c130d6841e1de5b8da320da7df2e8f1f7ec221b1c5293dd4762",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -358,7 +358,7 @@
     },
     {
       "name": "type-evidence-conflict",
-      "sha256": "479a88c50e9affa78f21de695ad59deddf60f125558a6fe5a3ba9319a161c9eb",
+      "sha256": "08975d09536aa7b811fdd6d4afe483d6a5611119a86ef9feb0d66a4edc83cebb",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -368,7 +368,7 @@
     },
     {
       "name": "non-cfb-vba",
-      "sha256": "4e2b2f7145d03d32d959691bc0b845fe5ded1bedcc02c2fc9368a8e0e495081f",
+      "sha256": "d99834d2549a5b480bd46bc48d2429bc24107d2045329174ce1307e4eb3eda1a",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -378,7 +378,7 @@
     },
     {
       "name": "macro-in-xlsx-type",
-      "sha256": "4eed78c0925206213160bd9543a6aff1bce975ab3da8a7b35daae263486583f1",
+      "sha256": "39df42319290ad843092061220cf35b2ccebdcca5ac6b77ce339be143ed4bbff",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -388,7 +388,7 @@
     },
     {
       "name": "macro-enabled-without-vba",
-      "sha256": "b3c1ca870e821b7971d36e680f936b31b2b977534d853b5c1f21762030b62fe4",
+      "sha256": "275882c7876e542c90175d5ea030691a19190202408e7ac597ec160206b983af",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "AcceptedWithinProfile",
@@ -398,7 +398,7 @@
     },
     {
       "name": "namespace-prefix-variation",
-      "sha256": "91d365dd7c420cf7557d0089a5a15cdd3443f354e241d1503dcd52a9885d7353",
+      "sha256": "33307b626b7862c2e5e73e035bdb19166a53fd1754df65fa725219e170d72cdb",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "AcceptedWithinProfile",
@@ -408,7 +408,7 @@
     },
     {
       "name": "absolute-target",
-      "sha256": "d99a9a3b66f0b48fe0b330f12d0563614495d0e1d16ef03242f66b48e9d95943",
+      "sha256": "394843cf505fa4384af0eb3644921b721ebc8a70abd157a1a1e0331ff3268f14",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "AcceptedWithinProfile",
@@ -418,7 +418,7 @@
     },
     {
       "name": "xml-depth-plus-one",
-      "sha256": "48bf358429276aaa9ecef9521e6a03c68b1f39dea7d0b8651b9283dedefeb8b1",
+      "sha256": "d3b773dc4ce786e6fc6ad7ee3d58db2908d8ea9c8f7f6986f1bfae11d8cfe05d",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -428,7 +428,7 @@
     },
     {
       "name": "per-element-attributes-over-limit",
-      "sha256": "ecbef6d716f1c71de6c0dad6d6a57b7b17b5692e1d71cfd40fa181e1e9810f20",
+      "sha256": "cecad6fce72cd81f91254c3a6775918398e1edb2fd88ff9878cbdb9e0dc93e88",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -438,7 +438,7 @@
     },
     {
       "name": "markup-token-over-limit",
-      "sha256": "3b52f7f2ea15a6f084bdfb216590d1030e3441029e45a08165071de7369d0af8",
+      "sha256": "c129242492cf361434e680e8ff881d6b203344658f835624160e596d87ba3fc1",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -448,7 +448,7 @@
     },
     {
       "name": "high-compression-xml-over-limit",
-      "sha256": "ace08b1d0909b61a1aeb9c3fe60796eb317a96ac6390b65dccb4938cdc4f50d5",
+      "sha256": "4461e6dd6f52b05e3d47890c6dc3eda8eac63ad3fb63393729eed4c1b56c29b3",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",
@@ -458,7 +458,7 @@
     },
     {
       "name": "zip-entry-over-limit",
-      "sha256": "e80fd9085c8715d3c69403c9d22753a16b75cfcf307443c695b5055ae24a82c0",
+      "sha256": "1739e19fb0ca9214b1f5eef5ef74d7f35ad44aff17fd6b18180dab7e86dca9d2",
       "source": "derived from pinned upstream macro01.xlsm",
       "license": "BSD-2-Clause (upstream fixture)",
       "expected": "Refuse",

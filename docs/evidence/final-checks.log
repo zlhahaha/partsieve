@@ -3,13 +3,11 @@ Symbols updated successfully
 Warning: `moon install` without arguments is deprecated and will be removed in a future version. Use `moon install <package>` to install binaries globally, or use `moon build` to build your project.
 Dependency source/version evidence verified.
 {"pinned_fixture_files": 5, "status": "Pass"}
-Finished. moon: ran 12 tasks, now up to date
-Finished. moon: no work to do
-Finished. moon: ran 12 tasks, now up to date
-Total tests: 15, passed: 15, failed: 0.
-fs_native.c
-sdk.c
-main.c
+Finished. moon: ran 4 tasks, now up to date
+Finished. moon: ran 19 tasks, now up to date
 Finished. moon: ran 16 tasks, now up to date
+Total tests: 22, passed: 22, failed: 0.
+Finished. moon: no work to do
 {"fixture_count": 48, "integration_assertions": 17, "status": "Pass"}
+{"graph_assertions": 11, "status": "Pass"}
 {"input_format":"XLSM","findings":1,"operations":5,"output_format":"XLSX","preservation":"Pass","output_hash":"fcc9a0ca93810d894df21c71d5764db7252afd3b1232b5aef55c21f3efcc9e53"}

@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- TODO-2：共用 PackageGraph/XmlReference、source-local 与入出边/内容类型索引、隐式 VBA 关系、迭代可达性与只报告的孤儿候选。
+- 新增 `inspect_graph` SDK 与有界 `graph` CLI，未知扩展显式报告覆盖缺口；新增 7 个单元测试和 11 项图宿主检查。
+
+
 ## 0.1.0-spike（2026-10-04）
 
 - 首个真实 XLSM VBA → XLSX 技术闭环。

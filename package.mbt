@@ -5,6 +5,7 @@ priv struct Package {
   xml_nodes : Map[String, Array[Node]]
   defaults : Map[String, String]
   overrides : Map[String, String]
+  graph : GraphFacts
 }
 
 ///|
@@ -16,7 +17,11 @@ fn get_part(archive : @zip.Archive, name : String) -> BytesView raise {
 }
 
 ///|
-fn load_package(input : Bytes, limits : Limits) -> Package raise {
+fn load_package(
+  input : Bytes,
+  limits : Limits,
+  enforce_profile? : Bool = true,
+) -> Package raise {
   limits.validate()
   let zl = @zip.ReadLimits::default()
     .with_package_limit(limits.input_bytes)
@@ -167,15 +172,14 @@ fn load_package(input : Bytes, limits : Limits) -> Package raise {
   }
   let main = mains[0].resolved
   let main_ct = parts.filter(fn(p) { p.name == main })[0].content_type
-  guard main_ct == xlsm_ct || main_ct == xlsx_ct else {
+  guard !enforce_profile || main_ct == xlsm_ct || main_ct == xlsx_ct else {
     raise Refused("unsupported main document type")
   }
+  let graph = build_graph(parts, relationships, nodes)
   let findings : Array[Finding] = []
   for p in parts {
     if p.content_type == vba_ct {
-      let incoming = relationships.filter(fn(r) {
-        !r.external && r.resolved == p.name
-      })
+      let incoming = graph_incoming(graph, p.name)
       findings.push({
         rule: "vba-v1",
         capability: "VBA",
@@ -192,8 +196,10 @@ fn load_package(input : Bytes, limits : Limits) -> Package raise {
     input_hash: digest(input[:]),
     format: if main_ct == xlsm_ct {
       "XLSM"
-    } else {
+    } else if main_ct == xlsx_ct {
       "XLSX"
+    } else {
+      "Unsupported"
     },
     main_part: main,
     coverage: "CompleteWithinProfile",
@@ -210,8 +216,17 @@ fn load_package(input : Bytes, limits : Limits) -> Package raise {
     relationships,
     findings,
   }
-  let pkg = { archive, audit: report, xml_nodes: nodes, defaults, overrides, }
-  validate_profile(pkg)
+  let pkg = {
+    archive,
+    audit: report,
+    xml_nodes: nodes,
+    defaults,
+    overrides,
+    graph,
+  }
+  if enforce_profile {
+    validate_profile(pkg)
+  }
   pkg
 }
 

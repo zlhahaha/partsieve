@@ -33,5 +33,7 @@ moon build --target native --deny-warn
 if ($LASTEXITCODE -ne 0) { throw 'moon build failed' }
 python tests/regression.py
 if ($LASTEXITCODE -ne 0) { throw 'Regression failed' }
+python tests/graph_regression.py
+if ($LASTEXITCODE -ne 0) { throw 'Graph regression failed' }
 moon run examples/sdk --target native
 if ($LASTEXITCODE -ne 0) { throw 'SDK example failed' }

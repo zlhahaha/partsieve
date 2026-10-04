@@ -6,12 +6,14 @@ fn main {
   try {
     let args = @env.args()
     guard args.length() >= 3 else {
-      fail("private worker: audit/plan/rebuild/verify INPUT [OUTPUT]")
+      fail("private worker: audit/graph/plan/rebuild/verify INPUT [OUTPUT]")
     }
     let command = args[1]
     let input = @fs.read_file_to_bytes(args[2])
     if command == "audit" {
       emit(@lib.audit(input).to_json())
+    } else if command == "graph" {
+      emit(@lib.inspect_graph(input).to_json())
     } else if command == "plan" {
       emit(@lib.plan(input).to_json())
     } else if command == "rebuild" {

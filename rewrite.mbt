@@ -3,9 +3,7 @@ fn make_plan(pkg : Package) -> RewritePlan {
   let report = pkg.audit
   let ops : Array[Operation] = []
   for f in report.findings {
-    let rel = report.relationships.filter(fn(r) {
-        r.kind == vba_rel && r.resolved == f.part
-      })[0]
+    let rel = graph_incoming(pkg.graph, f.part)[0]
     ops.push({
       kind: "RemovePart",
       part: f.part,
@@ -153,8 +151,7 @@ fn verify_parts(
   guard after.audit.format == "XLSX" && after.audit.findings.length() == 0 else {
     raise Refused("output has forbidden VBA or macro-enabled type")
   }
-  guard after.audit.parts == expected.audit.parts &&
-    after.audit.relationships == expected.audit.relationships else {
+  guard after.graph.graph == expected.graph.graph else {
     raise Refused("unexpected output part/relationship changes")
   }
   for p in before.audit.parts {

@@ -1,0 +1,52 @@
+{
+  "schema": "partsieve.graph-regression.v1",
+  "status": "Pass",
+  "checks": [
+    {
+      "name": "same input produces stable public graph",
+      "status": "Pass"
+    },
+    {
+      "name": "audit and graph expose identical part and relationship facts",
+      "status": "Pass"
+    },
+    {
+      "name": "real workbook source-local sheet reference and inbound/outbound indices",
+      "status": "Pass"
+    },
+    {
+      "name": "complete content-type index and package-root node",
+      "status": "Pass"
+    },
+    {
+      "name": "VBA implicit workbook relationship is reachable and indexed",
+      "status": "Pass"
+    },
+    {
+      "name": "package-absolute and source-relative targets resolve identically",
+      "status": "Pass"
+    },
+    {
+      "name": "external URL never creates an internal edge; rebuilding profile refuses",
+      "status": "Pass"
+    },
+    {
+      "name": "orphan candidate retained byte-for-byte through rebuild and verify",
+      "status": "Pass"
+    },
+    {
+      "name": "alternate-content is an explicit coverage gap and refuses profile audit",
+      "status": "Pass"
+    },
+    {
+      "name": "vml is an explicit coverage gap and refuses profile audit",
+      "status": "Pass"
+    },
+    {
+      "name": "unknown-extension is an explicit coverage gap and refuses profile audit",
+      "status": "Pass"
+    }
+  ],
+  "source": "pinned public macro01.xlsm and artificial mutations; not extra client compatibility evidence",
+  "fixture_sha256": "09c35d1580eb6d7e678ba8249cdd1cbc0bd245fbb0eed8794981728715944736"
+}

@@ -10,6 +10,8 @@ pub fn audit(Bytes, limits? : Limits) -> Audit raise
 
 pub fn digest(BytesView) -> String
 
+pub fn inspect_graph(Bytes, limits? : Limits) -> PackageGraph raise
+
 pub fn plan(Bytes, limits? : Limits) -> RewritePlan raise
 
 pub fn rebuild(Bytes, limits? : Limits) -> Rebuilt raise
@@ -44,6 +46,15 @@ pub fn Audit::not_equal(Self, Self) -> Bool
 pub fn Audit::to_json(Self) -> Json
 pub fn Audit::to_repr(Self) -> @debug.Repr
 
+pub(all) struct ContentTypeIndex {
+  content_type : String
+  parts : Array[String]
+} derive(Eq, ToJson, @debug.Debug)
+pub fn ContentTypeIndex::equal(Self, Self) -> Bool
+pub fn ContentTypeIndex::not_equal(Self, Self) -> Bool
+pub fn ContentTypeIndex::to_json(Self) -> Json
+pub fn ContentTypeIndex::to_repr(Self) -> @debug.Repr
+
 pub(all) struct Disposition {
   part : String
   classification : String
@@ -65,6 +76,28 @@ pub fn Finding::equal(Self, Self) -> Bool
 pub fn Finding::not_equal(Self, Self) -> Bool
 pub fn Finding::to_json(Self) -> Json
 pub fn Finding::to_repr(Self) -> @debug.Repr
+
+pub(all) struct GraphNode {
+  part : String
+  inbound : Array[Int]
+  outbound : Array[Int]
+  xml_references : Array[Int]
+  reachable : Bool
+} derive(Eq, ToJson, @debug.Debug)
+pub fn GraphNode::equal(Self, Self) -> Bool
+pub fn GraphNode::not_equal(Self, Self) -> Bool
+pub fn GraphNode::to_json(Self) -> Json
+pub fn GraphNode::to_repr(Self) -> @debug.Repr
+
+pub(all) struct ImplicitReference {
+  source : String
+  relationship_index : Int
+  semantics : String
+} derive(Eq, ToJson, @debug.Debug)
+pub fn ImplicitReference::equal(Self, Self) -> Bool
+pub fn ImplicitReference::not_equal(Self, Self) -> Bool
+pub fn ImplicitReference::to_json(Self) -> Json
+pub fn ImplicitReference::to_repr(Self) -> @debug.Repr
 
 pub(all) struct Limits {
   input_bytes : Int
@@ -94,6 +127,24 @@ pub fn Operation::equal(Self, Self) -> Bool
 pub fn Operation::not_equal(Self, Self) -> Bool
 pub fn Operation::to_json(Self) -> Json
 pub fn Operation::to_repr(Self) -> @debug.Repr
+
+pub(all) struct PackageGraph {
+  schema : String
+  root : String
+  parts : Array[PartRecord]
+  relationships : Array[Relationship]
+  xml_references : Array[XmlReference]
+  implicit_references : Array[ImplicitReference]
+  nodes : Array[GraphNode]
+  content_types : Array[ContentTypeIndex]
+  reachable : Array[String]
+  orphan_candidates : Array[String]
+  coverage_gaps : Array[String]
+} derive(Eq, ToJson, @debug.Debug)
+pub fn PackageGraph::equal(Self, Self) -> Bool
+pub fn PackageGraph::not_equal(Self, Self) -> Bool
+pub fn PackageGraph::to_json(Self) -> Json
+pub fn PackageGraph::to_repr(Self) -> @debug.Repr
 
 pub(all) struct PartRecord {
   name : String
@@ -160,6 +211,21 @@ pub fn RewritePlan::equal(Self, Self) -> Bool
 pub fn RewritePlan::not_equal(Self, Self) -> Bool
 pub fn RewritePlan::to_json(Self) -> Json
 pub fn RewritePlan::to_repr(Self) -> @debug.Repr
+
+pub(all) struct XmlReference {
+  source : String
+  element_index : Int
+  depth : Int
+  element_namespace : String
+  element_name : String
+  attribute_name : String
+  relationship_id : String
+  relationship_index : Int
+} derive(Eq, ToJson, @debug.Debug)
+pub fn XmlReference::equal(Self, Self) -> Bool
+pub fn XmlReference::not_equal(Self, Self) -> Bool
+pub fn XmlReference::to_json(Self) -> Json
+pub fn XmlReference::to_repr(Self) -> @debug.Repr
 
 // Type aliases
 

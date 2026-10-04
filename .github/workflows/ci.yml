@@ -51,7 +51,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: native-regression
-          path: docs/evidence/regression.json
+          path: |
+            docs/evidence/regression.json
+            docs/evidence/graph-regression.json
 
   independent:
     name: Independent ZIP and Open XML SDK
