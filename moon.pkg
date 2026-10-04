@@ -1,0 +1,7 @@
+import {
+  "moonbit-community/flate/zip",
+  "moonbit-community/flate/checksum",
+  "Milky2018/xml",
+  "moonbitlang/x/crypto",
+  "moonbitlang/core/encoding/utf8",
+}

@@ -1,0 +1,31 @@
+{
+  "tool": "DocumentFormat.OpenXml",
+  "version": "3.3.0",
+  "target": "Office2007",
+  "reports": [
+    {
+      "path": "tests/fixtures/upstream/macro01.xlsm",
+      "sha256": "09c35d1580eb6d7e678ba8249cdd1cbc0bd245fbb0eed8794981728715944736",
+      "status": "Pass",
+      "errors": []
+    },
+    {
+      "path": "docs/evidence/verified.xlsx",
+      "sha256": "fcc9a0ca93810d894df21c71d5764db7252afd3b1232b5aef55c21f3efcc9e53",
+      "status": "Pass",
+      "errors": []
+    },
+    {
+      "path": "tests/fixtures/upstream/simple01.xlsx",
+      "sha256": "cc6caf6efe9b60d5e9b59cc9c490cd02d7998af42021830f2def3e87f79004ad",
+      "status": "Pass",
+      "errors": []
+    },
+    {
+      "path": "docs/evidence/wps-saved.xlsx",
+      "sha256": "f7d036756be034775dee9dbebf7252f76b9176a5be2dcc57cdd11e0e40e0472b",
+      "status": "Pass",
+      "errors": []
+    }
+  ]
+}

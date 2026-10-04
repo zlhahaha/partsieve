@@ -1,0 +1,17 @@
+{
+  "tool": "DocumentFormat.OpenXml",
+  "version": "3.3.0",
+  "target": "Office2007",
+  "reports": [
+    {
+      "path": "tests/fixtures/upstream/simple01.xlsx",
+      "status": "Pass",
+      "errors": []
+    },
+    {
+      "path": "docs/evidence/wps-saved.xlsx",
+      "status": "Pass",
+      "errors": []
+    }
+  ]
+}

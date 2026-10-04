@@ -1,0 +1,502 @@
+{
+  "schema": "partsieve.corpus.spike-v1",
+  "fixtures": [
+    {
+      "name": "real-vba-control",
+      "sha256": "fcdb7e9493500abe5a445415b87d8b1e8370baf2955815db76a348da2fc0c1af",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "AcceptedWithinProfile",
+      "actual_exit": 0,
+      "status": "Pass",
+      "reason": null
+    },
+    {
+      "name": "clean-real-xlsx",
+      "expected": "AcceptedWithinProfile",
+      "actual_exit": 0
+    },
+    {
+      "name": "duplicate-name",
+      "sha256": "c16bed0972e193e7b0796202e3d6ea831daeb7ca104eecf30092cb6707d949cf",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "duplicate or case-equivalent part name"
+    },
+    {
+      "name": "case-alias",
+      "sha256": "84e501c02e595579b3bef9fdcef19b3f48632c97b423fb3facdbd3afff6059b9",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "duplicate or case-equivalent part name"
+    },
+    {
+      "name": "malformed-zip",
+      "sha256": "a3989126344744ef800dbc88bf7e744853f3f2eac75c9ab3301f4e845ef22078",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Incomplete",
+      "reason": "ZIP parsing did not complete: zip: end of central directory not found"
+    },
+    {
+      "name": "zip-truncated",
+      "sha256": "cf4175c40a2c35e563b20f9d211e6d2595009c60d3b423a5d6bdce475c460351",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Incomplete",
+      "reason": "ZIP parsing did not complete: zip: end of central directory not found"
+    },
+    {
+      "name": "local-central-name-disagreement",
+      "sha256": "91192e4ab9fcee112413d8b01b3fe5546a61dd806ab5ac7aad18b04aef16b6fc",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Incomplete",
+      "reason": "ZIP parsing did not complete: zip: local and central names differ"
+    },
+    {
+      "name": "local-central-size-disagreement",
+      "sha256": "217d0bf0baf0d8f08c7288b251e6958040656a2fb8bd3f818be4ceaa5a70b579",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Incomplete",
+      "reason": "ZIP parsing did not complete: zip: local and central sizes differ"
+    },
+    {
+      "name": "declared-uncompressed-size-understates-actual",
+      "sha256": "d5857ba651f50fda6c4f8af330f5628f8ccebd4f00f6fa96a0313baa97f8feb8",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Incomplete",
+      "reason": "ZIP parsing did not complete: zip: decoded size does not match central directory"
+    },
+    {
+      "name": "payload-crc-mismatch",
+      "sha256": "c5ce8c0f430b5882205ab33127b31027bbebf5250fc5c2281ab898e5d838b677",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "ZIP payload CRC mismatch"
+    },
+    {
+      "name": "invalid-utf8",
+      "sha256": "242b2137bc98eb72568445a253488d0fece72a8995a17bd89f99f3190853179e",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Incomplete",
+      "reason": "XML parsing did not complete: moonbitlang/core/encoding/utf8.Malformed.Malformed"
+    },
+    {
+      "name": "malformed-xml",
+      "sha256": "973d423dbf23aac1903e39f8287fcc8906ff8123ecf89ff3570b776b97e3ae55",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Incomplete",
+      "reason": "XML parsing did not complete: InvalidSyntax(unclosed element: <worksheet>) at 1:1-1:12"
+    },
+    {
+      "name": "metadata-unknown-root-attribute",
+      "sha256": "01e84e7fe0731cb5e296808f9750cc8ab80d57683e13a821f3e4fa3f6f4ec6a0",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "unsupported metadata attribute"
+    },
+    {
+      "name": "metadata-non-whitespace-text",
+      "sha256": "7e45da87e170a62a63d6e0759cc1e7e31c18a7f25396acf4ba6372979503e00b",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "text in package metadata"
+    },
+    {
+      "name": "dtd-entity",
+      "sha256": "3e64693777f2a9e709b220f33d8022da43506355c4eb8008f51a35aa448d64bd",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "DTD and entity declarations are forbidden"
+    },
+    {
+      "name": "duplicate-local-id",
+      "sha256": "ed5341e3b08090c3b298541a1860dbed13ea88839595daca346d25c1a921a4a2",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "duplicate or invalid local relationship ID"
+    },
+    {
+      "name": "missing-target",
+      "sha256": "6231047f622c5064b5ad00f8d921b454f347cebe3e48c6fcf53b10ae6851d8f8",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "internal target missing"
+    },
+    {
+      "name": "traversal-target",
+      "sha256": "41c1290f8e98745595357381135f7fb83e9186eb6132c76933afa73f64438d23",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "target escapes package root"
+    },
+    {
+      "name": "percent-encoding-target",
+      "sha256": "414be1eaca515af7577fd6c654282b8e49b834bcda36394b15cff27ddb499413",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "unsupported target URI encoding or syntax"
+    },
+    {
+      "name": "external-workbook",
+      "sha256": "f68381f6ef0477fc21c973d6ea2ae5ecad299c9d474547fff748fc27ac27c846",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "external or unsupported relationship capability"
+    },
+    {
+      "name": "external-target",
+      "sha256": "969a92e16bd24cfc5b837bb5addb447e746b493a08b23ed5ea4a7d9769873444",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "external or unsupported relationship capability"
+    },
+    {
+      "name": "activex",
+      "sha256": "e53862b1ce0e2d0e4b8298765a97a3f2070fa7f668ad149b1ae0780bf446b6b0",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "external or unsupported relationship capability"
+    },
+    {
+      "name": "ole",
+      "sha256": "2e36662def256cc72f6aeba13fdc6f38875cb26b6d2b55c459d117a5a3352d4c",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "external or unsupported relationship capability"
+    },
+    {
+      "name": "unknown-relation",
+      "sha256": "e6e8fa80d64a240dadbeb55f90f43c4c53c1cb4147cfe4d19799f19ed6b04a8f",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "external or unsupported relationship capability"
+    },
+    {
+      "name": "dangling-source-id",
+      "sha256": "87432fd6d2b5fb40b347f592e11241f0f0bb49af78c3e35876b44b9053aebc48",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "dangling or wrongly-bound source XML reference"
+    },
+    {
+      "name": "wrong-source-binding",
+      "sha256": "d8e2da76f4f80f1865d52c2685e0f81e164c8f05935be59627992a834ad0e79b",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "dangling or wrongly-bound source XML reference"
+    },
+    {
+      "name": "missing-source-id",
+      "sha256": "7c28ed1c9cf76e5976fccc8703131fc68a5d4302104d2f3351dfd1114f175470",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "missing or reused worksheet XML relationship ID"
+    },
+    {
+      "name": "wrong-source-element-placement",
+      "sha256": "b5f28086c78ca41d1345a263cae6fc13a257a88685221c0176fd0732800ea5b6",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "unsupported worksheet element placement"
+    },
+    {
+      "name": "formula",
+      "sha256": "3a5652bd20162ec661ff161a392a7a0eadae8a44ddf50088f0829c66438e33d3",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "unsupported worksheet element placement"
+    },
+    {
+      "name": "alternate-content",
+      "sha256": "b28a7d8cbaae4373b51b1734b455919926f5b05ca52b89daa09a22352bfefbe5",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "unsupported worksheet element placement"
+    },
+    {
+      "name": "unknown-extension",
+      "sha256": "f3fdd32df68419cc3cd708167f2a25babc70cc799c2bbcdb44a05bc10b447356",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "unsupported worksheet element placement"
+    },
+    {
+      "name": "undefined-prefix",
+      "sha256": "14859a6c655092dd63ea545ae617b69d553047a0bd00c80a4f5c2b81fbbe44f1",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Incomplete",
+      "reason": "XML parsing did not complete: InvalidSyntax(undeclared namespace prefix: q) at 2:459-2:507"
+    },
+    {
+      "name": "renamed-vba",
+      "sha256": "485b8498c7720d089d5bf3388625f342445ddcfdaeb539f5ab28711311708ce0",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "AcceptedWithinProfile",
+      "actual_exit": 0,
+      "status": "Pass",
+      "reason": null
+    },
+    {
+      "name": "orphan-vba",
+      "sha256": "bca63c760f697010222c18ef7974dc64c45de35c95e81fcc2e624fa7fc829b57",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "orphan/shared VBA or evidence conflict"
+    },
+    {
+      "name": "shared-vba",
+      "sha256": "34281e789bb1712a246a1b477b80d6998b4472e6fc060261ef69c70df4380cc0",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "orphan/shared VBA or evidence conflict"
+    },
+    {
+      "name": "unknown-orphan",
+      "sha256": "45124e95ffbd176ee31641e79a33ffab5e220f764844a6e94f212209c6d46ae4",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "multiple VBA parts unsupported"
+    },
+    {
+      "name": "type-evidence-conflict",
+      "sha256": "3f817a1f415f122600a0ab153af1fb55ea85c9eea0da89f52a05f8da01a16cd2",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "relationship/content-type evidence conflict"
+    },
+    {
+      "name": "non-cfb-vba",
+      "sha256": "994b80c24d291a0b1b4d2b4a0d05213f767aac6c9f80c7d54bb4d72c1fcdf6a7",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "VBA part is not a CFB container"
+    },
+    {
+      "name": "macro-in-xlsx-type",
+      "sha256": "df53c04dc03bff398b6645bcc5f5f9ca054545f29acfa9b29e7c37a76b961aab",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Unsupported",
+      "reason": "VBA in non-macro main type"
+    },
+    {
+      "name": "macro-enabled-without-vba",
+      "sha256": "ebea970c960faa9a05cb9c792df878954efb4e7e82f1ff1456175e7f0af8bd33",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "AcceptedWithinProfile",
+      "actual_exit": 0,
+      "status": "Pass",
+      "reason": null
+    },
+    {
+      "name": "namespace-prefix-variation",
+      "sha256": "c2e8de2fbc84d8edd28302bfbd7c34213ccf491b3720ea970b3d56d6e0465573",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "AcceptedWithinProfile",
+      "actual_exit": 0,
+      "status": "Pass",
+      "reason": null
+    },
+    {
+      "name": "absolute-target",
+      "sha256": "d2bd6bb82c749d7b51e93979c247ebec9b21be8481227a3defd3cc2ca78f338e",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "AcceptedWithinProfile",
+      "actual_exit": 0,
+      "status": "Pass",
+      "reason": null
+    },
+    {
+      "name": "xml-depth-plus-one",
+      "sha256": "5d6da68e55fd2ee48d94dd15427ebd357c8aed5e6930b3e43379b91bc7847bb4",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Incomplete",
+      "reason": "XML node/depth limit"
+    },
+    {
+      "name": "per-element-attributes-over-limit",
+      "sha256": "720f025e60255c569957f9bbc995111bb7f5abf6d43458e3f5ca889fb1620d6d",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Incomplete",
+      "reason": "per-element attribute ceiling"
+    },
+    {
+      "name": "markup-token-over-limit",
+      "sha256": "6993f63c2c428ab66bc96cf4802221c1af21f3b1659d34c385543115d67b7be4",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Incomplete",
+      "reason": "XML markup token limit"
+    },
+    {
+      "name": "high-compression-xml-over-limit",
+      "sha256": "71f4830e0ede1f9c6e52523b86e4693e2b90b7057ed6bbd308f85068e46ee00f",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Incomplete",
+      "reason": "XML byte limit"
+    },
+    {
+      "name": "zip-entry-over-limit",
+      "sha256": "2c60a325b20c22a91ce85c1b9b76ebb1623e77318edcdff4adabb919b849283e",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Incomplete",
+      "reason": "ZIP parsing did not complete: zip: entry exceeds the per-entry uncompressed limit"
+    },
+    {
+      "name": "sdk-host-input-over-limit",
+      "sha256": "b367c8cf8c1abc4227ff699d4ea1a21bafe050050ca10846abb76987a4182eef",
+      "source": "derived from pinned upstream macro01.xlsm",
+      "license": "BSD-2-Clause (upstream fixture)",
+      "expected": "Refuse",
+      "actual_exit": 3,
+      "status": "Incomplete",
+      "reason": "input/report exceeds byte limit"
+    }
+  ],
+  "fixture_count": 48,
+  "integration_assertions": 17,
+  "integration_checks": [
+    "genuine-vba-rebuild",
+    "original-and-receipt-verify",
+    "forged-receipt-refused",
+    "no-original-incomplete",
+    "dry-run",
+    "clean-xlsx-rebuild",
+    "clean-payloads-preserved",
+    "existing-output-not-overwritten",
+    "tampered-output-refused",
+    "changed-original-refused",
+    "second-rebuild",
+    "second-rebuild-payload-idempotence",
+    "unsupported-rebuild-refused",
+    "refusal-publishes-no-files",
+    "macro-enabled-without-vba-rebuild",
+    "namespace-prefix-variation-rebuild",
+    "renamed-vba-rebuild"
+  ],
+  "status": "Pass"
+}

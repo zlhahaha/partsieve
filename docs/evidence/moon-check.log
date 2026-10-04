@@ -1,0 +1,316 @@
+Warning: [0020]
+   ╭─[ E:\moonbit10\partsieve\cmd\main\main.mbt:7:16 ]
+   │
+ 7 │     let args = @sys.get_cli_args()
+   │                ────────┬────────  
+   │                        ╰────────── Warning (deprecated): Use `@env.args()` from `moonbitlang/core/env` instead. On the JavaScript backend, `@env.args()` returns `process.argv` unchanged, while this function omits `process.argv[0]`, the JavaScript runtime executable.
+───╯
+Warning: [0079]
+   ╭─[ E:\moonbit10\partsieve\model.mbt:4:10 ]
+   │
+ 4 │ } derive(Debug)
+   │          ──┬──  
+   │            ╰──── Warning (implicit_impl_as_method): The methods to_repr from `impl @moonbitlang/core/debug.Debug for SieveError` are implicit promoted as regular method for `SieveError`. This behavior is deprecated and will be removed in the future. Add a `pub extend SieveError with @moonbitlang/core/debug.Debug::{to_repr}` declaration or manually define regular methods for type `SieveError` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+───╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:17:10 ]
+    │
+ 17 │ } derive(ToJson, Eq, Debug)
+    │          ───┬──  
+    │             ╰──── Warning (implicit_impl_as_method): The methods to_json from `impl ToJson for Limits` are implicit promoted as regular method for `Limits`. This behavior is deprecated and will be removed in the future. Add a `pub extend Limits with ToJson::{to_json}` declaration or manually define regular methods for type `Limits` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:17:18 ]
+    │
+ 17 │ } derive(ToJson, Eq, Debug)
+    │                  ─┬  
+    │                   ╰── Warning (implicit_impl_as_method): The methods not_equal, equal from `impl Eq for Limits` are implicit promoted as regular method for `Limits`. This behavior is deprecated and will be removed in the future. Add a `pub extend Limits with Eq::{not_equal, equal}` declaration or manually define regular methods for type `Limits` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:17:22 ]
+    │
+ 17 │ } derive(ToJson, Eq, Debug)
+    │                      ──┬──  
+    │                        ╰──── Warning (implicit_impl_as_method): The methods to_repr from `impl @moonbitlang/core/debug.Debug for Limits` are implicit promoted as regular method for `Limits`. This behavior is deprecated and will be removed in the future. Add a `pub extend Limits with @moonbitlang/core/debug.Debug::{to_repr}` declaration or manually define regular methods for type `Limits` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:47:10 ]
+    │
+ 47 │ } derive(ToJson, Eq, Debug)
+    │          ───┬──  
+    │             ╰──── Warning (implicit_impl_as_method): The methods to_json from `impl ToJson for PartRecord` are implicit promoted as regular method for `PartRecord`. This behavior is deprecated and will be removed in the future. Add a `pub extend PartRecord with ToJson::{to_json}` declaration or manually define regular methods for type `PartRecord` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:47:18 ]
+    │
+ 47 │ } derive(ToJson, Eq, Debug)
+    │                  ─┬  
+    │                   ╰── Warning (implicit_impl_as_method): The methods not_equal, equal from `impl Eq for PartRecord` are implicit promoted as regular method for `PartRecord`. This behavior is deprecated and will be removed in the future. Add a `pub extend PartRecord with Eq::{not_equal, equal}` declaration or manually define regular methods for type `PartRecord` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:47:22 ]
+    │
+ 47 │ } derive(ToJson, Eq, Debug)
+    │                      ──┬──  
+    │                        ╰──── Warning (implicit_impl_as_method): The methods to_repr from `impl @moonbitlang/core/debug.Debug for PartRecord` are implicit promoted as regular method for `PartRecord`. This behavior is deprecated and will be removed in the future. Add a `pub extend PartRecord with @moonbitlang/core/debug.Debug::{to_repr}` declaration or manually define regular methods for type `PartRecord` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:57:10 ]
+    │
+ 57 │ } derive(ToJson, Eq, Debug)
+    │          ───┬──  
+    │             ╰──── Warning (implicit_impl_as_method): The methods to_json from `impl ToJson for Relationship` are implicit promoted as regular method for `Relationship`. This behavior is deprecated and will be removed in the future. Add a `pub extend Relationship with ToJson::{to_json}` declaration or manually define regular methods for type `Relationship` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:57:18 ]
+    │
+ 57 │ } derive(ToJson, Eq, Debug)
+    │                  ─┬  
+    │                   ╰── Warning (implicit_impl_as_method): The methods not_equal, equal from `impl Eq for Relationship` are implicit promoted as regular method for `Relationship`. This behavior is deprecated and will be removed in the future. Add a `pub extend Relationship with Eq::{not_equal, equal}` declaration or manually define regular methods for type `Relationship` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:57:22 ]
+    │
+ 57 │ } derive(ToJson, Eq, Debug)
+    │                      ──┬──  
+    │                        ╰──── Warning (implicit_impl_as_method): The methods to_repr from `impl @moonbitlang/core/debug.Debug for Relationship` are implicit promoted as regular method for `Relationship`. This behavior is deprecated and will be removed in the future. Add a `pub extend Relationship with @moonbitlang/core/debug.Debug::{to_repr}` declaration or manually define regular methods for type `Relationship` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:65:10 ]
+    │
+ 65 │ } derive(ToJson, Eq, Debug)
+    │          ───┬──  
+    │             ╰──── Warning (implicit_impl_as_method): The methods to_json from `impl ToJson for Finding` are implicit promoted as regular method for `Finding`. This behavior is deprecated and will be removed in the future. Add a `pub extend Finding with ToJson::{to_json}` declaration or manually define regular methods for type `Finding` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:65:18 ]
+    │
+ 65 │ } derive(ToJson, Eq, Debug)
+    │                  ─┬  
+    │                   ╰── Warning (implicit_impl_as_method): The methods not_equal, equal from `impl Eq for Finding` are implicit promoted as regular method for `Finding`. This behavior is deprecated and will be removed in the future. Add a `pub extend Finding with Eq::{not_equal, equal}` declaration or manually define regular methods for type `Finding` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:65:22 ]
+    │
+ 65 │ } derive(ToJson, Eq, Debug)
+    │                      ──┬──  
+    │                        ╰──── Warning (implicit_impl_as_method): The methods to_repr from `impl @moonbitlang/core/debug.Debug for Finding` are implicit promoted as regular method for `Finding`. This behavior is deprecated and will be removed in the future. Add a `pub extend Finding with @moonbitlang/core/debug.Debug::{to_repr}` declaration or manually define regular methods for type `Finding` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:80:10 ]
+    │
+ 80 │ } derive(ToJson, Eq, Debug)
+    │          ───┬──  
+    │             ╰──── Warning (implicit_impl_as_method): The methods to_json from `impl ToJson for Audit` are implicit promoted as regular method for `Audit`. This behavior is deprecated and will be removed in the future. Add a `pub extend Audit with ToJson::{to_json}` declaration or manually define regular methods for type `Audit` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:80:18 ]
+    │
+ 80 │ } derive(ToJson, Eq, Debug)
+    │                  ─┬  
+    │                   ╰── Warning (implicit_impl_as_method): The methods not_equal, equal from `impl Eq for Audit` are implicit promoted as regular method for `Audit`. This behavior is deprecated and will be removed in the future. Add a `pub extend Audit with Eq::{not_equal, equal}` declaration or manually define regular methods for type `Audit` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:80:22 ]
+    │
+ 80 │ } derive(ToJson, Eq, Debug)
+    │                      ──┬──  
+    │                        ╰──── Warning (implicit_impl_as_method): The methods to_repr from `impl @moonbitlang/core/debug.Debug for Audit` are implicit promoted as regular method for `Audit`. This behavior is deprecated and will be removed in the future. Add a `pub extend Audit with @moonbitlang/core/debug.Debug::{to_repr}` declaration or manually define regular methods for type `Audit` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:89:10 ]
+    │
+ 89 │ } derive(ToJson, Eq, Debug)
+    │          ───┬──  
+    │             ╰──── Warning (implicit_impl_as_method): The methods to_json from `impl ToJson for Operation` are implicit promoted as regular method for `Operation`. This behavior is deprecated and will be removed in the future. Add a `pub extend Operation with ToJson::{to_json}` declaration or manually define regular methods for type `Operation` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:89:18 ]
+    │
+ 89 │ } derive(ToJson, Eq, Debug)
+    │                  ─┬  
+    │                   ╰── Warning (implicit_impl_as_method): The methods not_equal, equal from `impl Eq for Operation` are implicit promoted as regular method for `Operation`. This behavior is deprecated and will be removed in the future. Add a `pub extend Operation with Eq::{not_equal, equal}` declaration or manually define regular methods for type `Operation` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:89:22 ]
+    │
+ 89 │ } derive(ToJson, Eq, Debug)
+    │                      ──┬──  
+    │                        ╰──── Warning (implicit_impl_as_method): The methods to_repr from `impl @moonbitlang/core/debug.Debug for Operation` are implicit promoted as regular method for `Operation`. This behavior is deprecated and will be removed in the future. Add a `pub extend Operation with @moonbitlang/core/debug.Debug::{to_repr}` declaration or manually define regular methods for type `Operation` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:98:10 ]
+    │
+ 98 │ } derive(ToJson, Eq, Debug)
+    │          ───┬──  
+    │             ╰──── Warning (implicit_impl_as_method): The methods to_json from `impl ToJson for RewritePlan` are implicit promoted as regular method for `RewritePlan`. This behavior is deprecated and will be removed in the future. Add a `pub extend RewritePlan with ToJson::{to_json}` declaration or manually define regular methods for type `RewritePlan` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:98:18 ]
+    │
+ 98 │ } derive(ToJson, Eq, Debug)
+    │                  ─┬  
+    │                   ╰── Warning (implicit_impl_as_method): The methods not_equal, equal from `impl Eq for RewritePlan` are implicit promoted as regular method for `RewritePlan`. This behavior is deprecated and will be removed in the future. Add a `pub extend RewritePlan with Eq::{not_equal, equal}` declaration or manually define regular methods for type `RewritePlan` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ E:\moonbit10\partsieve\model.mbt:98:22 ]
+    │
+ 98 │ } derive(ToJson, Eq, Debug)
+    │                      ──┬──  
+    │                        ╰──── Warning (implicit_impl_as_method): The methods to_repr from `impl @moonbitlang/core/debug.Debug for RewritePlan` are implicit promoted as regular method for `RewritePlan`. This behavior is deprecated and will be removed in the future. Add a `pub extend RewritePlan with @moonbitlang/core/debug.Debug::{to_repr}` declaration or manually define regular methods for type `RewritePlan` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+     ╭─[ E:\moonbit10\partsieve\model.mbt:106:10 ]
+     │
+ 106 │ } derive(ToJson, Eq, Debug)
+     │          ───┬──  
+     │             ╰──── Warning (implicit_impl_as_method): The methods to_json from `impl ToJson for Disposition` are implicit promoted as regular method for `Disposition`. This behavior is deprecated and will be removed in the future. Add a `pub extend Disposition with ToJson::{to_json}` declaration or manually define regular methods for type `Disposition` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+─────╯
+Warning: [0079]
+     ╭─[ E:\moonbit10\partsieve\model.mbt:106:18 ]
+     │
+ 106 │ } derive(ToJson, Eq, Debug)
+     │                  ─┬  
+     │                   ╰── Warning (implicit_impl_as_method): The methods not_equal, equal from `impl Eq for Disposition` are implicit promoted as regular method for `Disposition`. This behavior is deprecated and will be removed in the future. Add a `pub extend Disposition with Eq::{not_equal, equal}` declaration or manually define regular methods for type `Disposition` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+─────╯
+Warning: [0079]
+     ╭─[ E:\moonbit10\partsieve\model.mbt:106:22 ]
+     │
+ 106 │ } derive(ToJson, Eq, Debug)
+     │                      ──┬──  
+     │                        ╰──── Warning (implicit_impl_as_method): The methods to_repr from `impl @moonbitlang/core/debug.Debug for Disposition` are implicit promoted as regular method for `Disposition`. This behavior is deprecated and will be removed in the future. Add a `pub extend Disposition with @moonbitlang/core/debug.Debug::{to_repr}` declaration or manually define regular methods for type `Disposition` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+─────╯
+Warning: [0079]
+     ╭─[ E:\moonbit10\partsieve\model.mbt:129:10 ]
+     │
+ 129 │ } derive(ToJson, Eq, Debug)
+     │          ───┬──  
+     │             ╰──── Warning (implicit_impl_as_method): The methods to_json from `impl ToJson for Receipt` are implicit promoted as regular method for `Receipt`. This behavior is deprecated and will be removed in the future. Add a `pub extend Receipt with ToJson::{to_json}` declaration or manually define regular methods for type `Receipt` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+─────╯
+Warning: [0079]
+     ╭─[ E:\moonbit10\partsieve\model.mbt:129:18 ]
+     │
+ 129 │ } derive(ToJson, Eq, Debug)
+     │                  ─┬  
+     │                   ╰── Warning (implicit_impl_as_method): The methods not_equal, equal from `impl Eq for Receipt` are implicit promoted as regular method for `Receipt`. This behavior is deprecated and will be removed in the future. Add a `pub extend Receipt with Eq::{not_equal, equal}` declaration or manually define regular methods for type `Receipt` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+─────╯
+Warning: [0079]
+     ╭─[ E:\moonbit10\partsieve\model.mbt:129:22 ]
+     │
+ 129 │ } derive(ToJson, Eq, Debug)
+     │                      ──┬──  
+     │                        ╰──── Warning (implicit_impl_as_method): The methods to_repr from `impl @moonbitlang/core/debug.Debug for Receipt` are implicit promoted as regular method for `Receipt`. This behavior is deprecated and will be removed in the future. Add a `pub extend Receipt with @moonbitlang/core/debug.Debug::{to_repr}` declaration or manually define regular methods for type `Receipt` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+─────╯
+Warning: [0020]
+    ╭─[ E:\moonbit10\partsieve\opc.mbt:66:31 ]
+    │
+ 66 │   source.push(segments[n - 1].substring(end=segments[n - 1].length() - 5))
+    │                               ────┬────  
+    │                                   ╰────── Warning (deprecated): Use `str[:]` or `str[:].to_string()` instead
+────╯
+Warning: [0027]
+    ╭─[ E:\moonbit10\partsieve\partsieve_wbtest.mbt:23:20 ]
+    │
+ 23 │     expect_refused(fn() { ignore(resolve_target("xl/workbook.xml", target)) })
+    │                    ─┬  
+    │                     ╰── Warning (deprecated_syntax): This `fn` may raise error but is not annotated with `raise`, this kind of effect inference is deprecated, use arrow function `(..) => ...` instead or add explicit `raise` annotation.
+────╯
+Warning: [0027]
+    ╭─[ E:\moonbit10\partsieve\partsieve_wbtest.mbt:32:18 ]
+    │
+ 32 │   expect_refused(fn() { ignore(relationship_source("xl/workbook.rels")) })
+    │                  ─┬  
+    │                   ╰── Warning (deprecated_syntax): This `fn` may raise error but is not annotated with `raise`, this kind of effect inference is deprecated, use arrow function `(..) => ...` instead or add explicit `raise` annotation.
+────╯
+Warning: [0027]
+    ╭─[ E:\moonbit10\partsieve\partsieve_wbtest.mbt:52:18 ]
+    │
+ 52 │   expect_refused(fn() { ignore(read_xml(b"<a><b><c/></b></a>", limits)) })
+    │                  ─┬  
+    │                   ╰── Warning (deprecated_syntax): This `fn` may raise error but is not annotated with `raise`, this kind of effect inference is deprecated, use arrow function `(..) => ...` instead or add explicit `raise` annotation.
+────╯
+Warning: [0027]
+    ╭─[ E:\moonbit10\partsieve\partsieve_wbtest.mbt:58:18 ]
+    │
+ 58 │   expect_refused(fn() { ignore(read_xml(b"<a />", { ..Limits::default(), xml_bytes: 4 })) })
+    │                  ─┬  
+    │                   ╰── Warning (deprecated_syntax): This `fn` may raise error but is not annotated with `raise`, this kind of effect inference is deprecated, use arrow function `(..) => ...` instead or add explicit `raise` annotation.
+────╯
+Warning: [0027]
+    ╭─[ E:\moonbit10\partsieve\partsieve_wbtest.mbt:59:18 ]
+    │
+ 59 │   expect_refused(fn() { ignore(read_xml(b"<a><b/></a>", { ..Limits::default(), xml_nodes: 1 })) })
+    │                  ─┬  
+    │                   ╰── Warning (deprecated_syntax): This `fn` may raise error but is not annotated with `raise`, this kind of effect inference is deprecated, use arrow function `(..) => ...` instead or add explicit `raise` annotation.
+────╯
+Warning: [0027]
+    ╭─[ E:\moonbit10\partsieve\partsieve_wbtest.mbt:61:18 ]
+    │
+ 61 │   expect_refused(fn() { ignore(read_xml(b"<a x='1' y='2'/>", { ..Limits::default(), xml_attributes: 1 })) })
+    │                  ─┬  
+    │                   ╰── Warning (deprecated_syntax): This `fn` may raise error but is not annotated with `raise`, this kind of effect inference is deprecated, use arrow function `(..) => ...` instead or add explicit `raise` annotation.
+────╯
+Warning: [0027]
+    ╭─[ E:\moonbit10\partsieve\partsieve_wbtest.mbt:68:20 ]
+    │
+ 68 │     expect_refused(fn() { ignore(read_xml(@utf8.encode(text[:])[:], Limits::default())) })
+    │                    ─┬  
+    │                     ╰── Warning (deprecated_syntax): This `fn` may raise error but is not annotated with `raise`, this kind of effect inference is deprecated, use arrow function `(..) => ...` instead or add explicit `raise` annotation.
+────╯
+Warning: [0027]
+    ╭─[ E:\moonbit10\partsieve\partsieve_wbtest.mbt:70:18 ]
+    │
+ 70 │   expect_refused(fn() { ignore(read_xml(b"\xff", Limits::default())) })
+    │                  ─┬  
+    │                   ╰── Warning (deprecated_syntax): This `fn` may raise error but is not annotated with `raise`, this kind of effect inference is deprecated, use arrow function `(..) => ...` instead or add explicit `raise` annotation.
+────╯
+Warning: [0027]
+    ╭─[ E:\moonbit10\partsieve\partsieve_wbtest.mbt:81:18 ]
+    │
+ 81 │   expect_refused(fn() { ({ ..Limits::default(), entries: 0 }).validate() })
+    │                  ─┬  
+    │                   ╰── Warning (deprecated_syntax): This `fn` may raise error but is not annotated with `raise`, this kind of effect inference is deprecated, use arrow function `(..) => ...` instead or add explicit `raise` annotation.
+────╯
+Warning: [0027]
+    ╭─[ E:\moonbit10\partsieve\partsieve_wbtest.mbt:82:18 ]
+    │
+ 82 │   expect_refused(fn() { ({ ..Limits::default(), xml_depth: 129 }).validate() })
+    │                  ─┬  
+    │                   ╰── Warning (deprecated_syntax): This `fn` may raise error but is not annotated with `raise`, this kind of effect inference is deprecated, use arrow function `(..) => ...` instead or add explicit `raise` annotation.
+────╯
+Warning: [0027]
+    ╭─[ E:\moonbit10\partsieve\partsieve_wbtest.mbt:94:18 ]
+    │
+ 94 │   expect_refused(fn() { ignore(@zip.read(bytes[:], limits=limits.with_package_limit(bytes.length() - 1))) })
+    │                  ─┬  
+    │                   ╰── Warning (deprecated_syntax): This `fn` may raise error but is not annotated with `raise`, this kind of effect inference is deprecated, use arrow function `(..) => ...` instead or add explicit `raise` annotation.
+────╯
+Warning: [0027]
+    ╭─[ E:\moonbit10\partsieve\partsieve_wbtest.mbt:95:18 ]
+    │
+ 95 │   expect_refused(fn() { ignore(@zip.read(bytes[:], limits=limits.with_entry_limit(2))) })
+    │                  ─┬  
+    │                   ╰── Warning (deprecated_syntax): This `fn` may raise error but is not annotated with `raise`, this kind of effect inference is deprecated, use arrow function `(..) => ...` instead or add explicit `raise` annotation.
+────╯
+Warning: [0027]
+    ╭─[ E:\moonbit10\partsieve\partsieve_wbtest.mbt:96:18 ]
+    │
+ 96 │   expect_refused(fn() { ignore(@zip.read(bytes[:], limits=limits.with_total_limit(2))) })
+    │                  ─┬  
+    │                   ╰── Warning (deprecated_syntax): This `fn` may raise error but is not annotated with `raise`, this kind of effect inference is deprecated, use arrow function `(..) => ...` instead or add explicit `raise` annotation.
+────╯
+Warning: [0027]
+    ╭─[ E:\moonbit10\partsieve\partsieve_wbtest.mbt:97:18 ]
+    │
+ 97 │   expect_refused(fn() { ignore(@zip.read(bytes[:], limits=limits.with_entries_limit(0))) })
+    │                  ─┬  
+    │                   ╰── Warning (deprecated_syntax): This `fn` may raise error but is not annotated with `raise`, this kind of effect inference is deprecated, use arrow function `(..) => ...` instead or add explicit `raise` annotation.
+────╯
+Warning: [0027]
+     ╭─[ E:\moonbit10\partsieve\partsieve_wbtest.mbt:115:18 ]
+     │
+ 115 │   expect_refused(fn() { ignore(@zip.write_preserving_limited(read, max_output_bytes=output.length() - 1)) })
+     │                  ─┬  
+     │                   ╰── Warning (deprecated_syntax): This `fn` may raise error but is not annotated with `raise`, this kind of effect inference is deprecated, use arrow function `(..) => ...` instead or add explicit `raise` annotation.
+─────╯
+Finished. moon: ran 5 tasks, now up to date (45 warnings, 0 errors)

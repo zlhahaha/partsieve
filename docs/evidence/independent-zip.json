@@ -1,0 +1,60 @@
+{
+  "tool": "CPython zipfile + ElementTree",
+  "version": "3.12.7",
+  "status": "Pass",
+  "input_sha256": "09c35d1580eb6d7e678ba8249cdd1cbc0bd245fbb0eed8794981728715944736",
+  "output_sha256": "fcc9a0ca93810d894df21c71d5764db7252afd3b1232b5aef55c21f3efcc9e53",
+  "a1": 123,
+  "parts": [
+    {
+      "part": "[Content_Types].xml",
+      "before": "51dd89c3d04eaf31d2770b9f7b7b98c18a35d7927614036e9f684bc381ad6093",
+      "after": "5510106c3aaba1da8d5c9e8feaa6a72cf7eaf53b3a1f2923525a5fd0a494933b"
+    },
+    {
+      "part": "_rels/.rels",
+      "before": "73e5a29f48d5ab979eeda062493bc7e679265c1344ef936978b8becec5549497",
+      "after": "73e5a29f48d5ab979eeda062493bc7e679265c1344ef936978b8becec5549497"
+    },
+    {
+      "part": "xl/_rels/workbook.xml.rels",
+      "before": "ccfd9fdf98e7ecdee89d8d98365cac678000cdf350d49f87ac37debe4f0d732d",
+      "after": "2ad4955974296b289d32bf7148326c61e7e2013f27b1896bdc111876a54df97d"
+    },
+    {
+      "part": "xl/workbook.xml",
+      "before": "f44116310d44ff9c7ac9a3b1afe652af29149da7151ad3c4cfc8bba1c4edaa42",
+      "after": "f44116310d44ff9c7ac9a3b1afe652af29149da7151ad3c4cfc8bba1c4edaa42"
+    },
+    {
+      "part": "xl/vbaProject.bin",
+      "before": "c2dc50d080e28605c6281c834bebb7cc62366d805f12afdb92bcbc3f35a7db27",
+      "after": null
+    },
+    {
+      "part": "xl/styles.xml",
+      "before": "2de1fc9c48c4b0190361c49cdb053fd39cf81e32f12c82d08f88aec34358257f",
+      "after": "2de1fc9c48c4b0190361c49cdb053fd39cf81e32f12c82d08f88aec34358257f"
+    },
+    {
+      "part": "xl/theme/theme1.xml",
+      "before": "156137ac2d7fae74e0286df47c4d1c75e65d5ef1455ff74c4d46176aef06fe56",
+      "after": "156137ac2d7fae74e0286df47c4d1c75e65d5ef1455ff74c4d46176aef06fe56"
+    },
+    {
+      "part": "xl/worksheets/sheet1.xml",
+      "before": "daac29a20235c1d67743413c21fd3a524eadc56ddc2c8b0dbc5ea9e06c95295e",
+      "after": "daac29a20235c1d67743413c21fd3a524eadc56ddc2c8b0dbc5ea9e06c95295e"
+    },
+    {
+      "part": "docProps/core.xml",
+      "before": "7b949bce5f829ef10d32ba557ce2da00abb7572f0b478433e6218e1d70511aae",
+      "after": "7b949bce5f829ef10d32ba557ce2da00abb7572f0b478433e6218e1d70511aae"
+    },
+    {
+      "part": "docProps/app.xml",
+      "before": "3ee7711741c5959bde95ee0baf8144eded6de2b1a24492a8ade67500c49edb7d",
+      "after": "3ee7711741c5959bde95ee0baf8144eded6de2b1a24492a8ade67500c49edb7d"
+    }
+  ]
+}

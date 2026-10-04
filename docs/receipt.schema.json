@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:partsieve:receipt:spike-v1",
+  "title": "PartSieve spike-v1 published Receipt pair marker",
+  "description": "Shape validation only. Full verification requires original and actual output bytes, recomputed audit/plan/dispositions, and equality with this receipt. Independent validation remains separate evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["publication", "receipt"],
+  "properties": {
+    "publication": {"const": "pair-complete"},
+    "receipt": {"$ref": "#/$defs/receipt"}
+  },
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "strings": {"type": "array", "items": {"type": "string"}},
+    "limits": {
+      "type": "object", "additionalProperties": false,
+      "required": ["input_bytes", "entry_bytes", "total_bytes", "entries", "xml_bytes", "xml_depth", "xml_nodes", "xml_attributes", "output_bytes"],
+      "properties": {
+        "input_bytes": {"type": "integer", "minimum": 1, "maximum": 33554432},
+        "entry_bytes": {"type": "integer", "minimum": 1, "maximum": 33554432},
+        "total_bytes": {"type": "integer", "minimum": 1, "maximum": 134217728},
+        "entries": {"type": "integer", "minimum": 1, "maximum": 4096},
+        "xml_bytes": {"type": "integer", "minimum": 1, "maximum": 8388608},
+        "xml_depth": {"type": "integer", "minimum": 1, "maximum": 128},
+        "xml_nodes": {"type": "integer", "minimum": 1, "maximum": 200000},
+        "xml_attributes": {"type": "integer", "minimum": 1, "maximum": 400000},
+        "output_bytes": {"type": "integer", "minimum": 1, "maximum": 67108864}
+      }
+    },
+    "part": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "content_type", "sha256"],
+      "properties": {"name": {"type": "string"}, "content_type": {"type": "string"}, "sha256": {"$ref": "#/$defs/hash"}}
+    },
+    "relationship": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source", "id", "kind", "target", "resolved", "external"],
+      "properties": {
+        "source": {"type": "string"}, "id": {"type": "string"}, "kind": {"type": "string"},
+        "target": {"type": "string"}, "resolved": {"type": "string"}, "external": {"type": "boolean"}
+      }
+    },
+    "finding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["rule", "capability", "part", "evidence"],
+      "properties": {
+        "rule": {"const": "vba-v1"}, "capability": {"const": "VBA"},
+        "part": {"type": "string"}, "evidence": {"$ref": "#/$defs/strings"}
+      }
+    },
+    "audit": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "input_hash", "format", "main_part", "coverage", "profile", "checked_rules", "limitations", "parts", "relationships", "findings"],
+      "properties": {
+        "schema": {"const": "partsieve.audit.spike-v1"}, "input_hash": {"$ref": "#/$defs/hash"},
+        "format": {"enum": ["XLSM", "XLSX"]}, "main_part": {"type": "string"},
+        "coverage": {"const": "CompleteWithinProfile"}, "profile": {"const": "simple-spreadsheet-spike-v1"},
+        "checked_rules": {"$ref": "#/$defs/strings"}, "limitations": {"$ref": "#/$defs/strings"},
+        "parts": {"type": "array", "items": {"$ref": "#/$defs/part"}},
+        "relationships": {"type": "array", "items": {"$ref": "#/$defs/relationship"}},
+        "findings": {"type": "array", "items": {"$ref": "#/$defs/finding"}}
+      }
+    },
+    "operation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "part", "relationship_id", "rule", "reason"],
+      "properties": {
+        "kind": {"enum": ["RemovePart", "RemoveRelationship", "RewriteRelationshipPart", "ChangeMainContentType", "RewriteContentTypes"]},
+        "part": {"type": "string"}, "relationship_id": {"type": "string"},
+        "rule": {"type": "string"}, "reason": {"type": "string"}
+      }
+    },
+    "plan": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "input_hash", "policy", "profile", "operations"],
+      "properties": {
+        "schema": {"const": "partsieve.plan.spike-v1"}, "input_hash": {"$ref": "#/$defs/hash"},
+        "policy": {"const": "passive-office-v1"}, "profile": {"const": "simple-spreadsheet-spike-v1"},
+        "operations": {"type": "array", "items": {"$ref": "#/$defs/operation"}}
+      }
+    },
+    "disposition": {
+      "type": "object", "additionalProperties": false,
+      "required": ["part", "classification", "before_hash"],
+      "properties": {
+        "part": {"type": "string"}, "classification": {"enum": ["BytePreserved", "RemovedByPolicy", "RegeneratedMetadata"]},
+        "before_hash": {"$ref": "#/$defs/hash"}, "after_hash": {"$ref": "#/$defs/hash"}
+      },
+      "allOf": [
+        {"if": {"properties": {"classification": {"const": "RemovedByPolicy"}}},
+         "then": {"not": {"required": ["after_hash"]}}, "else": {"required": ["after_hash"]}}
+      ]
+    },
+    "receipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "tool", "rules", "policy", "profile", "input_hash", "output_hash", "input_size", "output_size", "input_format", "output_format", "limits", "audit", "plan", "dispositions", "structure", "preservation", "independent_validation", "limitations"],
+      "properties": {
+        "schema": {"const": "partsieve.receipt.spike-v1"}, "tool": {"const": "partsieve/0.1.0-spike"},
+        "rules": {"const": "spike-rules-v1"}, "policy": {"const": "passive-office-v1"},
+        "profile": {"const": "simple-spreadsheet-spike-v1"},
+        "input_hash": {"$ref": "#/$defs/hash"}, "output_hash": {"$ref": "#/$defs/hash"},
+        "input_size": {"type": "integer", "minimum": 1, "maximum": 33554432},
+        "output_size": {"type": "integer", "minimum": 1, "maximum": 67108864},
+        "input_format": {"enum": ["XLSM", "XLSX"]}, "output_format": {"const": "XLSX"},
+        "limits": {"$ref": "#/$defs/limits"}, "audit": {"$ref": "#/$defs/audit"}, "plan": {"$ref": "#/$defs/plan"},
+        "dispositions": {"type": "array", "items": {"$ref": "#/$defs/disposition"}},
+        "structure": {"const": "Pass"}, "preservation": {"const": "Pass"}, "independent_validation": {"const": "NotChecked"},
+        "limitations": {"$ref": "#/$defs/strings"}
+      }
+    }
+  }
+}

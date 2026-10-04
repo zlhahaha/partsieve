@@ -1,0 +1,166 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "zlhahaha/partsieve"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn audit(Bytes, limits? : Limits) -> Audit raise
+
+pub fn digest(BytesView) -> String
+
+pub fn plan(Bytes, limits? : Limits) -> RewritePlan raise
+
+pub fn rebuild(Bytes, limits? : Limits) -> Rebuilt raise
+
+pub fn resolve_target(String, String) -> String raise
+
+pub fn verify(Bytes, Bytes, limits? : Limits) -> Receipt raise
+
+// Errors
+pub(all) suberror SieveError {
+  Refused(String)
+  Incomplete(String)
+} derive(@debug.Debug)
+pub fn SieveError::to_repr(Self) -> @debug.Repr
+
+// Types and methods
+pub(all) struct Audit {
+  schema : String
+  input_hash : String
+  format : String
+  main_part : String
+  coverage : String
+  profile : String
+  checked_rules : Array[String]
+  limitations : Array[String]
+  parts : Array[PartRecord]
+  relationships : Array[Relationship]
+  findings : Array[Finding]
+} derive(Eq, ToJson, @debug.Debug)
+pub fn Audit::equal(Self, Self) -> Bool
+pub fn Audit::not_equal(Self, Self) -> Bool
+pub fn Audit::to_json(Self) -> Json
+pub fn Audit::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Disposition {
+  part : String
+  classification : String
+  before_hash : String
+  after_hash : String?
+} derive(Eq, ToJson, @debug.Debug)
+pub fn Disposition::equal(Self, Self) -> Bool
+pub fn Disposition::not_equal(Self, Self) -> Bool
+pub fn Disposition::to_json(Self) -> Json
+pub fn Disposition::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Finding {
+  rule : String
+  capability : String
+  part : String
+  evidence : Array[String]
+} derive(Eq, ToJson, @debug.Debug)
+pub fn Finding::equal(Self, Self) -> Bool
+pub fn Finding::not_equal(Self, Self) -> Bool
+pub fn Finding::to_json(Self) -> Json
+pub fn Finding::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Limits {
+  input_bytes : Int
+  entry_bytes : Int
+  total_bytes : Int
+  entries : Int
+  xml_bytes : Int
+  xml_depth : Int
+  xml_nodes : Int
+  xml_attributes : Int
+  output_bytes : Int
+} derive(Eq, ToJson, @debug.Debug)
+pub fn Limits::default() -> Self
+pub fn Limits::equal(Self, Self) -> Bool
+pub fn Limits::not_equal(Self, Self) -> Bool
+pub fn Limits::to_json(Self) -> Json
+pub fn Limits::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Operation {
+  kind : String
+  part : String
+  relationship_id : String
+  rule : String
+  reason : String
+} derive(Eq, ToJson, @debug.Debug)
+pub fn Operation::equal(Self, Self) -> Bool
+pub fn Operation::not_equal(Self, Self) -> Bool
+pub fn Operation::to_json(Self) -> Json
+pub fn Operation::to_repr(Self) -> @debug.Repr
+
+pub(all) struct PartRecord {
+  name : String
+  content_type : String
+  sha256 : String
+} derive(Eq, ToJson, @debug.Debug)
+pub fn PartRecord::equal(Self, Self) -> Bool
+pub fn PartRecord::not_equal(Self, Self) -> Bool
+pub fn PartRecord::to_json(Self) -> Json
+pub fn PartRecord::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Rebuilt {
+  bytes : Bytes
+  receipt : Receipt
+}
+
+pub(all) struct Receipt {
+  schema : String
+  tool : String
+  rules : String
+  policy : String
+  profile : String
+  input_hash : String
+  output_hash : String
+  input_size : Int
+  output_size : Int
+  input_format : String
+  output_format : String
+  limits : Limits
+  audit : Audit
+  plan : RewritePlan
+  dispositions : Array[Disposition]
+  structure : String
+  preservation : String
+  independent_validation : String
+  limitations : Array[String]
+} derive(Eq, ToJson, @debug.Debug)
+pub fn Receipt::equal(Self, Self) -> Bool
+pub fn Receipt::not_equal(Self, Self) -> Bool
+pub fn Receipt::to_json(Self) -> Json
+pub fn Receipt::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Relationship {
+  source : String
+  id : String
+  kind : String
+  target : String
+  resolved : String
+  external : Bool
+} derive(Eq, ToJson, @debug.Debug)
+pub fn Relationship::equal(Self, Self) -> Bool
+pub fn Relationship::not_equal(Self, Self) -> Bool
+pub fn Relationship::to_json(Self) -> Json
+pub fn Relationship::to_repr(Self) -> @debug.Repr
+
+pub(all) struct RewritePlan {
+  schema : String
+  input_hash : String
+  policy : String
+  profile : String
+  operations : Array[Operation]
+} derive(Eq, ToJson, @debug.Debug)
+pub fn RewritePlan::equal(Self, Self) -> Bool
+pub fn RewritePlan::not_equal(Self, Self) -> Bool
+pub fn RewritePlan::to_json(Self) -> Json
+pub fn RewritePlan::to_repr(Self) -> @debug.Repr
+
+// Type aliases
+
+// Traits

@@ -1,0 +1,13 @@
+.DS_Store
+_build/
+target/
+target
+.mooncakes/
+.moonagent/
+tools/test-deps/
+tests/OpenXmlValidation/bin/
+tests/OpenXmlValidation/obj/
+tests/generated/
+__pycache__/
+~$*
+.~lock.*

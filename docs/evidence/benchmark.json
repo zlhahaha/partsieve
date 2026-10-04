@@ -1,0 +1,105 @@
+{
+  "tool": "psutil subprocess sampling",
+  "psutil": "5.9.0",
+  "machine": "Windows-11-10.0.22631-SP0",
+  "processor": "Intel64 Family 6 Model 170 Stepping 4, GenuineIntel",
+  "build": "Native debug",
+  "runs_per_case": 3,
+  "toolchain": "moon 0.1.20260920 (914d7da 2026-09-20) ~\\.moon\\bin\\moon.exe\nmoonc v0.10.14+7d59c7ec9 (2026-09-18) ~\\.moon\\bin\\moonc.exe\nmoonrun 0.1.20260920 (914d7da 2026-09-20) ~\\.moon\\bin\\moonrun.exe\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+  "limits_calibrated": false,
+  "limitations": "Tiny-fixture smoke benchmark; samples may miss short-lived peaks. No 1/10/30 MiB calibration.",
+  "cases": [
+    {
+      "command": "audit",
+      "input": "tests/fixtures/upstream/macro01.xlsm",
+      "input_bytes": 11463,
+      "milliseconds": [
+        39.503,
+        39.812,
+        42.067
+      ],
+      "declared_expanded_bytes": 26068,
+      "compressed_payload_bytes": 8597,
+      "part_count": 10,
+      "sampled_peak_working_set_bytes": [
+        7983104,
+        7974912,
+        7946240
+      ],
+      "exit_codes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "command": "rebuild",
+      "input": "tests/fixtures/upstream/macro01.xlsm",
+      "input_bytes": 11463,
+      "milliseconds": [
+        87.749,
+        93.738,
+        93.952
+      ],
+      "declared_expanded_bytes": 26068,
+      "compressed_payload_bytes": 8597,
+      "part_count": 10,
+      "sampled_peak_working_set_bytes": [
+        8835072,
+        8790016,
+        8798208
+      ],
+      "exit_codes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "command": "verify",
+      "input": "docs/evidence/verified.xlsx",
+      "input_bytes": 6236,
+      "milliseconds": [
+        74.358,
+        62.025,
+        67.121
+      ],
+      "declared_expanded_bytes": 12465,
+      "compressed_payload_bytes": 4220,
+      "part_count": 9,
+      "sampled_peak_working_set_bytes": [
+        8798208,
+        8777728,
+        8773632
+      ],
+      "exit_codes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "command": "audit",
+      "input": "tests/generated/high-compression-xml-over-limit.xlsm",
+      "input_bytes": 16938,
+      "milliseconds": [
+        708.935,
+        677.625,
+        728.023
+      ],
+      "declared_expanded_bytes": 8414136,
+      "compressed_payload_bytes": 15802,
+      "part_count": 10,
+      "sampled_peak_working_set_bytes": [
+        24158208,
+        24535040,
+        24182784
+      ],
+      "exit_codes": [
+        3,
+        3,
+        3
+      ]
+    }
+  ]
+}

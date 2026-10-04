@@ -1,0 +1,32 @@
+{
+  "schema": "partsieve.dependency-evidence-v1",
+  "moon": "0.1.20260920 (914d7da 2026-09-20)",
+  "moonc": "v0.10.14+7d59c7ec9 (2026-09-18)",
+  "dependencies": [
+    {
+      "module": "moonbit-community/flate",
+      "version": "0.8.4",
+      "license": "Apache-2.0",
+      "registry_archive_checksum": "ac48f8d4798f4780c2753455087422cfa71f849a8de9f2422b041d578b933376",
+      "installed_source_sha256": "0be3e9560c9778e6f4c20908b520e30ef84a84bfbbc4e26183dfb1306166641d",
+      "source_file_count": 97
+    },
+    {
+      "module": "Milky2018/xml",
+      "version": "0.5.0",
+      "license": "Apache-2.0",
+      "registry_archive_checksum": "c05c0386d61348b1948e5e6f05bd443894a4be3f4ec9d4238559c0beedec4bbf",
+      "installed_source_sha256": "e8ac4e747024356e53300c1ba5c2b43a8ced4fc8d7ad3648f668f5cb3e8f76f3",
+      "source_file_count": 37
+    },
+    {
+      "module": "moonbitlang/x",
+      "version": "0.5.5",
+      "license": "Apache-2.0",
+      "registry_archive_checksum": "eb7ddddea2c871ac823d210c4a9fdf5efc75d2c1fe9965292760669f15041dc4",
+      "installed_source_sha256": "aa98279443017e5fd5777c7ec1032f53a3be07bcaf48758306bd999fa0c14613",
+      "source_file_count": 212
+    }
+  ],
+  "note": "Exact manifest versions plus installed source verification. This is project evidence, not a native Moon lockfile."
+}

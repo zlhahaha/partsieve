@@ -1,0 +1,6 @@
+import {
+  "zlhahaha/partsieve" @sieve,
+  "moonbitlang/x/fs",
+}
+
+pkgtype(kind: "executable")

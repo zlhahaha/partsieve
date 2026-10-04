@@ -1,0 +1,13 @@
+Dependency source/version evidence verified.
+{"pinned_fixture_files": 5, "status": "Pass"}
+Finished. moon: no work to do
+Finished. moon: ran 16 tasks, now up to date
+Finished. moon: ran 13 tasks, now up to date
+partsieve.whitebox_test.c
+Total tests: 15, passed: 15, failed: 0.
+fs_native.c
+sdk.c
+main.c
+Finished. moon: ran 16 tasks, now up to date
+{"fixture_count": 48, "integration_assertions": 17, "status": "Pass"}
+{"input_format":"XLSM","findings":1,"operations":5,"output_format":"XLSX","preservation":"Pass","output_hash":"fcc9a0ca93810d894df21c71d5764db7252afd3b1232b5aef55c21f3efcc9e53"}

@@ -1,0 +1,69 @@
+{
+  "schema": "partsieve.fixture-provenance.spike-v1",
+  "recorded": "2026-10-04",
+  "upstream": "jmcnamara/XlsxWriter",
+  "commit": "5d4606d89a955226d2d0825a0f44309043ae7251",
+  "files": [
+    {
+      "path": "tests/fixtures/upstream/macro01.xlsm",
+      "bytes": 11463,
+      "sha256": "09c35d1580eb6d7e678ba8249cdd1cbc0bd245fbb0eed8794981728715944736",
+      "license": "BSD-2-Clause",
+      "source": "https://github.com/jmcnamara/XlsxWriter/blob/5d4606d89a955226d2d0825a0f44309043ae7251/xlsxwriter/test/comparison/xlsx_files/macro01.xlsm"
+    },
+    {
+      "path": "tests/fixtures/upstream/simple01.xlsx",
+      "bytes": 7333,
+      "sha256": "cc6caf6efe9b60d5e9b59cc9c490cd02d7998af42021830f2def3e87f79004ad",
+      "license": "BSD-2-Clause",
+      "source": "https://github.com/jmcnamara/XlsxWriter/blob/5d4606d89a955226d2d0825a0f44309043ae7251/xlsxwriter/test/comparison/xlsx_files/simple01.xlsx"
+    },
+    {
+      "path": "tests/fixtures/upstream/test_macro01.py",
+      "bytes": 2230,
+      "sha256": "bef4201b145c586d798a527cf31cae2ef94bdb830a2177aa681773fbf41686c0",
+      "license": "BSD-2-Clause",
+      "source": "https://github.com/jmcnamara/XlsxWriter/blob/5d4606d89a955226d2d0825a0f44309043ae7251/xlsxwriter/test/comparison/test_macro01.py"
+    },
+    {
+      "path": "tests/fixtures/upstream/test_simple01.py",
+      "bytes": 3342,
+      "sha256": "7f93f01852442f89f90b9a888b0728a03f32bc1bfa2377cc579a4bd4eb6eb7a8",
+      "license": "BSD-2-Clause",
+      "source": "https://github.com/jmcnamara/XlsxWriter/blob/5d4606d89a955226d2d0825a0f44309043ae7251/xlsxwriter/test/comparison/test_simple01.py"
+    },
+    {
+      "path": "tests/fixtures/upstream/LICENSE.txt",
+      "bytes": 1349,
+      "sha256": "cf08b60a4ded986b58a617cb8304373bda5c4eff42fb4e30d7597b616e116e87",
+      "license": "BSD-2-Clause",
+      "source": "https://github.com/jmcnamara/XlsxWriter/blob/5d4606d89a955226d2d0825a0f44309043ae7251/LICENSE.txt"
+    }
+  ],
+  "expectations": {
+    "macro01.xlsm": {
+      "kind": "real Excel comparison fixture",
+      "sheets": 1,
+      "cell": "Sheet1!A1",
+      "value": 123,
+      "vba_projects": 1,
+      "expected_rewrite": "remove VBA payload and relationship; convert main type to XLSX; preserve other payloads",
+      "static_macro_review": "docs/evidence/vba-source-review.json",
+      "vba_executed": false
+    },
+    "simple01.xlsx": {
+      "kind": "real clean XLSX comparison fixture",
+      "expected_rewrite": "preserve every part payload; do not invent VBA findings"
+    }
+  },
+  "derived_cases": {
+    "generator": "tests/regression.py",
+    "manifest": "docs/evidence/regression.json",
+    "purpose": "bounded-reader, URI, XML, capability and refusal variants; not additional real-client compatibility evidence",
+    "license": "BSD-2-Clause for upstream-derived fixture payloads"
+  },
+  "limitations": [
+    "One-cell genuine VBA fixture; no image or visual-fidelity evidence.",
+    "Only verified macro-free output opened in WPS."
+  ]
+}
