@@ -40,7 +40,7 @@ fn build_graph(
   let type_parts : Map[String, Array[String]] = Map([])
   for i, part in parts {
     guard !part_index.contains(part.name) else {
-      raise Refused("duplicate graph part")
+      raise Invalid("duplicate graph part")
     }
     part_index[part.name] = i
     node_index[part.name] = names.length()
@@ -58,7 +58,7 @@ fn build_graph(
   let gaps : Array[String] = []
   for i, r in relationships {
     guard node_index.contains(r.source) else {
-      raise Refused("relationship source missing")
+      raise Invalid("relationship source missing")
     }
     let ids = match local_relationships.get(r.source) {
       Some(ids) => ids
@@ -69,13 +69,13 @@ fn build_graph(
       }
     }
     guard !ids.contains(r.id) else {
-      raise Refused("duplicate local graph relationship ID")
+      raise Invalid("duplicate local graph relationship ID")
     }
     ids[r.id] = i
     outbound[node_index[r.source]].push(i)
     if !r.external {
       guard node_index.contains(r.resolved) && r.resolved != "/" else {
-        raise Refused("internal graph target missing")
+        raise Invalid("internal graph target missing")
       }
       inbound[node_index[r.resolved]].push(i)
     }
@@ -145,7 +145,7 @@ fn build_graph(
             }
             guard local_relationships.get(part.name) is Some(ids) &&
               ids.get(a.value) is Some(index) else {
-              raise Refused("dangling source-local XML relationship reference")
+              raise Invalid("dangling source-local XML relationship reference")
             }
             source_refs[node_index[part.name]].push(references.length())
             references.push({

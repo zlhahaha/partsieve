@@ -1,6 +1,6 @@
 # PartSieve
 
-MoonBit OOXML Capability Auditor & Verified Rebuilder。首次原型版本为 **0.1.0-spike**，该发布包已完成 TODO-0 技术 GO 与 TODO-1 Bounded Package Loader；GitHub main 后续已完成 TODO-2 OPC 图与 XML 引用索引。完整路线图见 [plan.md](https://github.com/zlhahaha/partsieve/blob/main/plan.md)，交接记录见 [HANDOFF.md](https://github.com/zlhahaha/partsieve/blob/main/HANDOFF.md)，发布与章程要求的实际状态见 [发布记录](https://github.com/zlhahaha/partsieve/blob/main/docs/release.md)。
+MoonBit OOXML Capability Auditor & Verified Rebuilder。首次原型版本为 **0.1.0-spike**，该发布包已完成 TODO-0 技术 GO 与 TODO-1 Bounded Package Loader；GitHub main 后续已完成 TODO-2 OPC 图与 XML 引用索引、TODO-3 结构化能力/覆盖/决策。完整路线图见 [plan.md](https://github.com/zlhahaha/partsieve/blob/main/plan.md)，交接记录见 [HANDOFF.md](https://github.com/zlhahaha/partsieve/blob/main/HANDOFF.md)，发布与章程要求的实际状态见 [发布记录](https://github.com/zlhahaha/partsieve/blob/main/docs/release.md)。
 
 首个配置 `simple-spreadsheet-spike-v1` 支持简单 XLSX/XLSM：受限读取、VBA 证据、固定策略计划、重建、重新读取验证和所有 part 的 payload hash。真实样本经独立 ZIP、Open XML SDK 3.3.0、WPS 12.1.0.28505 检查。外链、公式、hyperlink、图片、OLE、ActiveX、未知部件/扩展及 DOCX/DOCM 当前拒绝，不宣称通用文档安全或视觉保真。
 
@@ -39,7 +39,7 @@ python tools/partsieve.py verify output.xlsx --original tests/fixtures/upstream/
 
 Python 是原型有界 I/O 宿主，所有 OOXML 核心逻辑在 MoonBit SDK。不要直接将 `cmd/main` 私有 worker 用于不可信文件输入；它假设宿主已限制输入文件。
 
-原型退出码：0 请求的检查完成；2 Receipt/已发布 hash 复核不符；3 配置不支持、检查不完整、资源拒绝或 worker 失败；4 I/O/用法错误。解析失败、截断与限额耗尽有明确的 Incomplete 诊断，不能发布重建结果。统一的 Coverage/Decision 和完整 Pass/Fail/Incomplete/Unsupported 结果模型属于后续 TODO-3，当前不把这些退出码当作最终发布契约。无 original 的 verify 会标 preservation NotChecked、整体 Incomplete，返回 3。
+原型退出码：0 请求的检查完成；2 明确结构完整性、保留契约、Receipt/已发布 hash 复核不符；3 配置不支持、检查不完整、资源拒绝或 worker 失败；4 I/O/用法错误。解析失败、截断与限额耗尽有明确的 Incomplete 诊断，不能发布重建结果。main 的 `assess` 已提供统一 Coverage/Decision 和 Pass/Fail/Incomplete/Unsupported；原型 Audit/Receipt 保留兼容形状，完整新版 Receipt 属于 TODO-6，当前不把这些退出码当作最终发布契约。无 original 的 verify 会标 preservation NotChecked、整体 Incomplete，返回 3。
 
 ## SDK 与验证
 
@@ -55,13 +55,17 @@ python tests/independent_zip.py tests/fixtures/upstream/macro01.xlsm docs/eviden
 dotnet run --project tests/OpenXmlValidation -- tests/fixtures/upstream/macro01.xlsm docs/evidence/verified.xlsx
 ```
 
-执行 [tools/check.ps1](tools/check.ps1) 可复核版本、依赖源码、格式与公开接口漂移、编译和回归。main 当前 22 个单元测试、48 个特征样本、17 项端到端检查和 11 项图宿主检查通过；首次发布包对应 15 个单元测试。WPS 检查是独立客户端证据，不宣称已由 CI 自动完成。大量样本为人工变体；真实兼容样本只有上游 macro01.xlsm/simple01.xlsx，不能靠样本数量扩大支持范围。
+执行 [tools/check.ps1](tools/check.ps1) 可复核版本、依赖源码、格式与公开接口漂移、编译和回归。main 当前 25 个单元测试、48 个特征样本、17 项端到端检查、11 项图宿主检查和 17 项覆盖/决策检查通过；首次发布包对应 15 个单元测试。WPS 检查是独立客户端证据，不宣称已由 CI 自动完成。大量样本为人工变体；真实兼容样本只有上游 macro01.xlsm/simple01.xlsx，不能靠样本数量扩大支持范围。
 
 详见 [Spike 报告](https://github.com/zlhahaha/partsieve/blob/main/docs/spike-report.md)、[实际兼容矩阵](docs/compatibility-matrix.md)、[保留契约](docs/preservation-contract.md)、[威胁模型](docs/threat-model.md)、[架构](docs/architecture.md)、[来源](tests/fixtures/provenance.json)、[Receipt schema](docs/receipt.schema.json)。依赖来源/许可见 [第三方说明](docs/third-party.md)。本项目并非通用 Office 读写库或宏行为检测器，核心贡献为已声明配置内的能力证据、策略变换和实际产物保留复核。
 
 ## main 的未发布图检查 API
 
 `inspect_graph(bytes, limits?)` / `python tools/partsieve.py graph INPUT --json` 暴露局部 XML 绑定、关系/内容类型索引、可达性、孤儿候选和覆盖缺口。空缺口不等于 profile 支持或可重建。该新 API 尚不包含在 Mooncakes `0.1.0-spike` 内，详见 [图事实模型](docs/package-graph.md)。
+
+## main 的未发布能力/覆盖 API
+
+`assess(bytes, limits?)` / `python tools/partsieve.py assess INPUT --json` 返回 CapabilityFinding、Coverage、Decision；未检查/不透明/解析未完成都保持 Unknown，不允许重建。Pass 仅表示当前配置下检查和变换许可，不表示输入没有 VBA。该新 API 尚不在 Mooncakes `0.1.0-spike` 内，详见 [覆盖与决策](docs/coverage-decision.md)。
 
 ## 许可
 

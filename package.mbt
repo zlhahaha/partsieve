@@ -46,7 +46,7 @@ fn load_package(
     aliases[name.to_lower()] = true
     ordered.push(name)
     guard @checksum.crc32(entry.data()) == entry.crc32() else {
-      raise Refused("ZIP payload CRC mismatch")
+      raise Invalid("ZIP payload CRC mismatch")
     }
   }
   ordered.sort()
@@ -129,7 +129,7 @@ fn load_package(
     }
     let source = relationship_source(name)
     guard source == "/" || names.contains(source) else {
-      raise Refused("relationship source missing")
+      raise Invalid("relationship source missing")
     }
     let local_ids : Map[String, Bool] = Map([])
     let rels = metadata_nodes(
@@ -147,7 +147,7 @@ fn load_package(
       validate_metadata_attributes(node, ["Id", "Type", "Target", "TargetMode"])
       let id = attr(node, "Id")
       guard id.length() > 0 && id.length() <= 1024 && !local_ids.contains(id) else {
-        raise Refused("duplicate or invalid local relationship ID")
+        raise Invalid("duplicate or invalid local relationship ID")
       }
       local_ids[id] = true
       let kind = attr(node, "Type")
@@ -159,7 +159,7 @@ fn load_package(
       let external = mode == "External"
       let resolved = if external { "" } else { resolve_target(source, target) }
       guard external || names.contains(resolved) else {
-        raise Refused("internal target missing")
+        raise Invalid("internal target missing")
       }
       relationships.push({ source, id, kind, target, resolved, external, })
     }
@@ -168,7 +168,7 @@ fn load_package(
     r.source == "/" && r.kind == office_rel + "officeDocument"
   })
   guard mains.length() == 1 && !mains[0].external else {
-    raise Refused("exactly one internal office main required")
+    raise Invalid("exactly one internal office main required")
   }
   let main = mains[0].resolved
   let main_ct = parts.filter(fn(p) { p.name == main })[0].content_type
@@ -225,7 +225,7 @@ fn load_package(
     graph,
   }
   if enforce_profile {
-    validate_profile(pkg)
+    require_supported_profile(pkg)
   }
   pkg
 }

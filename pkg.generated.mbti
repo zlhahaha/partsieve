@@ -6,6 +6,8 @@ import {
 }
 
 // Values
+pub fn assess(Bytes, limits? : Limits) -> Assessment
+
 pub fn audit(Bytes, limits? : Limits) -> Audit raise
 
 pub fn digest(BytesView) -> String
@@ -24,10 +26,24 @@ pub fn verify(Bytes, Bytes, limits? : Limits) -> Receipt raise
 pub(all) suberror SieveError {
   Refused(String)
   Incomplete(String)
+  Invalid(String)
 } derive(@debug.Debug)
 pub fn SieveError::to_repr(Self) -> @debug.Repr
 
 // Types and methods
+pub(all) struct Assessment {
+  schema : String
+  input_hash : String?
+  findings : Array[CapabilityFinding]
+  coverage : Coverage
+  decision : Decision
+  graph : PackageGraph?
+} derive(Eq, ToJson, @debug.Debug)
+pub fn Assessment::equal(Self, Self) -> Bool
+pub fn Assessment::not_equal(Self, Self) -> Bool
+pub fn Assessment::to_json(Self) -> Json
+pub fn Assessment::to_repr(Self) -> @debug.Repr
+
 pub(all) struct Audit {
   schema : String
   input_hash : String
@@ -46,6 +62,56 @@ pub fn Audit::not_equal(Self, Self) -> Bool
 pub fn Audit::to_json(Self) -> Json
 pub fn Audit::to_repr(Self) -> @debug.Repr
 
+pub(all) enum Capability {
+  Vba
+  HttpHyperlink
+  RemoteTemplate
+  ExternalResource
+  ExternalData
+  Ole
+  ActiveX
+  UnknownExternalRelationship
+  UnknownPotentiallyActiveExtension
+} derive(Eq, @debug.Debug)
+pub fn Capability::equal(Self, Self) -> Bool
+pub fn Capability::not_equal(Self, Self) -> Bool
+pub fn Capability::to_json(Self) -> Json
+pub fn Capability::to_repr(Self) -> @debug.Repr
+
+pub(all) struct CapabilityFinding {
+  rule_id : String
+  capability : Capability
+  source : String
+  part : String
+  certainty : Certainty
+  rebuild_support : RebuildSupport
+  evidence : Array[String]
+} derive(Eq, ToJson, @debug.Debug)
+pub fn CapabilityFinding::equal(Self, Self) -> Bool
+pub fn CapabilityFinding::not_equal(Self, Self) -> Bool
+pub fn CapabilityFinding::to_json(Self) -> Json
+pub fn CapabilityFinding::to_repr(Self) -> @debug.Repr
+
+pub(all) enum Certainty {
+  Declared
+  Uncertain
+} derive(Eq, @debug.Debug)
+pub fn Certainty::equal(Self, Self) -> Bool
+pub fn Certainty::not_equal(Self, Self) -> Bool
+pub fn Certainty::to_json(Self) -> Json
+pub fn Certainty::to_repr(Self) -> @debug.Repr
+
+pub(all) enum CheckState {
+  Checked
+  NotChecked
+  IncompleteCheck
+  Opaque
+} derive(Eq, @debug.Debug)
+pub fn CheckState::equal(Self, Self) -> Bool
+pub fn CheckState::not_equal(Self, Self) -> Bool
+pub fn CheckState::to_json(Self) -> Json
+pub fn CheckState::to_repr(Self) -> @debug.Repr
+
 pub(all) struct ContentTypeIndex {
   content_type : String
   parts : Array[String]
@@ -54,6 +120,30 @@ pub fn ContentTypeIndex::equal(Self, Self) -> Bool
 pub fn ContentTypeIndex::not_equal(Self, Self) -> Bool
 pub fn ContentTypeIndex::to_json(Self) -> Json
 pub fn ContentTypeIndex::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Coverage {
+  declared_profile : String
+  rules : Array[RuleCoverage]
+  checked_rules : Array[String]
+  unchecked_features : Array[String]
+  parse_complete : Bool
+  parse_error : String?
+} derive(Eq, ToJson, @debug.Debug)
+pub fn Coverage::equal(Self, Self) -> Bool
+pub fn Coverage::not_equal(Self, Self) -> Bool
+pub fn Coverage::to_json(Self) -> Json
+pub fn Coverage::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Decision {
+  result : ResultStatus
+  rebuild_allowed : Bool
+  profile : String
+  reason : String
+} derive(Eq, ToJson, @debug.Debug)
+pub fn Decision::equal(Self, Self) -> Bool
+pub fn Decision::not_equal(Self, Self) -> Bool
+pub fn Decision::to_json(Self) -> Json
+pub fn Decision::to_repr(Self) -> @debug.Repr
 
 pub(all) struct Disposition {
   part : String
@@ -156,6 +246,25 @@ pub fn PartRecord::not_equal(Self, Self) -> Bool
 pub fn PartRecord::to_json(Self) -> Json
 pub fn PartRecord::to_repr(Self) -> @debug.Repr
 
+pub(all) enum Presence {
+  Present
+  Absent
+  Unknown
+} derive(Eq, @debug.Debug)
+pub fn Presence::equal(Self, Self) -> Bool
+pub fn Presence::not_equal(Self, Self) -> Bool
+pub fn Presence::to_json(Self) -> Json
+pub fn Presence::to_repr(Self) -> @debug.Repr
+
+pub(all) enum RebuildSupport {
+  Supported
+  NotSupported
+} derive(Eq, @debug.Debug)
+pub fn RebuildSupport::equal(Self, Self) -> Bool
+pub fn RebuildSupport::not_equal(Self, Self) -> Bool
+pub fn RebuildSupport::to_json(Self) -> Json
+pub fn RebuildSupport::to_repr(Self) -> @debug.Repr
+
 pub(all) struct Rebuilt {
   bytes : Bytes
   receipt : Receipt
@@ -200,6 +309,17 @@ pub fn Relationship::not_equal(Self, Self) -> Bool
 pub fn Relationship::to_json(Self) -> Json
 pub fn Relationship::to_repr(Self) -> @debug.Repr
 
+pub(all) enum ResultStatus {
+  Pass
+  Fail
+  IncompleteResult
+  Unsupported
+} derive(Eq, @debug.Debug)
+pub fn ResultStatus::equal(Self, Self) -> Bool
+pub fn ResultStatus::not_equal(Self, Self) -> Bool
+pub fn ResultStatus::to_json(Self) -> Json
+pub fn ResultStatus::to_repr(Self) -> @debug.Repr
+
 pub(all) struct RewritePlan {
   schema : String
   input_hash : String
@@ -211,6 +331,19 @@ pub fn RewritePlan::equal(Self, Self) -> Bool
 pub fn RewritePlan::not_equal(Self, Self) -> Bool
 pub fn RewritePlan::to_json(Self) -> Json
 pub fn RewritePlan::to_repr(Self) -> @debug.Repr
+
+pub(all) struct RuleCoverage {
+  rule_id : String
+  capability : Capability
+  state : CheckState
+  presence : Presence
+  rebuild_support : RebuildSupport
+  reason : String
+} derive(Eq, ToJson, @debug.Debug)
+pub fn RuleCoverage::equal(Self, Self) -> Bool
+pub fn RuleCoverage::not_equal(Self, Self) -> Bool
+pub fn RuleCoverage::to_json(Self) -> Json
+pub fn RuleCoverage::to_repr(Self) -> @debug.Repr
 
 pub(all) struct XmlReference {
   source : String

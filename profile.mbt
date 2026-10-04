@@ -5,23 +5,35 @@ let spreadsheet_ns = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 let drawing_ns = "http://schemas.openxmlformats.org/drawingml/2006/main"
 
 ///|
+let supported_relationship_types : Array[String] = [
+  office_rel + "officeDocument",
+  office_rel + "worksheet",
+  office_rel + "styles",
+  office_rel + "theme",
+  office_rel + "sharedStrings",
+  office_rel + "extended-properties",
+  "http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties",
+  vba_rel,
+]
+
+///|
+let supported_content_types : Array[String] = [
+  xlsm_ct, xlsx_ct, vba_ct, "application/vnd.openxmlformats-package.relationships+xml",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml", "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml",
+  "application/vnd.openxmlformats-officedocument.theme+xml", "application/vnd.openxmlformats-package.core-properties+xml",
+  "application/vnd.openxmlformats-officedocument.extended-properties+xml",
+]
+
+///|
 fn validate_profile(pkg : Package) -> Unit raise {
   let report = pkg.audit
   guard pkg.graph.graph.coverage_gaps.length() == 0 else {
     raise Refused("graph coverage gap: " + pkg.graph.graph.coverage_gaps[0])
   }
-  let allowed_rels = [
-    office_rel + "officeDocument",
-    office_rel + "worksheet",
-    office_rel + "styles",
-    office_rel + "theme",
-    office_rel + "sharedStrings",
-    office_rel + "extended-properties",
-    "http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties",
-    vba_rel,
-  ]
+
   for r in report.relationships {
-    guard !r.external && allowed_rels.contains(r.kind) else {
+    guard !r.external && supported_relationship_types.contains(r.kind) else {
       raise Refused("external or unsupported relationship capability")
     }
     let target = report.parts[pkg.graph.part_index[r.resolved]]
@@ -81,18 +93,12 @@ fn validate_profile(pkg : Package) -> Unit raise {
       raise Refused("VBA part is not a CFB container")
     }
   }
-  let static_types = [
-    xlsm_ct, xlsx_ct, vba_ct, "application/vnd.openxmlformats-package.relationships+xml",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml", "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml",
-    "application/vnd.openxmlformats-officedocument.theme+xml", "application/vnd.openxmlformats-package.core-properties+xml",
-    "application/vnd.openxmlformats-officedocument.extended-properties+xml",
-  ]
+
   for p in report.parts {
     if p.name == "[Content_Types].xml" {
       continue
     }
-    guard static_types.contains(p.content_type) else {
+    guard supported_content_types.contains(p.content_type) else {
       raise Refused("unknown/unsupported part content type")
     }
     if p.content_type == vba_ct {

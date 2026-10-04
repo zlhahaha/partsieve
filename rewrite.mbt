@@ -149,10 +149,10 @@ fn verify_parts(
 ) -> Array[Disposition] raise {
   let dispositions : Array[Disposition] = []
   guard after.audit.format == "XLSX" && after.audit.findings.length() == 0 else {
-    raise Refused("output has forbidden VBA or macro-enabled type")
+    raise Invalid("output has forbidden VBA or macro-enabled type")
   }
   guard after.graph.graph == expected.graph.graph else {
-    raise Refused("unexpected output part/relationship changes")
+    raise Invalid("unexpected output part/relationship changes")
   }
   for p in before.audit.parts {
     let matches = after.audit.parts.filter(fn(q) { q.name == p.name })
@@ -167,7 +167,7 @@ fn verify_parts(
         )
       )
     if removed {
-      guard out is None else { raise Refused("VBA part retained") }
+      guard out is None else { raise Invalid("VBA part retained") }
       dispositions.push({
         part: p.name,
         classification: "RemovedByPolicy",
@@ -175,9 +175,9 @@ fn verify_parts(
         after_hash: None,
       })
     } else {
-      guard out is Some(q) else { raise Refused("preserved part missing") }
+      guard out is Some(q) else { raise Invalid("preserved part missing") }
       guard metadata || q.sha256 == p.sha256 else {
-        raise Refused("preserved payload changed")
+        raise Invalid("preserved payload changed")
       }
       dispositions.push({
         part: p.name,

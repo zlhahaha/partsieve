@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- TODO-3：typed CapabilityFinding/Coverage/Decision、`assess` SDK/CLI；九类声明能力、Checked/NotChecked/Opaque/Incomplete 与 Present/Absent/Unknown 明确区分。
+- 核心共用 typed gate；新增 Invalid/Fail 完整性诊断；3 个单元和 17 项覆盖/决策检查，旧成功产物/Receipt 保持兼容。
+
 - TODO-2：共用 PackageGraph/XmlReference、source-local 与入出边/内容类型索引、隐式 VBA 关系、迭代可达性与只报告的孤儿候选。
 - 新增 `inspect_graph` SDK 与有界 `graph` CLI，未知扩展显式报告覆盖缺口；新增 7 个单元测试和 11 项图宿主检查。
 

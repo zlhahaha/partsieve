@@ -50,6 +50,11 @@ def worker(command, input_path, extra=None):
         report = json.loads(raw)
     except (ValueError, UnicodeError) as exc:
         raise Diagnostic("invalid worker response", 4) from exc
+    if command == "assess" and report.get("schema") == "partsieve.assessment.v1":
+        expected = {"Pass": 0, "Fail": 2, "Incomplete": 3, "Unsupported": 3}.get(report.get("decision", {}).get("result"))
+        if expected != result.returncode:
+            raise Diagnostic("assessment decision/worker exit mismatch", 4)
+        return report
     if result.returncode:
         raise Diagnostic(report.get("error", "worker refused"), result.returncode, report.get("status"))
     return report
@@ -57,7 +62,7 @@ def worker(command, input_path, extra=None):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=["audit", "graph", "plan", "rebuild", "verify"])
+    parser.add_argument("command", choices=["audit", "assess", "graph", "plan", "rebuild", "verify"])
     parser.add_argument("input", type=Path)
     parser.add_argument("--json", action="store_true", help="JSON is always used by the spike")
     parser.add_argument("--policy", default="passive-office-v1", choices=["passive-office-v1"])
@@ -66,13 +71,15 @@ def main():
     parser.add_argument("--original", type=Path)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
+    if args.command in ("assess", "graph") and args.dry_run:
+        raise Diagnostic("--dry-run does not apply to structural/coverage inspection", 4)
     if not WORKER.is_file():
         raise Diagnostic("build first: moon build --target native", 4)
     data = bounded_bytes(args.input)
     with tempfile.TemporaryDirectory(prefix="partsieve-") as private_dir:
         snapshot = Path(private_dir) / "input.zip"
         snapshot.write_bytes(data)
-        if args.command in ("audit", "graph", "plan") or args.dry_run:
+        if args.command in ("audit", "assess", "graph", "plan") or args.dry_run:
             result = worker("plan" if args.dry_run else args.command, snapshot)
         elif args.command == "verify":
             if args.original is None:
@@ -151,6 +158,8 @@ def main():
                 for path in temporary_paths:
                     path.unlink(missing_ok=True)
         print(json.dumps(result, ensure_ascii=True))
+        if args.command == "assess":
+            return {"Pass": 0, "Fail": 2, "Incomplete": 3, "Unsupported": 3}[result["decision"]["result"]]
     return 0
 
 

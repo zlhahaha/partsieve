@@ -4,7 +4,7 @@
 
 ## 任务目标
 
-按计划建设 MoonBit OOXML 能力审计与验证重建项目 PartSieve。当前已完成 TODO-0 Kill Spike 技术 GO 和 TODO-1 Bounded Package Loader 和 TODO-2 OPC Graph + XML Reference Index；下一个主线任务是 TODO-3 Capability/Coverage/Decision。完整路线图尚未完成，项目尚未 LOCK；原型已按作者新增授权发布到 GitHub 和 Mooncakes 0.1.0-spike。当前真实、无害 VBA XLSM → XLSX 已完成 audit → plan → rebuild → verify、部件保留、Receipt、独立校验和 WPS 客户端证据。原型完成时未联系外部维护者或发布包；作者随后明确授权创建指定 GitHub 仓库并发布 Mooncakes。
+按计划建设 MoonBit OOXML 能力审计与验证重建项目 PartSieve。当前已完成 TODO-0 Kill Spike 技术 GO 和 TODO-1 Bounded Package Loader 和 TODO-2 OPC Graph + XML Reference Index、TODO-3 Capability/Coverage/Decision；下一个主线任务是 TODO-4 VBA Handler。完整路线图尚未完成，项目尚未 LOCK；原型已按作者新增授权发布到 GitHub 和 Mooncakes 0.1.0-spike。当前真实、无害 VBA XLSM → XLSX 已完成 audit → plan → rebuild → verify、部件保留、Receipt、独立校验和 WPS 客户端证据。原型完成时未联系外部维护者或发布包；作者随后明确授权创建指定 GitHub 仓库并发布 Mooncakes。
 
 ## 已完成内容
 
@@ -27,21 +27,20 @@
 
 - 配置仅为 simple-spreadsheet-spike-v1；不支持 DOCM、外链、公式、图片、控件、未知扩展；不声称通用 OOXML 安全或视觉保真。
 - 真实可编辑 OOXML 接入工作流和非作者维护的 MoonBit 下游需求证据尚缺。
-- 现有 Audit/Receipt 的兼容 JSON 仍为原型字符串 Coverage；PackageGraph/XmlReference 与内部索引已完成，统一 Capability/Coverage/Decision 和验证状态还需 TODO-3。
+- 现有 Audit/Receipt 的兼容 JSON 仍为原型字符串 Coverage；PackageGraph/XmlReference 与内部索引已完成，统一 CapabilityFinding/Coverage/Decision 与 Fail/Incomplete/Unsupported 已完成；新版 Receipt 的完整 typed 状态还需 TODO-6。
 - 资源数字仍为 PROVISIONAL；微型 benchmark 已跑，未完成 1/10/30 MiB 校准、完整工作预算/取消接口。
 - Python 是有界宿主入口，Native worker 使用无限 x/fs 读取，只能接收宿主已限额的私有快照。硬链接文件发布不保证两个路径事务原子性。
 - GitHub 两个功能 CI job 已通过，Mooncakes 原型已发布并由独立目录消费者安装验证；独立第三方下游采用仍缺，自建消费者不计入 TODO-11。
 
 ## 正在做什么
 
-TODO-0/1 原型公开发布已收尾：CI 成功、Mooncakes 返回 200、独立目录从注册表下载并运行 SDK，通过真实 fixture 与准确输出 hash 检查。发布记录、踩坑和公开镜像已同步。随后 TODO-2 已完成，新增结构检查 API、source-local XML 绑定、入出边/内容类型索引、隐式引用和迭代遍历；22 单元、11 图宿主检查与原 48/17 回归全过，独立证据复核 Pass。下一项是 TODO-3。后续任务保持未完成状态。
+TODO-0/1 原型公开发布已收尾：CI 成功、Mooncakes 返回 200、独立目录从注册表下载并运行 SDK，通过真实 fixture 与准确输出 hash 检查。发布记录、踩坑和公开镜像已同步。随后 TODO-2 已完成，新增结构检查 API、source-local XML 绑定、入出边/内容类型索引、隐式引用和迭代遍历；22 单元、11 图宿主检查与原 48/17 回归全过，独立证据复核 Pass。随后 TODO-3 的结构化 assess API/CLI 与共用 typed gate 已通过 25 单元、17 覆盖/决策检查，原回归/真实输出一致；下一项是 TODO-4。后续任务保持未完成状态。
 
 ## 下一步计划
 
-1. TODO-3：将原型字符串状态升级为统一 Capability/Coverage/Decision 和 Pass/Fail/Incomplete/Unsupported；区分未检查、不存在与不支持。
-2. TODO-4～6：扩到真实 DOCM VBA 样本，补 handler/计划前置条件与源 XML 语义改写、共享依赖闭包、完整 Receipt 和专属保留断言；每项有独立客户端证据。
-3. SDK 可用后启动 TODO-11 真实需求/下游验证。自建 example 只算示例；外部消息、PR 与公开发布按计划需要明确授权，先准备具体可审查的集成方案。
-4. 按依赖推进外部模板和 OLE/ActiveX handler、完整样本/CI/benchmark/兼容矩阵和演示；没有真实采用证据时不能扩充顶奖宣称。后续版本发布前复核命名、规则、分发和本轮授权范围。
+1. TODO-4～6：扩到真实 DOCM VBA 样本，补 handler/计划前置条件与源 XML 语义改写、共享依赖闭包、完整 Receipt 和专属保留断言；每项有独立客户端证据。
+2. SDK 可用后启动 TODO-11 真实需求/下游验证。自建 example 只算示例；外部消息、PR 与公开发布按计划需要明确授权，先准备具体可审查的集成方案。
+3. 按依赖推进外部模板和 OLE/ActiveX handler、完整样本/CI/benchmark/兼容矩阵和演示；没有真实采用证据时不能扩充顶奖宣称。后续版本发布前复核命名、规则、分发和本轮授权范围。
 
 ## 踩过的坑
 
@@ -93,4 +92,14 @@ TODO-0/1 原型公开发布已收尾：CI 成功、Mooncakes 返回 200、独立
 - 新 API 为 main 开发内容，不在已发布 `0.1.0-spike` 包内；原型标签仍准确指向发布源码。开发代码未重复发布同一个不可变版本。
 - 用户回答暂无真实下游。重新通过 GitHub API 读取 office.mbt #265，仍 open，内容为全量 XLSX 重写保留契约；它不是安全清洗需求或采用确认。没有联系维护者，TODO-11 未完成。
 - 踩坑：图的空 coverage_gaps 只能表示已建模结构未发现缺口，不能等同于支持 profile 或可重建；结构检查与重建授权必须分开。原有孤儿是否可删除不能由 reachability 单独决定。
-- 后续当前任务：TODO-3 统一 capability/coverage/decision；完整 P0/P1 路线未完成，真实下游与 10 次有效提交仍未满足。
+- 完成此项时下一任务：TODO-3 统一 capability/coverage/decision（后续验收见下节）；完整 P0/P1 路线未完成，真实下游与 10 次有效提交仍未满足。
+
+## TODO-3 验收更新
+
+- `coverage_model.mbt` / `coverage.mbt`：CapabilityFinding、九类 Capability、RuleCoverage、Coverage、Decision、Assessment；新 `assess` SDK/CLI 报告完整证据/覆盖/权限。旧 Audit/Receipt JSON 继续兼容；typed profile_decision 已成为所有核心重建入口的共用门槛。
+- 按声明证据区分 HTTP 点击 hyperlink、外部资源/数据、Word template、OLE/ActiveX、未知关系/扩展。Declared 不是宏行为或恶意性断言；不支持的 handler 不因识别声明而允许重建。
+- NotChecked/Opaque/Incomplete 的 presence 为 Unknown；解析失败不以空 findings 推导 Absent。CRC、缺失内部目标、明确图/保留契约错误为 Invalid/Fail；不支持语法为 Refused/Unsupported；截断/超限为 Incomplete。
+- 新增 3 个单元测试与 17 项宿主能力/决策检查；总单元 25，原 48/17、图 11 与独立证据复核 Pass，输出 SHA-256 不变。拒绝状态没有输出或 Receipt。
+- 新 API 在 main，未重复发布已有不可变版本。公开提交按真实功能完成点记录，仍不足章程 10 次；真实第三方下游仍缺，用户已答复暂无。
+- 下一主线 TODO-4：获取来源/许可固定的真实 DOCM，并静态审查宏；将 VBA handler 扩到 DOCM→DOCX，补共享/孤儿结构拒绝、独立格式及 WPS 宏移除后客户端证据。原始含宏文档不在客户端打开。
+- 踩坑：结构解析成功与规则覆盖完成必须分别表示；元数据 capability 声明不意味着存在自动网络获取，也不意味着清洗 handler 可用；完整性 Fail 与能力 Unsupported 不应混为一个错误。

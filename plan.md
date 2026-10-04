@@ -2,7 +2,7 @@
 
 > 项目名称：**PartSieve**。副标题：OOXML Capability Auditor & Verified Rebuilder。  
 > `Part` 对应 OOXML 部件，`Sieve` 表达按策略筛选；目录 `partsieve`，CLI `partsieve`，Mooncakes 模块候选 `zlhahaha/partsieve`。  
-> 修订日期：2026-10-04。状态：**TODO-0 技术 GO；TODO-1/2 已验收；下一项 TODO-3；尚未 LOCK；原型 0.1.0-spike 已公开发布**。
+> 修订日期：2026-10-04。状态：**TODO-0 技术 GO；TODO-1/2/3 已验收；下一项 TODO-4；尚未 LOCK；原型 0.1.0-spike 已公开发布**。
 > 定位：用 MoonBit 对 OOXML 文档中的已建模活动能力进行审计、策略化移除和结果验证。  
 > 目标：做成可复用、可审查、工程扎实的生态项目，争取季度奖项；奖项是竞争目标，不是技术验收标准。
 
@@ -416,28 +416,28 @@ Spike 期间就加入失败样本测试，不推迟到发布前。不能在支�
 
 实现统一模型：
 
-- [ ] `Finding`
-- [ ] `Coverage`
-- [ ] `Decision`
-- [ ] rule ID
-- [ ] certainty
-- [ ] rebuild support status
-- [ ] checked rules
-- [ ] unchecked features
-- [ ] parse truncation / error
-- [ ] `Pass / Fail / Incomplete / Unsupported`
+- [x] `Finding`
+- [x] `Coverage`
+- [x] `Decision`
+- [x] rule ID
+- [x] certainty
+- [x] rebuild support status
+- [x] checked rules
+- [x] unchecked features
+- [x] parse truncation / error
+- [x] `Pass / Fail / Incomplete / Unsupported`
 
 首版 capability 分类至少包含：
 
-- [ ] VBA
-- [ ] HTTP/HTTPS 点击 hyperlink
-- [ ] Word external template
-- [ ] External Resource
-- [ ] External Data
-- [ ] OLE
-- [ ] ActiveX
-- [ ] Unknown external relationship
-- [ ] Unknown potentially active extension
+- [x] VBA
+- [x] HTTP/HTTPS 点击 hyperlink
+- [x] Word external template
+- [x] External Resource
+- [x] External Data
+- [x] OLE
+- [x] ActiveX
+- [x] Unknown external relationship
+- [x] Unknown potentially active extension
 
 **Coverage 必须成为一级输出。**
 
@@ -458,10 +458,10 @@ Result:
 
 **验收**：
 
-- [ ] `Pass` 只在声明支持范围内成立。
-- [ ] `Incomplete` 永远不能发布重建文档。
-- [ ] 未检查能力不能被当作“不存在”。
-- [ ] 普通 hyperlink 与自动外部引用分开建模。
+- [x] `Pass` 只在声明支持范围内成立。
+- [x] `Incomplete` 永远不能发布重建文档。
+- [x] 未检查能力不能被当作“不存在”。
+- [x] 普通 hyperlink 与自动外部引用分开建模。
 
 ---
 
@@ -971,9 +971,10 @@ SDK 可用后必须推进真实 MoonBit 下游验证。作者自建示例只能�
 - [x] 作出 GO 判断：技术闭环通过；真实需求和独立下游门槛仍缺。
 - [x] TODO-1：收敛 Bounded Package Loader 的解析截断/限额失败状态和边界验收。
 - [x] TODO-2：共用 PackageGraph/XML 引用与关系索引、迭代可达性、孤儿候选和覆盖缺口验收通过。
-- [ ] TODO-3 至后续任务：依赖逐项满足后推进，不提前勾选。
+- [x] TODO-3：统一 CapabilityFinding/Coverage/Decision；assess SDK/CLI、typed gate 和失败状态验收。
+- [ ] TODO-4 至后续任务：依赖逐项满足后推进，不提前勾选。
 
-TODO-0/1/2 已验收，下一开发 P0 为 TODO-3。22 个单元测试、48 个特征样本、17 项端到端检查和 11 项图宿主检查通过；统计不扩大支持范围。统一 Coverage/Decision、DOCM 与后续 handler、真实下游、benchmark 校准与最终成品发布仍未完成；原型的 Native/独立格式 CI 和 Mooncakes 预发布已完成。
+TODO-0/1/2/3 已验收，下一开发 P0 为 TODO-4。25 个单元测试、48 个特征样本、17 项端到端检查、11 项图宿主检查和 17 项覆盖/决策检查通过；统计不扩大支持范围。DOCM、规划/完整新版 Receipt 与后续 handler、真实下游、benchmark 校准与最终成品发布仍未完成；原型的 Native/独立格式 CI 和 Mooncakes 预发布已完成。
 
 ## 16. 参考依据与待复核项
 
@@ -995,3 +996,5 @@ TODO-0/1/2 已验收，下一开发 P0 为 TODO-3。22 个单元测试、48 个�
 原型发布结果：GitHub main 已推送；源码提交 `a7be1e1` 的两个功能 CI job 全部成功；Mooncakes 正式发布返回 HTTP 200 / exit 0，独立目录从注册表下载 `0.1.0-spike`，通过 Native SDK audit/rebuild/verify 和准确输出 hash 检查。完整记录与可复现消费者见 `partsieve/docs/evidence/release-validation.json` / `registry-consumer/`。已有 5 次真实有效提交，10 次章程申报门槛仍未达成。
 
 TODO-2 后续开发：新增 Graph API 位于 main，原型已发布标签不包含此 API。用户已确认暂无第三方下游；office.mbt #265 经公开 GitHub API 重新读取仍 open，说明全量重写保留问题，不等于清洗需求或采用承诺。TODO-11 保持未完成。
+
+TODO-3：统一类型与 profile_decision 进入 audit/plan/rebuild/verify 门槛；assess 是结构化 coverage 一级报告。保留旧原型 Audit/Receipt JSON 为兼容接口，TODO-6 才升级完整 Receipt，不提前勾选。9 类声明能力、未知特征、Incomplete/Unknown 与拒绝无产物已验收；人工声明分类不代表新 handler 兼容完成。

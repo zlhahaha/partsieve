@@ -54,6 +54,7 @@ jobs:
           path: |
             docs/evidence/regression.json
             docs/evidence/graph-regression.json
+            docs/evidence/coverage-regression.json
 
   independent:
     name: Independent ZIP and Open XML SDK

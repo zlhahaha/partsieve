@@ -6,12 +6,22 @@ fn main {
   try {
     let args = @env.args()
     guard args.length() >= 3 else {
-      fail("private worker: audit/graph/plan/rebuild/verify INPUT [OUTPUT]")
+      fail(
+        "private worker: audit/assess/graph/plan/rebuild/verify INPUT [OUTPUT]",
+      )
     }
     let command = args[1]
     let input = @fs.read_file_to_bytes(args[2])
     if command == "audit" {
       emit(@lib.audit(input).to_json())
+    } else if command == "assess" {
+      let report = @lib.assess(input)
+      emit(report.to_json())
+      match report.decision.result {
+        @lib.Pass => ()
+        @lib.Fail => @sys.exit(2)
+        @lib.IncompleteResult | @lib.Unsupported => @sys.exit(3)
+      }
     } else if command == "graph" {
       emit(@lib.inspect_graph(input).to_json())
     } else if command == "plan" {
@@ -33,6 +43,15 @@ fn main {
       fail("unknown command")
     }
   } catch {
+    @lib.Invalid(reason) => {
+      let diagnostic : Json = {
+        "schema": "partsieve.error.spike-v1",
+        "status": "Fail",
+        "error": reason,
+      }
+      println(diagnostic.stringify())
+      @sys.exit(2)
+    }
     @lib.Incomplete(reason) => {
       let diagnostic : Json = {
         "schema": "partsieve.error.spike-v1",

@@ -2,6 +2,7 @@
 pub(all) suberror SieveError {
   Refused(String)
   Incomplete(String)
+  Invalid(String)
 } derive(Debug)
 
 ///|

@@ -44,6 +44,6 @@
 - 发布 zip：79,929 bytes，51 files，SHA-256 `66ecd3b5f2e91b2690da9d3d9ec95494ba44e2a7192823dc32b3a8e94f4faa19`。正式发布源码为 `a7be1e1`；仓库后来追加的发布状态文档不修改已经发布的不可变包。
 - 真实注册表消费者：`docs/evidence/registry-consumer/`；执行 `moon add zlhahaha/partsieve@0.1.0-spike` 时观察到下载，安装目录版本正确，无本地源码替换。运行退出 0，输出 `Published SDK: audit/rebuild/verify Pass`。
 - 发布/CI/消费者完整记录：[release-validation.json](evidence/release-validation.json)。消费者由作者自建，不算独立第三方需求或下游采用。
-- 首次发布归档时 5 次真实有效提交，仍不足章程要求的 10 次；下一开发任务是 TODO-2，完整成品仍未完成。
+- 首次发布归档时 5 次真实有效提交，仍不足章程要求的 10 次；该发布完成时下一开发任务是 TODO-2，完整成品仍未完成。
 
 CI 踩坑：第一次干净 Runner 没有先安装依赖便验证 hash；第二次安装前缺少注册表索引。已修复为 `moon update` → 安装固定依赖 → hash 校验，第三次 CI 成功。消费者直接使用 x/fs 时须声明 x，不能将传递依赖作为直接依赖使用。
