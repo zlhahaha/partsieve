@@ -31,6 +31,8 @@ moon test --target native --deny-warn
 if ($LASTEXITCODE -ne 0) { throw 'moon test failed' }
 moon build --target native --deny-warn
 if ($LASTEXITCODE -ne 0) { throw 'moon build failed' }
+moon build --release --target native --deny-warn
+if ($LASTEXITCODE -ne 0) { throw 'Release build failed' }
 python tools/generate_test_evidence.py
 if ($LASTEXITCODE -ne 0) { throw 'Generated SDK evidence failed' }
 python tests/regression.py

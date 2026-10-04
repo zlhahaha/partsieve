@@ -111,6 +111,7 @@ def worker(command, input_path, extra=None):
 
 
 def main():
+    global WORKER
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("command", choices=["audit", "assess", "graph", "plan", "prepare", "rebuild", "verify"])
     parser.add_argument("input", type=Path)
@@ -121,8 +122,13 @@ def main():
     parser.add_argument("--original", type=Path)
     parser.add_argument("--plan", type=Path, help="rebuild using an independently recomputed prepared plan")
     parser.add_argument("--receipt-format", choices=["legacy", "v2"], default="legacy")
+    parser.add_argument("--release", action="store_true", help="use the locally compiled Native release worker")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
+    if args.release:
+        WORKER = ROOT / "_build/native/release/build/cmd/main/main"
+        if os.name == "nt":
+            WORKER = WORKER.with_suffix(".exe")
     if args.command in ("assess", "graph", "prepare") and args.dry_run:
         raise Diagnostic("--dry-run does not apply to structural/coverage inspection", 4)
     if args.plan and (args.command != "rebuild" or args.dry_run):
@@ -131,7 +137,7 @@ def main():
         raise Diagnostic("--receipt-format applies only to rebuild/verify without --dry-run", 4)
     verify_command = "verify-v2" if args.receipt_format == "v2" else "verify"
     if not WORKER.is_file():
-        raise Diagnostic("build first: moon build --target native", 4)
+        raise Diagnostic("build first: moon build " + ("--release " if args.release else "") + "--target native", 4)
     data = bounded_bytes(args.input)
     with tempfile.TemporaryDirectory(prefix="partsieve-") as private_dir:
         snapshot = Path(private_dir) / "input.zip"
@@ -152,7 +158,9 @@ def main():
             if args.receipt:
                 saved = json.loads(bounded_json(args.receipt, "Receipt"))
                 expected = {"publication": "pair-complete", "receipt": result}
-                if saved != expected:
+                # Python equates False with 0 and True with 1. Receipt field
+                # types are part of the contract; ignore only object key order.
+                if json.dumps(saved, sort_keys=True, separators=(",", ":")) != json.dumps(expected, sort_keys=True, separators=(",", ":")):
                     raise Diagnostic("Receipt differs from independently recomputed verification", 2)
         else:
             if args.output is None or args.receipt is None:

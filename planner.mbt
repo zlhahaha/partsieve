@@ -300,16 +300,25 @@ fn execute_prepared(
 ///|
 // A supplied JSON plan is data, not authority. Recompute every field from the
 // actual bounded input before execution, then verify the serialized output.
-pub fn rebuild_with_plan(
+fn execute_supplied_plan(
   input : Bytes,
   supplied : Json,
-  limits? : Limits = Limits::default(),
-) -> Rebuilt raise {
+  limits : Limits,
+) -> Bytes raise {
   let pkg = load_package(input, limits)
   let expected = make_prepared_plan(pkg, limits)
   guard supplied == expected.to_json() else {
     raise Invalid("supplied plan differs from independently recomputed plan")
   }
-  let bytes = execute_prepared(pkg, expected, limits)
+  execute_prepared(pkg, expected, limits)
+}
+
+///|
+pub fn rebuild_with_plan(
+  input : Bytes,
+  supplied : Json,
+  limits? : Limits = Limits::default(),
+) -> Rebuilt raise {
+  let bytes = execute_supplied_plan(input, supplied, limits)
   { bytes, receipt: verify(bytes, input, limits~), }
 }

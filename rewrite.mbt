@@ -204,11 +204,18 @@ fn verify_parts(
 }
 
 ///|
-pub fn verify(
+priv struct VerifiedPackages {
+  before : Package
+  after : Package
+  dispositions : Array[Disposition]
+}
+
+///|
+fn verify_packages(
   output : Bytes,
   original : Bytes,
-  limits? : Limits = Limits::default(),
-) -> Receipt raise {
+  limits : Limits,
+) -> VerifiedPackages raise {
   guard output.length() <= limits.output_bytes else {
     raise Incomplete("output byte limit")
   }
@@ -217,6 +224,18 @@ pub fn verify(
   let expected = load_package(expected_bytes, limits)
   let after = load_package(output, limits)
   let dispositions = verify_parts(before, after, expected)
+  { before, after, dispositions, }
+}
+
+///|
+fn legacy_receipt(
+  checked : VerifiedPackages,
+  output : Bytes,
+  original : Bytes,
+  limits : Limits,
+) -> Receipt {
+  let before = checked.before
+  let after = checked.after
   {
     schema: if is_word_format(before.audit.format) {
       "partsieve.receipt.word-dev-v1"
@@ -244,12 +263,26 @@ pub fn verify(
     limits,
     audit: before.audit,
     plan: make_plan(before),
-    dispositions,
+    dispositions: checked.dispositions,
     structure: "Pass",
     preservation: "Pass",
     independent_validation: "NotChecked",
     limitations: before.audit.limitations,
   }
+}
+
+///|
+pub fn verify(
+  output : Bytes,
+  original : Bytes,
+  limits? : Limits = Limits::default(),
+) -> Receipt raise {
+  legacy_receipt(
+    verify_packages(output, original, limits),
+    output,
+    original,
+    limits,
+  )
 }
 
 ///|

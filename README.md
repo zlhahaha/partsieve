@@ -35,6 +35,8 @@ Word 示例替换输入为 `tests/fixtures/poi/SimpleMacro.docm`，输出使用 
 
 Python `tools/partsieve.py` 是有界 I/O 宿主；全部 OOXML 逻辑在 MoonBit。不要直接将私有 Native worker 用于不可信文件：worker 只接收宿主已限制的快照。固定策略为 `passive-office-v1`。输出与 Receipt 不覆盖已有文件；实际文件重读验证后才成对发布，两个路径不保证事务原子性。
 
+较大输入先 `moon build --release --target native --deny-warn`，再给 CLI 加 `--release` 使用优化构建。默认 Debug 保持开发行为；每次 worker 调用超时 60 秒，超时为 Incomplete。限额仍 provisional，不承诺任意限额内输入都能完成，也没有完整 SDK 工作预算/取消接口。
+
 退出码：0 请求完成，2 明确完整性/保留/Receipt 不符，3 Unsupported/Incomplete/资源拒绝，4 I/O 或用法错误。没有 original 的 verify 保留检查为 NotChecked，完整结论 Incomplete，退出 3。未检查、未知和解析失败不能推导为无禁止能力。
 
 ## 支持与保留

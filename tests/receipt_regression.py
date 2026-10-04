@@ -78,8 +78,19 @@ code, receipt = call("rebuild", word_source, "--plan", plan_path, "-o", planned_
 assert code == 0 and receipt == records[1][2]["receipt"]
 assert planned_out.read_bytes() == records[1][1].read_bytes()
 check("saved prepared plan and typed Receipt use the same verified Word bytes")
+release_out, release_receipt = DEST / "release.docx", DEST / "release.receipt.json"
+release_out.unlink(missing_ok=True); release_receipt.unlink(missing_ok=True)
+code, receipt = call("rebuild", word_source, "--release", "-o", release_out, "--receipt", release_receipt)
+assert code == 0 and receipt == records[1][2]["receipt"]
+assert release_out.read_bytes() == records[1][1].read_bytes()
+assert call("verify", release_out, "--release", "--original", word_source, "--receipt", release_receipt) == (0, receipt)
+check("public Release host recomputes the identical typed contract and bytes")
 
 source, out, valid = records[0]
+reordered = DEST / "reordered.receipt.json"
+reordered.write_text(json.dumps(valid, sort_keys=True), encoding="utf8")
+assert call("verify", out, "--original", source, "--receipt", reordered) == (0, valid["receipt"])
+check("JSON object key order is irrelevant to a genuine typed Receipt")
 raw = json.dumps(valid)
 for name, payload, expected_code in [
     ("duplicate-key", '{"publication":"pair-complete",' + raw[1:], 2),
@@ -101,6 +112,7 @@ for name, field, value in [("input-hash", "input_hash", "0" * 64), ("output-hash
 tampered = deepcopy(valid);tampered["receipt"]["output_coverage"]["rules"][0]["presence"] = "Unknown";mutations.append(("coverage-gap", tampered))
 tampered = deepcopy(valid);tampered["receipt"]["plan"]["operations"][0]["before_hash"] = "0" * 64;mutations.append(("operation-precondition", tampered))
 tampered = deepcopy(valid);next(d for d in tampered["receipt"]["dispositions"] if d["classification"] == "BytePreserved")["after_hash"] = "0" * 64;mutations.append(("preservation-claim", tampered))
+tampered = deepcopy(valid);tampered["receipt"]["decisions"][0]["finding_index"] = False;mutations.append(("boolean-as-number", tampered))
 for name, tampered in mutations:
     p = DEST / (name + ".receipt.json");p.write_text(json.dumps(tampered), encoding="utf8")
     code, error = call("verify", out, "--original", source, "--receipt", p)

@@ -52,9 +52,10 @@ pub fn verify_contract(
   // The compatibility verifier reparses actual serialized output, compares its
   // full graph with independently generated expected changes, and checks every
   // payload. Executor memory and a supplied Receipt cannot produce this result.
-  let basis = verify(output, original, limits~)
-  let before = load_package(original, limits)
-  let after = load_package(output, limits)
+  let checked = verify_packages(output, original, limits)
+  let basis = legacy_receipt(checked, output, original, limits)
+  let before = checked.before
+  let after = checked.after
   let prepared = make_prepared_plan(before, limits)
   let assessment = assess_package(after)
   guard assessment.decision.result == Pass &&
@@ -132,8 +133,8 @@ pub fn rebuild_verified(
   input : Bytes,
   limits? : Limits = Limits::default(),
 ) -> VerifiedRebuilt raise {
-  let basis = rebuild(input, limits~)
-  { bytes: basis.bytes, receipt: verify_contract(basis.bytes, input, limits~), }
+  let bytes = execute(load_package(input, limits), limits)
+  { bytes, receipt: verify_contract(bytes, input, limits~), }
 }
 
 ///|
@@ -142,6 +143,6 @@ pub fn rebuild_verified_with_plan(
   supplied : Json,
   limits? : Limits = Limits::default(),
 ) -> VerifiedRebuilt raise {
-  let basis = rebuild_with_plan(input, supplied, limits~)
-  { bytes: basis.bytes, receipt: verify_contract(basis.bytes, input, limits~), }
+  let bytes = execute_supplied_plan(input, supplied, limits)
+  { bytes, receipt: verify_contract(bytes, input, limits~), }
 }
