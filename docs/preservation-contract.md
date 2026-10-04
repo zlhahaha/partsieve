@@ -23,4 +23,4 @@
 
 真实 fixture 的 14 个 parts 中删除 3 个、重写 2 个元数据、保留 9 个。源正文没有 VBA relationship ID，因此没有正文语义改写。宏启用类型没有实际 VBA 时仅转换主类型，不制造 finding。输出必须为实际 DOCX 主类型且使用 .docx 扩展名。Word schema/规则标为开发版，尚未进入已发布 0.1.0-spike；完整 typed Receipt 仍属 TODO-6。
 
-WPS 保存副本属于客户端重写，不属于 PartSieve 的 BytePreserved 契约。该 Word 副本正文一致、可以重开，但独立 SDK 发现 styles 中三个元素顺序错误，见 [Word handler 报告](word-vba.md)；不得把客户端另存副本当成 PartSieve 完整 verify 成功产物。
+WPS 保存副本属于客户端重写，不属于 PartSieve 的 BytePreserved 契约。该 Word 副本正文一致、可以重开，但独立 SDK 发现 styles 中三个元素顺序错误，兼容矩阵单列该失败；不得把客户端另存副本当成 PartSieve 完整 verify 成功产物。

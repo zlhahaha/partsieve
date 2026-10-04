@@ -11,3 +11,21 @@ tests/generated/
 __pycache__/
 ~$*
 .~lock.*
+
+# Workspace notes and validation archives are local; CI uploads run artifacts.
+HANDOFF.md
+plan.md
+docs/evidence/
+docs/release.md
+docs/demand-evidence.md
+docs/spike-report.md
+docs/word-vba.md
+docs/package-graph.md
+docs/coverage-decision.md
+tools/benchmark.py
+tools/manifest_evidence.py
+tools/sync_workspace_docs.py
+tools/validate_evidence.py
+tools/validate_word_evidence.py
+tests/fixtures/upstream/test_macro01.py
+tests/fixtures/upstream/test_simple01.py

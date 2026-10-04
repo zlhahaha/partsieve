@@ -8,8 +8,6 @@ COMMIT = "5d4606d89a955226d2d0825a0f44309043ae7251"
 FILES = {
     "macro01.xlsm": ("xlsx_files/macro01.xlsm", "09c35d1580eb6d7e678ba8249cdd1cbc0bd245fbb0eed8794981728715944736"),
     "simple01.xlsx": ("xlsx_files/simple01.xlsx", "cc6caf6efe9b60d5e9b59cc9c490cd02d7998af42021830f2def3e87f79004ad"),
-    "test_macro01.py": ("test_macro01.py", "bef4201b145c586d798a527cf31cae2ef94bdb830a2177aa681773fbf41686c0"),
-    "test_simple01.py": ("test_simple01.py", "7f93f01852442f89f90b9a888b0728a03f32bc1bfa2377cc579a4bd4eb6eb7a8"),
     "LICENSE.txt": (None, "cf08b60a4ded986b58a617cb8304373bda5c4eff42fb4e30d7597b616e116e87"),
 }
 records = []

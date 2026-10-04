@@ -3,7 +3,7 @@
 *.xlsm -text
 *.docx -text
 *.docm -text
-tests/fixtures/poi/SimpleMacro.vba -text
+tests/fixtures/poi/SimpleMacro.vba -text -whitespace
 tests/fixtures/poi/LICENSE -text
 tests/fixtures/poi/NOTICE -text
 *.jpg -text
