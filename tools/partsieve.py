@@ -34,12 +34,12 @@ def bounded_bytes(path, cap=CAP):
         return data
 
 
-def bounded_plan(path):
+def bounded_json(path, label):
     raw = bounded_bytes(path, REPORT_CAP)
     try:
         text = raw.decode("utf-8")
     except UnicodeError as exc:
-        raise Diagnostic("supplied plan is not UTF-8 JSON", 2) from exc
+        raise Diagnostic(f"{label} is not UTF-8 JSON", 2) from exc
     depth = token = tokens = 0
     quoted = escaped = False
     for char in text:
@@ -66,7 +66,7 @@ def bounded_plan(path):
         elif char in ",:" or char.isspace():
             token = 0
         if depth > 32 or token > 65536 or tokens > 200000:
-            raise Diagnostic("supplied plan JSON resource limit", status="Incomplete")
+            raise Diagnostic(f"{label} JSON resource limit", status="Incomplete")
 
     def unique_object(pairs):
         result = {}
@@ -80,7 +80,7 @@ def bounded_plan(path):
         json.loads(text, object_pairs_hook=unique_object,
                    parse_constant=lambda value: (_ for _ in ()).throw(ValueError("non-finite JSON value")))
     except (ValueError, RecursionError) as exc:
-        raise Diagnostic("malformed or ambiguous supplied plan JSON", 2) from exc
+        raise Diagnostic(f"malformed or ambiguous {label} JSON", 2) from exc
     return raw
 
 
@@ -120,12 +120,16 @@ def main():
     parser.add_argument("--receipt", type=Path)
     parser.add_argument("--original", type=Path)
     parser.add_argument("--plan", type=Path, help="rebuild using an independently recomputed prepared plan")
+    parser.add_argument("--receipt-format", choices=["legacy", "v2"], default="legacy")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
     if args.command in ("assess", "graph", "prepare") and args.dry_run:
         raise Diagnostic("--dry-run does not apply to structural/coverage inspection", 4)
     if args.plan and (args.command != "rebuild" or args.dry_run):
         raise Diagnostic("--plan applies only to rebuild without --dry-run", 4)
+    if args.receipt_format != "legacy" and (args.command not in ("rebuild", "verify") or args.dry_run):
+        raise Diagnostic("--receipt-format applies only to rebuild/verify without --dry-run", 4)
+    verify_command = "verify-v2" if args.receipt_format == "v2" else "verify"
     if not WORKER.is_file():
         raise Diagnostic("build first: moon build --target native", 4)
     data = bounded_bytes(args.input)
@@ -137,16 +141,16 @@ def main():
         elif args.command == "verify":
             if args.original is None:
                 audit = worker("audit", snapshot)
-                result = {"schema": "partsieve.verify.spike-v1",
+                result = {"schema": "partsieve.verify.v2-partial" if args.receipt_format == "v2" else "partsieve.verify.spike-v1",
                           "structure": "Pass" if audit["format"] in ("XLSX", "DOCX") and not audit["findings"] else "Fail",
                           "preservation": "NotChecked", "status": "Incomplete", "audit": audit}
                 print(json.dumps(result, ensure_ascii=True))
                 return 3
             original = Path(private_dir) / "original.zip"
             original.write_bytes(bounded_bytes(args.original))
-            result = worker("verify", snapshot, original)
+            result = worker(verify_command, snapshot, original)
             if args.receipt:
-                saved = json.loads(bounded_bytes(args.receipt, REPORT_CAP))
+                saved = json.loads(bounded_json(args.receipt, "Receipt"))
                 expected = {"publication": "pair-complete", "receipt": result}
                 if saved != expected:
                     raise Diagnostic("Receipt differs from independently recomputed verification", 2)
@@ -171,10 +175,11 @@ def main():
                 temporary_paths.append(temp_output)
                 if args.plan:
                     plan_snapshot = Path(private_dir) / "plan.json"
-                    plan_snapshot.write_bytes(bounded_plan(args.plan))
-                    result = worker("rebuild-plan", snapshot, [temp_output, plan_snapshot])
+                    plan_snapshot.write_bytes(bounded_json(args.plan, "supplied plan"))
+                    command = "rebuild-plan-v2" if args.receipt_format == "v2" else "rebuild-plan"
+                    result = worker(command, snapshot, [temp_output, plan_snapshot])
                 else:
-                    result = worker("rebuild", snapshot, temp_output)
+                    result = worker("rebuild-v2" if args.receipt_format == "v2" else "rebuild", snapshot, temp_output)
                 expected_suffix = {"XLSX": ".xlsx", "DOCX": ".docx"}.get(result["output_format"])
                 if output.suffix.lower() != expected_suffix:
                     raise Diagnostic("output extension differs from verified main document type", 4)
@@ -182,7 +187,7 @@ def main():
                 if hashlib.sha256(actual).hexdigest() != result["output_hash"]:
                     raise Diagnostic("temporary output hash mismatch", 2)
                 # Re-read actual file on disk through the SDK before publishing.
-                recheck = worker("verify", temp_output, snapshot)
+                recheck = worker(verify_command, temp_output, snapshot)
                 if recheck != result:
                     raise Diagnostic("temporary output verification mismatch", 2)
                 payload = json.dumps({"publication": "pair-complete", "receipt": result},

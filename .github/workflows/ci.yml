@@ -46,6 +46,8 @@ jobs:
           if (-not $taskPathLine) { throw 'MSVC PATH missing' }
           $env:PATH = $taskPathLine.Substring(5)
           Get-Command cl.exe
+          python -m pip install jsonschema==4.23.0
+          if ($LASTEXITCODE -ne 0) { throw 'Test dependency installation failed' }
           .\tools\check.ps1
       - name: Keep actual regression evidence
         uses: actions/upload-artifact@v4
@@ -57,6 +59,7 @@ jobs:
             docs/evidence/coverage-regression.json
             docs/evidence/word-regression.json
             docs/evidence/planner-regression.json
+            docs/evidence/receipt-regression.json
             docs/evidence/verified.xlsx
             docs/evidence/verified.receipt.json
             docs/evidence/word-verified.docx

@@ -21,6 +21,12 @@
 
 `simple-word-vba-dev-v1` 使用同一图/引用索引和验证管线。DOCM 的单一实际 VBA 项目、其专属 relationship part、至多一个由 `wordVbaData` 关系独占的 supporting XML 为 RemovedByPolicy；主 document 的 VBA 关系和 Content Types 是 RegeneratedMetadata。正文、样式、设置、字体、主题、属性等其他 payload 必须 BytePreserved。共享项目/元数据、原有孤儿 VBA、保留 XML 引用、未知 companion 均拒绝；不做通用孤儿 GC。
 
-真实 fixture 的 14 个 parts 中删除 3 个、重写 2 个元数据、保留 9 个。源正文没有 VBA relationship ID，因此没有正文语义改写。宏启用类型没有实际 VBA 时仅转换主类型，不制造 finding。输出必须为实际 DOCX 主类型且使用 .docx 扩展名。Word schema/规则标为开发版，尚未进入已发布 0.1.0-spike；完整 typed Receipt 仍属 TODO-6。
+真实 fixture 的 14 个 parts 中删除 3 个、重写 2 个元数据、保留 9 个。源正文没有 VBA relationship ID，因此没有正文语义改写。宏启用类型没有实际 VBA 时仅转换主类型，不制造 finding。输出必须为实际 DOCX 主类型且使用 .docx 扩展名。Word schema/规则标为开发版，尚未进入已发布 0.1.0-spike。
+
+## main typed Receipt
+
+`verify_contract` 从实际 original/output bytes 重算完整契约；`rebuild_verified` 和 saved-plan 版本返回经过同一检查的 bytes 与 `VerifiedReceipt`。v2 包含工具/规则/配置版本、限额、入出覆盖、能力与策略决策、完整计划、每个 part 的分类/hash/变更规则及检查状态。已有 VBA 配置使用 BytePreserved、RemovedByPolicy、RegeneratedMetadata；SemanticallyRewritten 的类型仅保留接口，尚无可接受的 source XML handler 或语义保留声明。
+
+独立 schema/客户端检查在 SDK 中是 NotChecked，不产生 Pass 或工具记录。外部证据必须另行绑定实际输出 hash。Receipt 不带真实性签名；CLI 比较的是原件/输出重新计算的整份报告。输入或输出、决策、计划、覆盖、部件去向及伪造客户端证据的修改均不能通过该比较。Receipt/计划 JSON 的字节、深度、token 与项数有界，重复键拒绝。
 
 WPS 保存副本属于客户端重写，不属于 PartSieve 的 BytePreserved 契约。该 Word 副本正文一致、可以重开，但独立 SDK 发现 styles 中三个元素顺序错误，兼容矩阵单列该失败；不得把客户端另存副本当成 PartSieve 完整 verify 成功产物。

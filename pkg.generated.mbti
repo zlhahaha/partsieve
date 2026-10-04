@@ -20,11 +20,17 @@ pub fn prepare(Bytes, limits? : Limits) -> PreparedPlan raise
 
 pub fn rebuild(Bytes, limits? : Limits) -> Rebuilt raise
 
+pub fn rebuild_verified(Bytes, limits? : Limits) -> VerifiedRebuilt raise
+
+pub fn rebuild_verified_with_plan(Bytes, Json, limits? : Limits) -> VerifiedRebuilt raise
+
 pub fn rebuild_with_plan(Bytes, Json, limits? : Limits) -> Rebuilt raise
 
 pub fn resolve_target(String, String) -> String raise
 
 pub fn verify(Bytes, Bytes, limits? : Limits) -> Receipt raise
+
+pub fn verify_contract(Bytes, Bytes, limits? : Limits) -> VerifiedReceipt raise
 
 // Errors
 pub(all) suberror SieveError {
@@ -142,6 +148,20 @@ pub fn ContentTypeIndex::equal(Self, Self) -> Bool
 pub fn ContentTypeIndex::not_equal(Self, Self) -> Bool
 pub fn ContentTypeIndex::to_json(Self) -> Json
 pub fn ContentTypeIndex::to_repr(Self) -> @debug.Repr
+
+pub(all) struct ContractDisposition {
+  part : String
+  classification : PreservationKind
+  before_hash : String
+  after_hash : String?
+  decision_id : String?
+  rule_id : String?
+  reason : String
+} derive(Eq, ToJson, @debug.Debug)
+pub fn ContractDisposition::equal(Self, Self) -> Bool
+pub fn ContractDisposition::not_equal(Self, Self) -> Bool
+pub fn ContractDisposition::to_json(Self) -> Json
+pub fn ContractDisposition::to_repr(Self) -> @debug.Repr
 
 pub(all) struct Coverage {
   declared_profile : String
@@ -339,6 +359,17 @@ pub fn Presence::not_equal(Self, Self) -> Bool
 pub fn Presence::to_json(Self) -> Json
 pub fn Presence::to_repr(Self) -> @debug.Repr
 
+pub(all) enum PreservationKind {
+  BytePreservedKind
+  SemanticallyRewrittenKind
+  RemovedByPolicyKind
+  RegeneratedMetadataKind
+} derive(Eq, @debug.Debug)
+pub fn PreservationKind::equal(Self, Self) -> Bool
+pub fn PreservationKind::not_equal(Self, Self) -> Bool
+pub fn PreservationKind::to_json(Self) -> Json
+pub fn PreservationKind::to_repr(Self) -> @debug.Repr
+
 pub(all) enum RebuildSupport {
   Supported
   NotSupported
@@ -427,6 +458,54 @@ pub fn RuleCoverage::equal(Self, Self) -> Bool
 pub fn RuleCoverage::not_equal(Self, Self) -> Bool
 pub fn RuleCoverage::to_json(Self) -> Json
 pub fn RuleCoverage::to_repr(Self) -> @debug.Repr
+
+pub(all) struct VerificationCheck {
+  check_id : String
+  state : CheckState
+  result : ResultStatus?
+  detail : String
+} derive(Eq, ToJson, @debug.Debug)
+pub fn VerificationCheck::equal(Self, Self) -> Bool
+pub fn VerificationCheck::not_equal(Self, Self) -> Bool
+pub fn VerificationCheck::to_json(Self) -> Json
+pub fn VerificationCheck::to_repr(Self) -> @debug.Repr
+
+pub(all) struct VerifiedRebuilt {
+  bytes : Bytes
+  receipt : VerifiedReceipt
+}
+
+pub(all) struct VerifiedReceipt {
+  schema : String
+  tool : String
+  rules : String
+  policy : String
+  profile : String
+  input_hash : String
+  output_hash : String
+  input_size : Int
+  output_size : Int
+  input_format : String
+  output_format : String
+  limits : Limits
+  input_coverage : Coverage
+  output_coverage : Coverage
+  findings : Array[CapabilityFinding]
+  output_findings : Array[CapabilityFinding]
+  decisions : Array[PolicyDecision]
+  allowed_capabilities : Array[CapabilityFinding]
+  plan : PreparedPlan
+  dispositions : Array[ContractDisposition]
+  checks : Array[VerificationCheck]
+  result : ResultStatus
+  independent_validation : CheckState
+  independent_tools : Array[String]
+  limitations : Array[String]
+} derive(Eq, ToJson, @debug.Debug)
+pub fn VerifiedReceipt::equal(Self, Self) -> Bool
+pub fn VerifiedReceipt::not_equal(Self, Self) -> Bool
+pub fn VerifiedReceipt::to_json(Self) -> Json
+pub fn VerifiedReceipt::to_repr(Self) -> @debug.Repr
 
 pub(all) struct XmlReference {
   source : String

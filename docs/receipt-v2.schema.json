@@ -1,0 +1,799 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:partsieve:receipt:v2-dev",
+  "title": "PartSieve current accepted VBA profiles typed Receipt (development)",
+  "description": "Shape only, not verification. Recompute from actual original/output. Source XML rewrites and independent clients are not certified by this schema.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "publication": {
+      "const": "pair-complete"
+    },
+    "receipt": {
+      "$ref": "#/$defs/receipt"
+    }
+  },
+  "required": [
+    "publication",
+    "receipt"
+  ],
+  "$defs": {
+    "profile": {
+      "enum": [
+        "simple-spreadsheet-spike-v1",
+        "simple-word-vba-dev-v1"
+      ]
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rule_id": {
+          "type": "string"
+        },
+        "capability": {
+          "enum": [
+            "VBA",
+            "HTTPHyperlink",
+            "RemoteTemplate",
+            "ExternalResource",
+            "ExternalData",
+            "OLE",
+            "ActiveX",
+            "UnknownExternalRelationship",
+            "UnknownPotentiallyActiveExtension"
+          ]
+        },
+        "state": {
+          "const": "Checked"
+        },
+        "presence": {
+          "enum": [
+            "Present",
+            "Absent"
+          ]
+        },
+        "rebuild_support": {
+          "enum": [
+            "Supported",
+            "Unsupported"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_id",
+        "capability",
+        "state",
+        "presence",
+        "rebuild_support",
+        "reason"
+      ]
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "declared_profile": {
+          "enum": [
+            "simple-spreadsheet-spike-v1",
+            "simple-word-vba-dev-v1"
+          ]
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/rule"
+          },
+          "minItems": 9,
+          "maxItems": 9
+        },
+        "checked_rules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unchecked_features": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 0
+        },
+        "parse_complete": {
+          "const": true
+        },
+        "parse_error": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "declared_profile",
+        "rules",
+        "checked_rules",
+        "unchecked_features",
+        "parse_complete"
+      ]
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rule_id": {
+          "const": "vba-v1"
+        },
+        "capability": {
+          "const": "VBA"
+        },
+        "source": {
+          "type": "string"
+        },
+        "part": {
+          "type": "string"
+        },
+        "certainty": {
+          "const": "Declared"
+        },
+        "rebuild_support": {
+          "const": "Supported"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "rule_id",
+        "capability",
+        "source",
+        "part",
+        "certainty",
+        "rebuild_support",
+        "evidence"
+      ]
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "decision_id": {
+          "type": "string"
+        },
+        "finding_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "action": {
+          "enum": [
+            "Allow",
+            "Remove"
+          ]
+        },
+        "rule_id": {
+          "enum": [
+            "vba-v1",
+            "format-v1"
+          ]
+        },
+        "part": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "decision_id",
+        "action",
+        "rule_id",
+        "part",
+        "reason"
+      ]
+    },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "operation_id": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "RemovePart",
+            "RemoveRelationship",
+            "RewriteRelationshipPart",
+            "RewriteContentTypes",
+            "ChangeMainContentType"
+          ]
+        },
+        "part": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "relationship_id": {
+          "type": "string"
+        },
+        "rule_id": {
+          "enum": [
+            "vba-v1",
+            "format-v1"
+          ]
+        },
+        "decision_id": {
+          "type": "string"
+        },
+        "before_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "expected_after_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "depends_on": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "operation_id",
+        "kind",
+        "part",
+        "source",
+        "relationship_id",
+        "rule_id",
+        "decision_id",
+        "before_hash",
+        "depends_on",
+        "reason"
+      ]
+    },
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "result": {
+          "const": "Pass"
+        },
+        "rebuild_allowed": {
+          "const": true
+        },
+        "profile": {
+          "$ref": "#/$defs/profile"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "result",
+        "rebuild_allowed",
+        "profile",
+        "reason"
+      ]
+    },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema": {
+          "const": "partsieve.prepared-plan.v1"
+        },
+        "tool": {
+          "const": "partsieve/0.2.0-dev"
+        },
+        "rules": {
+          "const": "bounded-vba-plan-v1"
+        },
+        "input_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "input_format": {
+          "enum": [
+            "XLSM",
+            "XLSX",
+            "DOCM",
+            "DOCX"
+          ]
+        },
+        "output_format": {
+          "enum": [
+            "XLSX",
+            "DOCX"
+          ]
+        },
+        "policy": {
+          "const": "passive-office-v1"
+        },
+        "profile": {
+          "$ref": "#/$defs/profile"
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "input_bytes",
+            "entry_bytes",
+            "total_bytes",
+            "entries",
+            "xml_bytes",
+            "xml_depth",
+            "xml_nodes",
+            "xml_attributes",
+            "output_bytes"
+          ],
+          "properties": {
+            "input_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 33554432
+            },
+            "entry_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 33554432
+            },
+            "total_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 134217728
+            },
+            "entries": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4096
+            },
+            "xml_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 8388608
+            },
+            "xml_depth": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 128
+            },
+            "xml_nodes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200000
+            },
+            "xml_attributes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 400000
+            },
+            "output_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 67108864
+            }
+          }
+        },
+        "preconditions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "content_type",
+              "sha256"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "content_type": {
+                "type": "string"
+              },
+              "sha256": {
+                "$ref": "#/$defs/hash"
+              }
+            }
+          }
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/finding"
+          }
+        },
+        "decisions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/decision"
+          }
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/operation"
+          }
+        },
+        "controlled_removals": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "orphan_candidates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "coverage": {
+          "$ref": "#/$defs/coverage"
+        },
+        "gate": {
+          "$ref": "#/$defs/gate"
+        },
+        "unavailable_handlers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "schema",
+        "tool",
+        "rules",
+        "input_hash",
+        "input_format",
+        "output_format",
+        "policy",
+        "profile",
+        "limits",
+        "preconditions",
+        "findings",
+        "decisions",
+        "operations",
+        "controlled_removals",
+        "orphan_candidates",
+        "coverage",
+        "gate",
+        "unavailable_handlers"
+      ]
+    },
+    "disposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "part": {
+          "type": "string"
+        },
+        "classification": {
+          "enum": [
+            "BytePreserved",
+            "RemovedByPolicy",
+            "RegeneratedMetadata"
+          ]
+        },
+        "before_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "after_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "decision_id": {
+          "type": "string"
+        },
+        "rule_id": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "part",
+        "classification",
+        "before_hash",
+        "reason"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "classification": {
+                "const": "RemovedByPolicy"
+              }
+            }
+          },
+          "then": {
+            "not": {
+              "required": [
+                "after_hash"
+              ]
+            },
+            "required": [
+              "decision_id",
+              "rule_id"
+            ]
+          },
+          "else": {
+            "required": [
+              "after_hash"
+            ]
+          }
+        }
+      ]
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "check_id": {
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "Checked",
+            "NotChecked"
+          ]
+        },
+        "result": {
+          "const": "Pass"
+        },
+        "detail": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "check_id",
+        "state",
+        "detail"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "Checked"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "result"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "result"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema": {
+          "const": "partsieve.receipt.v2-dev"
+        },
+        "tool": {
+          "const": "partsieve/0.2.0-dev"
+        },
+        "rules": {
+          "const": "bounded-vba-plan-v1"
+        },
+        "policy": {
+          "const": "passive-office-v1"
+        },
+        "profile": {
+          "$ref": "#/$defs/profile"
+        },
+        "input_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "output_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "input_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "output_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "input_format": {
+          "enum": [
+            "XLSM",
+            "XLSX",
+            "DOCM",
+            "DOCX"
+          ]
+        },
+        "output_format": {
+          "enum": [
+            "XLSX",
+            "DOCX"
+          ]
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "input_bytes",
+            "entry_bytes",
+            "total_bytes",
+            "entries",
+            "xml_bytes",
+            "xml_depth",
+            "xml_nodes",
+            "xml_attributes",
+            "output_bytes"
+          ],
+          "properties": {
+            "input_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 33554432
+            },
+            "entry_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 33554432
+            },
+            "total_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 134217728
+            },
+            "entries": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4096
+            },
+            "xml_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 8388608
+            },
+            "xml_depth": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 128
+            },
+            "xml_nodes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200000
+            },
+            "xml_attributes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 400000
+            },
+            "output_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 67108864
+            }
+          }
+        },
+        "input_coverage": {
+          "$ref": "#/$defs/coverage"
+        },
+        "output_coverage": {
+          "$ref": "#/$defs/coverage"
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/finding"
+          }
+        },
+        "output_findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/finding"
+          },
+          "maxItems": 0
+        },
+        "decisions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/decision"
+          }
+        },
+        "allowed_capabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/finding"
+          },
+          "maxItems": 0
+        },
+        "plan": {
+          "$ref": "#/$defs/plan"
+        },
+        "dispositions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/disposition"
+          }
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/check"
+          }
+        },
+        "result": {
+          "const": "Pass"
+        },
+        "independent_validation": {
+          "const": "NotChecked"
+        },
+        "independent_tools": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 0
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "schema",
+        "tool",
+        "rules",
+        "policy",
+        "profile",
+        "input_hash",
+        "output_hash",
+        "input_size",
+        "output_size",
+        "input_format",
+        "output_format",
+        "limits",
+        "input_coverage",
+        "output_coverage",
+        "findings",
+        "output_findings",
+        "decisions",
+        "allowed_capabilities",
+        "plan",
+        "dispositions",
+        "checks",
+        "result",
+        "independent_validation",
+        "independent_tools",
+        "limitations"
+      ]
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

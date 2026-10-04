@@ -43,5 +43,7 @@ python tests/word_regression.py
 if ($LASTEXITCODE -ne 0) { throw 'Word regression failed' }
 python tests/planner_regression.py
 if ($LASTEXITCODE -ne 0) { throw 'Planner regression failed' }
+python tests/receipt_regression.py
+if ($LASTEXITCODE -ne 0) { throw 'Typed Receipt regression failed' }
 moon run examples/sdk --target native
 if ($LASTEXITCODE -ne 0) { throw 'SDK example failed' }

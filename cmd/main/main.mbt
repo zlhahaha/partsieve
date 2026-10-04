@@ -28,7 +28,7 @@ fn main {
       emit(@lib.plan(input).to_json())
     } else if command == "prepare" {
       emit(@lib.prepare(input).to_json())
-    } else if command == "rebuild-plan" {
+    } else if command == "rebuild-plan" || command == "rebuild-plan-v2" {
       guard args.length() == 5 else {
         fail("private worker: rebuild-plan INPUT TEMP_OUTPUT PLAN_SNAPSHOT")
       }
@@ -36,22 +36,40 @@ fn main {
       let supplied = @json.parse(@utf8.decode(plan_bytes[:])[:]) catch {
         _ => raise @lib.Invalid("malformed supplied plan JSON")
       }
-      let result = @lib.rebuild_with_plan(input, supplied)
-      @fs.write_bytes_to_file(args[3], result.bytes)
-      emit(result.receipt.to_json())
-    } else if command == "rebuild" {
+      if command == "rebuild-plan-v2" {
+        let result = @lib.rebuild_verified_with_plan(input, supplied)
+        @fs.write_bytes_to_file(args[3], result.bytes)
+        emit(result.receipt.to_json())
+      } else {
+        let result = @lib.rebuild_with_plan(input, supplied)
+        @fs.write_bytes_to_file(args[3], result.bytes)
+        emit(result.receipt.to_json())
+      }
+    } else if command == "rebuild" || command == "rebuild-v2" {
       guard args.length() == 4 else {
         fail("private worker: rebuild INPUT TEMP_OUTPUT")
       }
-      let result = @lib.rebuild(input)
-      @fs.write_bytes_to_file(args[3], result.bytes)
-      emit(result.receipt.to_json())
-    } else if command == "verify" {
+      if command == "rebuild-v2" {
+        let result = @lib.rebuild_verified(input)
+        @fs.write_bytes_to_file(args[3], result.bytes)
+        emit(result.receipt.to_json())
+      } else {
+        let result = @lib.rebuild(input)
+        @fs.write_bytes_to_file(args[3], result.bytes)
+        emit(result.receipt.to_json())
+      }
+    } else if command == "verify" || command == "verify-v2" {
       guard args.length() == 4 else {
         fail("private worker: verify OUTPUT ORIGINAL")
       }
       let original = @fs.read_file_to_bytes(args[3])
-      emit(@lib.verify(input, original).to_json())
+      emit(
+        if command == "verify-v2" {
+          @lib.verify_contract(input, original).to_json()
+        } else {
+          @lib.verify(input, original).to_json()
+        },
+      )
     } else {
       fail("unknown command")
     }

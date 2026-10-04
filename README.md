@@ -13,6 +13,8 @@ moon add zlhahaha/partsieve@0.1.0-spike
 
 调用方 `moon.pkg` 导入 `"zlhahaha/partsieve" @sieve`。公开 SDK：`audit(bytes, limits?)`、`plan(bytes, limits?)`、`rebuild(bytes, limits?)`、`verify(output, original, limits?)`；main 另有 `inspect_graph`、`assess`、`prepare`、`rebuild_with_plan(input, prepared_json, limits?)`。`rebuild` 仅在重解析和保留验证通过后返回 bytes + Receipt。调用方负责有界文件读取、取消/超时和发布。
 
+main 的 `rebuild_verified`、`rebuild_verified_with_plan`、`verify_contract` 返回 typed v2 Receipt，含入出 coverage、finding→decision→plan、全部 part 去向/hash 和检查状态。CLI 在 rebuild/verify 加 `--receipt-format v2` 使用该格式，默认 legacy 保持原型兼容；配合 `--plan` 也可使用。SDK 没有运行独立客户端，报告明确为 `NotChecked`，不继承历史 WPS/CI 结果。
+
 本地 CLI 与测试：
 
 ```powershell
@@ -50,13 +52,14 @@ Python `tools/partsieve.py` 是有界 I/O 宿主；全部 OOXML 逻辑在 MoonBi
 工具链固定 `moonc 0.10.14+7d59c7ec9`，依赖见 [dependency-lock.json](docs/dependency-lock.json)。Windows Native/MSVC 完整检查：
 
 ```powershell
+python -m pip install jsonschema==4.23.0
 .\tools\check.ps1
 moon run examples/sdk --target native
 ```
 
 检查会生成本地 `docs/evidence/` 输出与报告。GitHub Actions 将实际生成的 SDK 输出传给独立 ZIP/Open XML SDK 3.3.0 校验 job，并将报告作为 CI artifacts 保存；不依赖预先提交的成功输出。核心回归覆盖读取限额、CRC、URI、namespace、引用/关系图、能力/拒绝、共享保护和保留篡改。WPS 检查是本地客户端证据，CI 不自动运行 WPS。
 
-[架构](docs/architecture.md)、[威胁模型](docs/threat-model.md)、[保留契约](docs/preservation-contract.md)、[兼容矩阵](docs/compatibility-matrix.md)、[原型 Receipt schema](docs/receipt.schema.json)、[开发 Word schema](docs/word-receipt.schema.json)。完整路线图、HANDOFF、工作日志、截图和详细验证档案仅在本地维护。真实第三方 MoonBit 下游尚未确认，不把作者示例计作独立采用。
+[架构](docs/architecture.md)、[威胁模型](docs/threat-model.md)、[保留契约](docs/preservation-contract.md)、[兼容矩阵](docs/compatibility-matrix.md)、[原型 Receipt schema](docs/receipt.schema.json)、[开发 Word schema](docs/word-receipt.schema.json)、[typed v2 schema](docs/receipt-v2.schema.json)。Schema 只约束形状，完整验证需要实际原件/输出重算。完整路线图、HANDOFF、工作日志、截图和详细验证档案仅在本地维护。真实第三方 MoonBit 下游尚未确认，不把作者示例计作独立采用。
 
 ## 许可与来源
 
