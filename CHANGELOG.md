@@ -1,13 +1,15 @@
 # Changelog
 
-## Unreleased
+## 0.2.0-spike（2026-10-04）
 
-- TODO-3：typed CapabilityFinding/Coverage/Decision、`assess` SDK/CLI；九类声明能力、Checked/NotChecked/Opaque/Incomplete 与 Present/Absent/Unknown 明确区分。
-- 核心共用 typed gate；新增 Invalid/Fail 完整性诊断；3 个单元和 17 项覆盖/决策检查，旧成功产物/Receipt 保持兼容。
+- 受限 DOCM→DOCX VBA 移除，保护共享依赖和正文 payload；真实 Word fixture 与独立校验通过。
+- source-local 关系/XML 图、结构化能力与覆盖报告；未知/未检查不推导为 Absent。
+- PreparedPlan 绑定 hash/限额/决策/依赖，saved plan 独立重算后执行。
+- typed v2 Receipt，从实际输出重建图并验证全部 part 去向/hash；独立客户端为 NotChecked。
+- 复用验证事实减少重复解析；CLI 可选 Release 构建，Receipt JSON 类型/重复键/资源防线。
+- 输入与输出使用各自 byte limit，合法增长不误拒绝，超限仍返回 Incomplete。
 
-- TODO-2：共用 PackageGraph/XmlReference、source-local 与入出边/内容类型索引、隐式 VBA 关系、迭代可达性与只报告的孤儿候选。
-- 新增 `inspect_graph` SDK 与有界 `graph` CLI，未知扩展显式报告覆盖缺口；新增 7 个单元测试和 11 项图宿主检查。
-
+实验版本已发布 Mooncakes，发布源码双 job CI 和独立注册表消费者通过。source XML handler、外部能力/OLE/ActiveX 与真实下游尚未完成；WPS Word 保存副本有三个 styles 顺序错误，资源数值仍 provisional。
 
 ## 0.1.0-spike（2026-10-04）
 

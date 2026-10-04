@@ -15,6 +15,8 @@ moon add zlhahaha/partsieve@0.2.0-spike
 
 0.2 的 `rebuild_verified`、`rebuild_verified_with_plan`、`verify_contract` 返回 typed v2 Receipt，含入出 coverage、finding→decision→plan、全部 part 去向/hash 和检查状态。CLI 在 rebuild/verify 加 `--receipt-format v2` 使用该格式，默认 legacy 保持原型兼容；配合 `--plan` 也可使用。SDK 没有运行独立客户端，报告明确为 `NotChecked`，不继承历史 WPS/CI 结果。
 
+legacy Spreadsheet Receipt 的 tool/rules 字段保留原型标识以兼容已有报告；需要绑定当前工具版本时使用 v2，0.2 的 v2 tool 为 `partsieve/0.2.0-spike`。
+
 本地 CLI 与测试：
 
 ```powershell
