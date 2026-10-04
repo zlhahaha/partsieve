@@ -1,0 +1,78 @@
+name: CI
+
+'on':
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native:
+    name: Native SDK and bounded-host regression
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.7'
+      - name: Install pinned MoonBit toolchain
+        shell: pwsh
+        env:
+          MOONBIT_INSTALL_VERSION: '0.10.14+7d59c7ec9'
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Invoke-WebRequest https://cli.moonbitlang.com/install/powershell.ps1 -OutFile "$env:RUNNER_TEMP\install-moonbit.ps1"
+          & "$env:RUNNER_TEMP\install-moonbit.ps1"
+          "$env:USERPROFILE\.moon\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      - name: Set up MSVC
+        shell: pwsh
+        run: |
+          $taskVswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $taskVs = & $taskVswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          if (-not $taskVs) { throw 'MSVC installation missing' }
+          $taskDev = Join-Path $taskVs 'Common7\Tools\VsDevCmd.bat'
+          $taskEnv = & cmd.exe /c "`"$taskDev`" -arch=x64 -host_arch=x64 >nul && set"
+          if ($LASTEXITCODE -ne 0) { throw 'MSVC environment failed' }
+          foreach ($taskLine in $taskEnv) {
+            if ($taskLine -match '^([^=]+)=(.*)$') {
+              [Environment]::SetEnvironmentVariable($matches[1], $matches[2], 'Process')
+            }
+          }
+          Get-Command cl.exe
+          .\tools\check.ps1
+      - name: Keep actual regression evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-regression
+          path: docs/evidence/regression.json
+
+  independent:
+    name: Independent ZIP and Open XML SDK
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.7'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+      - name: Check pinned fixture provenance
+        run: python tools/record_fixture_provenance.py
+      - name: Independently validate the published example pair
+        run: |
+          python tests/independent_zip.py tests/fixtures/upstream/macro01.xlsm docs/evidence/verified.xlsx > independent-zip-ci.json
+          dotnet restore tests/OpenXmlValidation
+          dotnet run --no-restore --project tests/OpenXmlValidation -- tests/fixtures/upstream/macro01.xlsm docs/evidence/verified.xlsx tests/fixtures/upstream/simple01.xlsx docs/evidence/wps-saved.xlsx > openxml-ci.json
+      - name: Keep independent validation evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: independent-validation
+          path: |
+            independent-zip-ci.json
+            openxml-ci.json

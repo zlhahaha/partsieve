@@ -3,16 +3,6 @@
   "date": "2026-10-04",
   "files": [
     {
-      "path": "../HANDOFF.md",
-      "bytes": 7661,
-      "sha256": "67d1ae866c7db2b42fee582ca6d258f066df327864d5a6f9af91522360dac037"
-    },
-    {
-      "path": "../plan.md",
-      "bytes": 49267,
-      "sha256": "c8628f11e0cba56dd2caede51fb5f8e591c9f4df549ab6d8587ecafc82472a2b"
-    },
-    {
       "path": ".gitattributes",
       "bytes": 69,
       "sha256": "32d4fed6172bc52a0ad2fa2a739a8a98ee4f3a18699294ccceb004e49dc99432"
@@ -28,14 +18,19 @@
       "sha256": "44fd6d6c20ace4dd78f22158e5df64d41b952c7118dc6a12b1ec55a131a1d6ed"
     },
     {
-      "path": ".github/workflows/copilot-setup-steps.yml",
-      "bytes": 1605,
-      "sha256": "b2157259bc72632c8116987b01191255a422168b812bff578364c9626eaf6c1f"
+      "path": ".github/workflows/ci.yml",
+      "bytes": 3012,
+      "sha256": "0858af51358ddaee026dfc7bb7bb4f3cddd146257ac36019e14c94f2c4f30b28"
     },
     {
       "path": ".gitignore",
       "bytes": 175,
       "sha256": "16d3fbf97a3896101ef9d1808759d542a894f4bb31069764ec37f9155bad524b"
+    },
+    {
+      "path": ".moonignore",
+      "bytes": 352,
+      "sha256": "e0272c78ecae8c473a2838715902168066c5a6ca9be9440f87dc086bcac8dddf"
     },
     {
       "path": "AGENTS.md",
@@ -48,19 +43,24 @@
       "sha256": "c5cd75fd18ead2a7745459ac71e7f11014e6d91e61c40e562659cfc27ead44fc"
     },
     {
+      "path": "HANDOFF.md",
+      "bytes": 9072,
+      "sha256": "e505956043c326aa05c7019206d1ea41783decb78e0c0a502e6af8047baf075d"
+    },
+    {
       "path": "LICENSE",
       "bytes": 11358,
       "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
     },
     {
       "path": "README.mbt.md",
-      "bytes": 160,
-      "sha256": "74680e5add5b7a45a6bd70140e237b489cd2df78432e20b71e1921ea9036bcaf"
+      "bytes": 174,
+      "sha256": "ddeaa18261d420fc83194e9aa8ab80ed8d92b165525a0c071b0fe2c7d489ba51"
     },
     {
       "path": "README.md",
-      "bytes": 4059,
-      "sha256": "dc96bc4a82c8d74e960108938deb2af5620a1596c17d235b9f1bb4ed9a58b51e"
+      "bytes": 4973,
+      "sha256": "4a4143d897939993bbbdbec5a5b67abae88bada926a09e3f313387905335693b"
     },
     {
       "path": "cmd/main/main.mbt",
@@ -109,8 +109,8 @@
     },
     {
       "path": "docs/evidence/final-checks.log",
-      "bytes": 595,
-      "sha256": "300203428c1e347914d30b7697caf226a75bd4e5cb548c3784ee4fcdaacf40ea"
+      "bytes": 748,
+      "sha256": "2543505e2f09d29a03925f699c99eedce1a5d31de0670e26ba98f0e1f20561ba"
     },
     {
       "path": "docs/evidence/independent-zip.json",
@@ -149,8 +149,8 @@
     },
     {
       "path": "docs/evidence/regression.json",
-      "bytes": 19101,
-      "sha256": "aaf26229c30bd10085772cac2f28dc6d8629b168c740d786024cd03bff5d1cd7"
+      "bytes": 19602,
+      "sha256": "12eb9c7376292344a13fa89f3cae1c48d8d9f293bc3ca59d7f64606e0e033cff"
     },
     {
       "path": "docs/evidence/vba-source-review.json",
@@ -203,9 +203,19 @@
       "sha256": "c51b9a1cabdec632154f8107a94c251d5ce308a80b1d8d2d59776542e202c27a"
     },
     {
+      "path": "docs/release.md",
+      "bytes": 3802,
+      "sha256": "ff6e6f9a8fa7fe316c7dc371b4c17faa3e8a25ef791f7adfa4a85af981d3ffad"
+    },
+    {
       "path": "docs/spike-report.md",
       "bytes": 9807,
       "sha256": "d6bbf637a83f63ece806a05cfdc503c0af03d37d1a3856513ce4cf75320432cd"
+    },
+    {
+      "path": "docs/third-party.md",
+      "bytes": 2193,
+      "sha256": "1104f5f2a2bfc93bc8ca87704fc3cbeff8f56dd57d787ec0dcd9385c32438979"
     },
     {
       "path": "docs/threat-model.md",
@@ -234,8 +244,8 @@
     },
     {
       "path": "moon.mod",
-      "bytes": 644,
-      "sha256": "756198e8538b83f9fb461f67e128641128a66312841b5e9fd1bcaf468f2bb8e2"
+      "bytes": 769,
+      "sha256": "d8438f313583823fc44f89d79eaad7aa30889eeb506f9c991745f63a3c352b08"
     },
     {
       "path": "moon.pkg",
@@ -271,6 +281,11 @@
       "path": "pkg.generated.mbti",
       "bytes": 4324,
       "sha256": "185cf039de9f2c1d15ac7d4decccf2b1d1c68a4d49dbbdd1c0884c14f329e0bb"
+    },
+    {
+      "path": "plan.md",
+      "bytes": 49102,
+      "sha256": "912261fdf20a49971d825a3369f8bbc5b9565a3ae10889d0e56a2581296da7c1"
     },
     {
       "path": "profile.mbt",
@@ -354,8 +369,8 @@
     },
     {
       "path": "tools/manifest_evidence.py",
-      "bytes": 1601,
-      "sha256": "f8ee4f89285855b23196e6638efe15813dc04dabe0e056172e6a2e90ae30f18a"
+      "bytes": 1410,
+      "sha256": "0e2e9fafdfbd682606376047abb42270b147428dee2d9c4c1115be22820116ee"
     },
     {
       "path": "tools/partsieve.py",
@@ -366,6 +381,11 @@
       "path": "tools/record_fixture_provenance.py",
       "bytes": 2842,
       "sha256": "fd05bafa5aabe127c5f95599e8bc6df76ff076b1d29a2cd14f2ff4cefec33845"
+    },
+    {
+      "path": "tools/sync_workspace_docs.py",
+      "bytes": 379,
+      "sha256": "d7c38f7507caee6c81d06fcd2ba46f5b5f7cafa6fe30894d4f86a95bf8508aa0"
     },
     {
       "path": "tools/validate_evidence.py",

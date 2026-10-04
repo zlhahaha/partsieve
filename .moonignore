@@ -1,0 +1,17 @@
+_build/
+target/
+.mooncakes/
+.moonagent/
+tools/test-deps/
+tests/OpenXmlValidation/bin/
+tests/OpenXmlValidation/obj/
+tests/generated/
+__pycache__/
+~$*
+.~lock.*
+# GitHub retains client screenshots, saved workbooks and historical logs.
+docs/evidence/
+docs/release.md
+# Development handoff/roadmap are available in the source repository.
+HANDOFF.md
+plan.md

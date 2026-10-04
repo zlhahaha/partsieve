@@ -19,9 +19,6 @@ for current, directories, filenames in os.walk(ROOT):
         data = path.read_bytes()
         records.append({"path": path.relative_to(ROOT).as_posix(), "bytes": len(data),
                         "sha256": hashlib.sha256(data).hexdigest()})
-for name in ["plan.md", "HANDOFF.md"]:
-    data = (ROOT.parent / name).read_bytes()
-    records.append({"path": "../" + name, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()})
 records.sort(key=lambda item: item["path"])
 report = {"schema": "partsieve.artifact-manifest.spike-v1", "date": "2026-10-04", "files": records,
           "excluded": sorted(SKIP), "excluded_file_prefixes": ["~$", ".~lock."],

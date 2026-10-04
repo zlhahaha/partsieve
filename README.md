@@ -1,10 +1,23 @@
 # PartSieve
 
-MoonBit OOXML Capability Auditor & Verified Rebuilder。当前是 **0.1.0-spike，未发布**，已完成 TODO-0 技术 GO 与 TODO-1 Bounded Package Loader。完整路线图见工作区 `plan.md`，交接记录见工作区 `HANDOFF.md`。
+MoonBit OOXML Capability Auditor & Verified Rebuilder。首次原型版本为 **0.1.0-spike**，已完成 TODO-0 技术 GO 与 TODO-1 Bounded Package Loader。完整路线图见 [plan.md](https://github.com/zlhahaha/partsieve/blob/main/plan.md)，交接记录见 [HANDOFF.md](https://github.com/zlhahaha/partsieve/blob/main/HANDOFF.md)，发布与章程要求的实际状态见 [发布记录](https://github.com/zlhahaha/partsieve/blob/main/docs/release.md)。
 
 首个配置 `simple-spreadsheet-spike-v1` 支持简单 XLSX/XLSM：受限读取、VBA 证据、固定策略计划、重建、重新读取验证和所有 part 的 payload hash。真实样本经独立 ZIP、Open XML SDK 3.3.0、WPS 12.1.0.28505 检查。外链、公式、hyperlink、图片、OLE、ActiveX、未知部件/扩展及 DOCX/DOCM 当前拒绝，不宣称通用文档安全或视觉保真。
 
 ## 本地运行
+
+Mooncakes SDK 使用：
+
+```powershell
+moon add zlhahaha/partsieve@0.1.0-spike
+```
+
+在调用方 `moon.pkg` 中 `import { "zlhahaha/partsieve" @sieve }`，然后调用下方 SDK API。当前声明支持 Native；版本为实验性原型，API 和支持配置可能变化。脚本 CLI、完整测试与客户端证据请克隆源码仓库：
+
+```powershell
+git clone https://github.com/zlhahaha/partsieve.git
+cd partsieve
+```
 
 使用记录在 [dependency-lock.json](docs/dependency-lock.json) 的 MoonBit 工具链与依赖：
 
@@ -42,7 +55,7 @@ dotnet run --project tests/OpenXmlValidation -- tests/fixtures/upstream/macro01.
 
 执行 [tools/check.ps1](tools/check.ps1) 可复核版本、依赖源码、格式与公开接口漂移、编译和回归。当前 15 个单元测试、48 个特征样本、17 项端到端检查通过。WPS 检查是独立客户端证据，不宣称已由 CI 自动完成。大量样本为人工变体；真实兼容样本只有上游 macro01.xlsm/simple01.xlsx，不能靠样本数量扩大支持范围。
 
-详见 [Spike 报告](docs/spike-report.md)、[实际兼容矩阵](docs/compatibility-matrix.md)、[保留契约](docs/preservation-contract.md)、[威胁模型](docs/threat-model.md)、[架构](docs/architecture.md)、[来源](tests/fixtures/provenance.json)、[Receipt schema](docs/receipt.schema.json)。
+详见 [Spike 报告](https://github.com/zlhahaha/partsieve/blob/main/docs/spike-report.md)、[实际兼容矩阵](docs/compatibility-matrix.md)、[保留契约](docs/preservation-contract.md)、[威胁模型](docs/threat-model.md)、[架构](docs/architecture.md)、[来源](tests/fixtures/provenance.json)、[Receipt schema](docs/receipt.schema.json)。依赖来源/许可见 [第三方说明](docs/third-party.md)。本项目并非通用 Office 读写库或宏行为检测器，核心贡献为已声明配置内的能力证据、策略变换和实际产物保留复核。
 
 ## 许可
 
