@@ -2,18 +2,18 @@
 
 MoonBit OOXML 能力审计与验证重建 SDK。按受限配置识别 VBA、生成删除计划、重建为普通可编辑 OOXML，再从实际输出重算结构和所有部件的保留契约。不执行宏，不获取外部资源。
 
-Mooncakes 已发布 **0.1.0-spike**；GitHub main 为 **0.2.0-dev（未发布）**。原型支持简单 XLSM→XLSX，main 新增受限 DOCM→DOCX、图/引用索引和结构化覆盖报告。通用 Office 文档、外链、公式、图片、OLE/ActiveX、未知扩展仍拒绝；不保证任意文档安全或视觉保真。
+当前实验版本 **0.2.0-spike**；旧原型 **0.1.0-spike** 支持简单 XLSM→XLSX。0.2 新增受限 DOCM→DOCX、图/引用索引和结构化覆盖报告。通用 Office 文档、外链、公式、图片、OLE/ActiveX、未知扩展仍拒绝；不保证任意文档安全或视觉保真。
 
 ## 安装与使用
 
 ```powershell
 moon update
-moon add zlhahaha/partsieve@0.1.0-spike
+moon add zlhahaha/partsieve@0.2.0-spike
 ```
 
-调用方 `moon.pkg` 导入 `"zlhahaha/partsieve" @sieve`。公开 SDK：`audit(bytes, limits?)`、`plan(bytes, limits?)`、`rebuild(bytes, limits?)`、`verify(output, original, limits?)`；main 另有 `inspect_graph`、`assess`、`prepare`、`rebuild_with_plan(input, prepared_json, limits?)`。`rebuild` 仅在重解析和保留验证通过后返回 bytes + Receipt。调用方负责有界文件读取、取消/超时和发布。
+调用方 `moon.pkg` 导入 `"zlhahaha/partsieve" @sieve`。公开 SDK：`audit(bytes, limits?)`、`plan(bytes, limits?)`、`rebuild(bytes, limits?)`、`verify(output, original, limits?)`；0.2 另有 `inspect_graph`、`assess`、`prepare`、`rebuild_with_plan(input, prepared_json, limits?)`。`rebuild` 仅在重解析和保留验证通过后返回 bytes + Receipt。调用方负责有界文件读取、取消/超时和发布。
 
-main 的 `rebuild_verified`、`rebuild_verified_with_plan`、`verify_contract` 返回 typed v2 Receipt，含入出 coverage、finding→decision→plan、全部 part 去向/hash 和检查状态。CLI 在 rebuild/verify 加 `--receipt-format v2` 使用该格式，默认 legacy 保持原型兼容；配合 `--plan` 也可使用。SDK 没有运行独立客户端，报告明确为 `NotChecked`，不继承历史 WPS/CI 结果。
+0.2 的 `rebuild_verified`、`rebuild_verified_with_plan`、`verify_contract` 返回 typed v2 Receipt，含入出 coverage、finding→decision→plan、全部 part 去向/hash 和检查状态。CLI 在 rebuild/verify 加 `--receipt-format v2` 使用该格式，默认 legacy 保持原型兼容；配合 `--plan` 也可使用。SDK 没有运行独立客户端，报告明确为 `NotChecked`，不继承历史 WPS/CI 结果。
 
 本地 CLI 与测试：
 
@@ -44,7 +44,7 @@ Python `tools/partsieve.py` 是有界 I/O 宿主；全部 OOXML 逻辑在 MoonBi
 | 配置 | 审计与重建 | 保留与证据 |
 | --- | --- | --- |
 | simple-spreadsheet-spike-v1 | 简单 XLSX/XLSM；已支持 VBA 移除、主类型转换 | 真实 macro01.xlsm 删除 1 VBA part、重写 2 元数据、保留 7 payload；独立 ZIP/SDK 校验和 WPS 打开通过 |
-| simple-word-vba-dev-v1（main） | 简单 DOCX/DOCM；项目和独占 supporting 元数据移除 | 真实 SimpleMacro.docm 删除 3 parts、重写 2 元数据、保留 9 payload；独立 ZIP/SDK 校验和 WPS 打开通过 |
+| simple-word-vba-dev-v1（0.2 实验配置） | 简单 DOCX/DOCM；项目和独占 supporting 元数据移除 | 真实 SimpleMacro.docm 删除 3 parts、重写 2 元数据、保留 9 payload；独立 ZIP/SDK 校验和 WPS 打开通过 |
 | 共享/孤儿 VBA、保留 XML 引用、未知 companion、外部能力和扩展 | Refuse | 不返回重建文档；未知孤儿不按可达性自动删除 |
 
 字节保留指解压后的 part payload。移除宏会失去宏功能。客户端保存的文件属于客户端重写；WPS Word 另存副本可重开、正文一致，但独立 SDK 发现 3 个 styles 元素顺序错误，不能记为 PartSieve 的保留成功。没有 Microsoft Office/LibreOffice 的验收证据。

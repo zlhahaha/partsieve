@@ -374,7 +374,7 @@
           "const": "partsieve.receipt.word-dev-v1"
         },
         "tool": {
-          "const": "partsieve/0.2.0-dev"
+          "const": "partsieve/0.2.0-spike"
         },
         "rules": {
           "const": "word-vba-dev-v1"

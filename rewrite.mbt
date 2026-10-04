@@ -243,7 +243,7 @@ fn legacy_receipt(
       "partsieve.receipt.spike-v1"
     },
     tool: if is_word_format(before.audit.format) {
-      "partsieve/0.2.0-dev"
+      "partsieve/0.2.0-spike"
     } else {
       "partsieve/0.1.0-spike"
     },

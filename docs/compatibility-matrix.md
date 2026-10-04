@@ -13,4 +13,4 @@
 
 首个真实样本只有一个数字单元格，不含图片。WPS 客户端证据经用户指定纳入验收；没有声称 Microsoft Excel/LibreOffice 已测试。WPS 保存副本通过 SDK 格式校验和 A1 检查，但客户端重写不属于 PartSieve 的 BytePreserved 契约。
 
-上一段 WPS 保存副本指 XLSX；Word 保存副本的独立失败在上表明确列出。Word 主体也是简单单段，无图片或复杂布局证据。Word 支持只在 GitHub main 0.2.0-dev，尚未发布 Mooncakes；完整矩阵验收 TODO-12 未完成。
+上一段 WPS 保存副本指 XLSX；Word 保存副本的独立失败在上表明确列出。Word 主体也是简单单段，无图片或复杂布局证据。Word 支持自 0.2.0-spike 加入，仍为受限实验配置；完整矩阵验收 TODO-12 未完成。

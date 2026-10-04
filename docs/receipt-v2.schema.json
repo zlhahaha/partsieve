@@ -292,7 +292,7 @@
           "const": "partsieve.prepared-plan.v1"
         },
         "tool": {
-          "const": "partsieve/0.2.0-dev"
+          "const": "partsieve/0.2.0-spike"
         },
         "rules": {
           "const": "bounded-vba-plan-v1"
@@ -593,7 +593,7 @@
           "const": "partsieve.receipt.v2-dev"
         },
         "tool": {
-          "const": "partsieve/0.2.0-dev"
+          "const": "partsieve/0.2.0-spike"
         },
         "rules": {
           "const": "bounded-vba-plan-v1"
