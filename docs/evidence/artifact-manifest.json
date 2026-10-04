@@ -19,8 +19,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 3012,
-      "sha256": "0858af51358ddaee026dfc7bb7bb4f3cddd146257ac36019e14c94f2c4f30b28"
+      "bytes": 3242,
+      "sha256": "c224cb3933dabf1f4a08178b9f55167298c2c157153dac8d219470ae33cef591"
     },
     {
       "path": ".gitignore",
@@ -39,13 +39,13 @@
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 643,
-      "sha256": "c5cd75fd18ead2a7745459ac71e7f11014e6d91e61c40e562659cfc27ead44fc"
+      "bytes": 682,
+      "sha256": "6635f7f09587e16aae641f3d45f95067ca78dc6e1ead2c92312d868cc22d1a14"
     },
     {
       "path": "HANDOFF.md",
-      "bytes": 9072,
-      "sha256": "e505956043c326aa05c7019206d1ea41783decb78e0c0a502e6af8047baf075d"
+      "bytes": 10367,
+      "sha256": "90c254bbe6385162ac1d262b427c3cc4b01ea5ba67eeca34be48140e39939754"
     },
     {
       "path": "LICENSE",
@@ -59,8 +59,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 4973,
-      "sha256": "4a4143d897939993bbbdbec5a5b67abae88bada926a09e3f313387905335693b"
+      "bytes": 4997,
+      "sha256": "7f6f5d56564ba0bda7e7d52dd49b3ace256182ea0da65d5d77489cf60ed2c828"
     },
     {
       "path": "cmd/main/main.mbt",
@@ -109,8 +109,8 @@
     },
     {
       "path": "docs/evidence/final-checks.log",
-      "bytes": 748,
-      "sha256": "2543505e2f09d29a03925f699c99eedce1a5d31de0670e26ba98f0e1f20561ba"
+      "bytes": 833,
+      "sha256": "281e3fc0de7f60ef29844fe495409c24f36eecebed8edc4a5bb3fcc08a57bdb1"
     },
     {
       "path": "docs/evidence/independent-zip.json",
@@ -148,9 +148,34 @@
       "sha256": "2718bada1492430b19d0050c87bff5b258755f0f8c74ec7a377f3ddc5eb0ca80"
     },
     {
+      "path": "docs/evidence/registry-consumer/README.md",
+      "bytes": 875,
+      "sha256": "7fec5f1716b10512c20ff0d3876fabcebdeece984fe899ec52fa5e75fc7f68b5"
+    },
+    {
+      "path": "docs/evidence/registry-consumer/main.mbt",
+      "bytes": 522,
+      "sha256": "164782be796ed00a492eb395f59ba89af4533ec032d3bf3ea960c062d72028b8"
+    },
+    {
+      "path": "docs/evidence/registry-consumer/moon.mod",
+      "bytes": 161,
+      "sha256": "8a57ae34bb4ecab644681eb4e730787f376a39654f12b6a4739a04fb22b37586"
+    },
+    {
+      "path": "docs/evidence/registry-consumer/moon.pkg",
+      "bytes": 96,
+      "sha256": "92c88e569485438c48713d1ac6d565452540362471380c73855845c0560ed93d"
+    },
+    {
       "path": "docs/evidence/regression.json",
-      "bytes": 19602,
-      "sha256": "12eb9c7376292344a13fa89f3cae1c48d8d9f293bc3ca59d7f64606e0e033cff"
+      "bytes": 19101,
+      "sha256": "adc6c744a0f00effb339254a9cd57a29da656668a0ae3338b9d7b17be8cfb186"
+    },
+    {
+      "path": "docs/evidence/release-validation.json",
+      "bytes": 2307,
+      "sha256": "5261dcddc0c999737e25375658cbac4a341ffebace138df132cc525f67479f87"
     },
     {
       "path": "docs/evidence/vba-source-review.json",
@@ -204,13 +229,13 @@
     },
     {
       "path": "docs/release.md",
-      "bytes": 3802,
-      "sha256": "ff6e6f9a8fa7fe316c7dc371b4c17faa3e8a25ef791f7adfa4a85af981d3ffad"
+      "bytes": 5239,
+      "sha256": "c1312e82c63dea5b277f76342b9ab8579fa49802e5442190c3569aba6428d38b"
     },
     {
       "path": "docs/spike-report.md",
-      "bytes": 9807,
-      "sha256": "d6bbf637a83f63ece806a05cfdc503c0af03d37d1a3856513ce4cf75320432cd"
+      "bytes": 9917,
+      "sha256": "0df7575deab517de5dd26e8deec1f33c831d3e3aca83c81f27f9628183feb651"
     },
     {
       "path": "docs/third-party.md",
@@ -284,8 +309,8 @@
     },
     {
       "path": "plan.md",
-      "bytes": 49102,
-      "sha256": "912261fdf20a49971d825a3369f8bbc5b9565a3ae10889d0e56a2581296da7c1"
+      "bytes": 49664,
+      "sha256": "a68817bcaba121c4cfd7ed8f16556942b7701de5b9db07e4f6850b07abbf5240"
     },
     {
       "path": "profile.mbt",
@@ -309,8 +334,8 @@
     },
     {
       "path": "tests/fixtures/provenance.json",
-      "bytes": 3052,
-      "sha256": "aff2d111d87eeb43a56bf4a0165aec462c8b87cd906aa152c7173dac6edc37ec"
+      "bytes": 2983,
+      "sha256": "ef25578dd1274975d9fb2c812b2048ea145f8a914cdf9f86ec623a148a516bde"
     },
     {
       "path": "tests/fixtures/upstream/LICENSE.txt",
@@ -359,8 +384,8 @@
     },
     {
       "path": "tools/check.ps1",
-      "bytes": 1478,
-      "sha256": "53fbfd01ab17bc5c10258f36900cb3df25d2dd06cd5bb8fabfeb2d7755d04711"
+      "bytes": 1631,
+      "sha256": "54f412909c4b3ea227575f2db4389af9acbca3dd573d2398530484b7de95ef2d"
     },
     {
       "path": "tools/lock_evidence.py",
@@ -369,8 +394,8 @@
     },
     {
       "path": "tools/manifest_evidence.py",
-      "bytes": 1410,
-      "sha256": "0e2e9fafdfbd682606376047abb42270b147428dee2d9c4c1115be22820116ee"
+      "bytes": 1424,
+      "sha256": "5592b5250a3f98f41ec8550631a10bb21102acc2f7f723071fdaeca2984361b3"
     },
     {
       "path": "tools/partsieve.py",

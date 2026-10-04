@@ -2,7 +2,7 @@
 
 > 项目名称：**PartSieve**。副标题：OOXML Capability Auditor & Verified Rebuilder。  
 > `Part` 对应 OOXML 部件，`Sieve` 表达按策略筛选；目录 `partsieve`，CLI `partsieve`，Mooncakes 模块候选 `zlhahaha/partsieve`。  
-> 修订日期：2026-10-04。状态：**TODO-0 技术 GO；TODO-1 已验收；下一项 TODO-2；尚未 LOCK；原型公开发布准备中**。  
+> 修订日期：2026-10-04。状态：**TODO-0 技术 GO；TODO-1 已验收；下一项 TODO-2；尚未 LOCK；原型 0.1.0-spike 已公开发布**。
 > 定位：用 MoonBit 对 OOXML 文档中的已建模活动能力进行审计、策略化移除和结果验证。  
 > 目标：做成可复用、可审查、工程扎实的生态项目，争取季度奖项；奖项是竞争目标，不是技术验收标准。
 
@@ -964,7 +964,7 @@ SDK 可用后必须推进真实 MoonBit 下游验证。作者自建示例只能�
 
 执行状态以实际证据为准，不把设计命令、矩阵或原型已有部分实现等同于后续 TODO 完成。
 
-- [x] 复核并建立 `partsieve/`，模块名 `zlhahaha/partsieve`，未发布。
+- [x] 复核并建立 `partsieve/`，模块名 `zlhahaha/partsieve`，已发布实验性 `0.1.0-spike`。
 - [x] 确认 ZIP/XML/hash 公共 API、许可证和限制执行点。
 - [x] 获取干净 XLSX 与真实、无害 VBA XLSM 样本，固定来源与 hash。
 - [x] 执行 TODO-0 Kill Spike，保存 spike-report 与前后证据。
@@ -972,7 +972,7 @@ SDK 可用后必须推进真实 MoonBit 下游验证。作者自建示例只能�
 - [x] TODO-1：收敛 Bounded Package Loader 的解析截断/限额失败状态和边界验收。
 - [ ] TODO-2 至后续任务：依赖逐项满足后推进，不提前勾选。
 
-TODO-0、TODO-1 已验收，下一开发 P0 为 TODO-2。15 个单元测试、48 个特征样本、17 项端到端检查通过；统计不扩大支持范围。统一 Coverage/Decision、DOCM 与后续 handler、真实下游、CI/benchmark 校准及发布仍未完成。
+TODO-0、TODO-1 已验收，下一开发 P0 为 TODO-2。15 个单元测试、48 个特征样本、17 项端到端检查通过；统计不扩大支持范围。统一 Coverage/Decision、DOCM 与后续 handler、真实下游、benchmark 校准与最终成品发布仍未完成；原型的 Native/独立格式 CI 和 Mooncakes 预发布已完成。
 
 ## 16. 参考依据与待复核项
 
@@ -990,3 +990,5 @@ TODO-0、TODO-1 已验收，下一开发 P0 为 TODO-2。15 个单元测试、48
 作者已明确要求初始化 GitHub `https://github.com/zlhahaha/partsieve` 并在原型完成后发布 Mooncakes。TODO-0/1 已完成，因此本轮执行 `zlhahaha/partsieve@0.1.0-spike` 的原型预发布；这更新此前“暂不发布”的执行约定，不代表 TODO-13 顶奖成品验收或整个路线图完成。
 
 章程要求公开源码、合理开发记录、README、检查/构建/测试、可运行示例、关键测试、Mooncakes 与 OSI 许可，本轮逐项保存证据。申报时至少 10 个有效 commits 尚未满足；按后续实际变化积累。不得以空提交、重复提交或过度拆分凑数，报名与作者的人工作文等要求仍由作者确认。最新发布状态见 `partsieve/docs/release.md`。
+
+原型发布结果：GitHub main 已推送；源码提交 `a7be1e1` 的两个功能 CI job 全部成功；Mooncakes 正式发布返回 HTTP 200 / exit 0，独立目录从注册表下载 `0.1.0-spike`，通过 Native SDK audit/rebuild/verify 和准确输出 hash 检查。完整记录与可复现消费者见 `partsieve/docs/evidence/release-validation.json` / `registry-consumer/`。已有 5 次真实有效提交，10 次章程申报门槛仍未达成。

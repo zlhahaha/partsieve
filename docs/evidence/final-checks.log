@@ -1,15 +1,11 @@
+Registry index updated successfully
+Symbols updated successfully
+Warning: `moon install` without arguments is deprecated and will be removed in a future version. Use `moon install <package>` to install binaries globally, or use `moon build` to build your project.
 Dependency source/version evidence verified.
 {"pinned_fixture_files": 5, "status": "Pass"}
+Finished. moon: ran 12 tasks, now up to date
 Finished. moon: no work to do
-Finished. moon: ran 16 tasks, now up to date
-Finished. moon: ran 16 tasks, now up to date
-partsieve.blackbox_test.c
-main.internal_test.c
-sdk.internal_test.c
-partsieve.internal_test.c
-sdk.blackbox_test.c
-main.blackbox_test.c
-partsieve.whitebox_test.c
+Finished. moon: ran 12 tasks, now up to date
 Total tests: 15, passed: 15, failed: 0.
 fs_native.c
 sdk.c

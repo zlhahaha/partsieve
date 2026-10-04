@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-04",
+  "repo": "https://github.com/zlhahaha/partsieve",
+  "version": "0.1.0-spike",
+  "initial_commit": "21f10e4",
+  "release_preparation_commit": "a97c1b9513d04ba552d97c72f114f7c90c7de1da",
+  "published_source_commit": "a7be1e1d5ddec1af5cc822014fc61ddddb45adc9",
+  "server_dry_run": {
+    "http_status": 202,
+    "detail": "Dry run completed successfully. No changes were made.",
+    "cli_exit": 1
+  },
+  "ci_history": [
+    {
+      "id": 37176020737,
+      "independent": "success",
+      "native": "failure: dependencies not installed before source verification"
+    },
+    {
+      "id": 37176267027,
+      "independent": "success",
+      "native": "failure: clean runner registry index not initialized"
+    }
+  ],
+  "ci_final": {
+    "id": 37176472295,
+    "commit": "a7be1e1d5ddec1af5cc822014fc61ddddb45adc9",
+    "url": "https://github.com/zlhahaha/partsieve/actions/runs/37176472295",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 111360000364,
+        "name": "Independent ZIP and Open XML SDK",
+        "conclusion": "success"
+      },
+      {
+        "id": 111360000433,
+        "name": "Native SDK and bounded-host regression",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "mooncakes_publish": {
+    "command": "moon publish",
+    "http_status": 200,
+    "cli_exit": 0,
+    "archive_bytes": 79929,
+    "archive_sha256": "66ecd3b5f2e91b2690da9d3d9ec95494ba44e2a7192823dc32b3a8e94f4faa19",
+    "archive_files": 51
+  },
+  "registry_consumer": {
+    "status": "Pass",
+    "installation": "moon add zlhahaha/partsieve@0.1.0-spike",
+    "download_observed": true,
+    "source": "Mooncakes registry; no local path override",
+    "installed_version": "0.1.0-spike",
+    "direct_io_dependency": "moonbitlang/x@0.5.5",
+    "command": "moon run . --target native",
+    "exit": 0,
+    "stdout": "Published SDK: audit/rebuild/verify Pass",
+    "source_directory": "docs/evidence/registry-consumer",
+    "input_sha256": "09c35d1580eb6d7e678ba8249cdd1cbc0bd245fbb0eed8794981728715944736",
+    "output_sha256": "fcc9a0ca93810d894df21c71d5764db7252afd3b1232b5aef55c21f3efcc9e53",
+    "independent_downstream_adoption": false
+  },
+  "local_validation": {
+    "unit_tests": 15,
+    "feature_fixtures": 48,
+    "integration_assertions": 17,
+    "status": "Pass"
+  }
+}

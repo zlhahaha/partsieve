@@ -4,14 +4,14 @@
 
 ## 任务目标
 
-按计划建设 MoonBit OOXML 能力审计与验证重建项目 PartSieve。当前已完成 TODO-0 Kill Spike 技术 GO 和 TODO-1 Bounded Package Loader；下一个主线任务是 TODO-2 OPC Graph + XML Reference Index。完整路线图尚未完成，项目尚未 LOCK；原型公开发布正在按作者新增授权执行。当前真实、无害 VBA XLSM → XLSX 已完成 audit → plan → rebuild → verify、部件保留、Receipt、独立校验和 WPS 客户端证据。原型完成时未联系外部维护者或发布包；作者随后明确授权创建指定 GitHub 仓库并发布 Mooncakes。
+按计划建设 MoonBit OOXML 能力审计与验证重建项目 PartSieve。当前已完成 TODO-0 Kill Spike 技术 GO 和 TODO-1 Bounded Package Loader；下一个主线任务是 TODO-2 OPC Graph + XML Reference Index。完整路线图尚未完成，项目尚未 LOCK；原型已按作者新增授权发布到 GitHub 和 Mooncakes 0.1.0-spike。当前真实、无害 VBA XLSM → XLSX 已完成 audit → plan → rebuild → verify、部件保留、Receipt、独立校验和 WPS 客户端证据。原型完成时未联系外部维护者或发布包；作者随后明确授权创建指定 GitHub 仓库并发布 Mooncakes。
 
 ## 已完成内容
 
 - 已读取 `plan.md`，确认 TODO 依赖和 GO / CONDITIONAL GO / RE-SCOPE / STOP 门槛。
 - 初始工作区 `E:\moonbit10` 不是 Git 仓库、没有实现目录；随后建立独立 `partsieve/` 仓库，并遵循模板生成的 AGENTS.md。
 - 已确认环境有 moon、Python、dotnet、git、Node。
-- 建立本交接文档与独立 Git 仓库 `partsieve/`（MoonBit 模板自动创建）；没有提交或发布。
+- 建立本交接文档与独立 Git 仓库 `partsieve/`（MoonBit 模板自动创建）；已有真实有效提交并推送指定公开仓库。
 - 固定 flate 0.8.4、Milky2018/xml 0.5.0、moonbitlang/x 0.5.5，均 Apache-2.0。
 - MoonBit 原型已实现受限 ZIP、CRC、保守 OPC URI、命名空间 XML、内容类型、关系图、VBA 证据、计划、重建、重新读取验证和 Receipt。
 - Python 宿主 CLI 提供有界文件读取、60 秒 worker 超时、dry-run、成对文件发布及 original/Receipt 复核；OOXML 逻辑在 MoonBit SDK。
@@ -30,11 +30,11 @@
 - 现有 Audit 仍为原型字符串 Coverage 和数组关系；显式 XmlReference/PackageGraph/索引、统一 Decision 和验证状态还需 TODO-2/3，不能将后续任务提前标完成。
 - 资源数字仍为 PROVISIONAL；微型 benchmark 已跑，未完成 1/10/30 MiB 校准、完整工作预算/取消接口。
 - Python 是有界宿主入口，Native worker 使用无限 x/fs 读取，只能接收宿主已限额的私有快照。硬链接文件发布不保证两个路径事务原子性。
-- 基础 CI 尚未建立/运行；`.github` 中模板 Copilot setup 不是功能验收 CI。已有首次真实原型提交；GitHub 推送与 Mooncakes 发布准备中，独立下游采用仍缺。
+- GitHub 两个功能 CI job 已通过，Mooncakes 原型已发布并由独立目录消费者安装验证；独立第三方下游采用仍缺，自建消费者不计入 TODO-11。
 
 ## 正在做什么
 
-当前停靠在 TODO-0/1 验收完成点：成功输出 hash 没有变化，新增资源/失败状态测试通过，文档与计划已同步。下一项是 TODO-2；原型中已有部分图/引用逻辑，但还没有完成该 TODO 的统一公开事实模型。后续任务保持未完成状态。
+TODO-0/1 原型公开发布已收尾：CI 成功、Mooncakes 返回 200、独立目录从注册表下载并运行 SDK，通过真实 fixture 与准确输出 hash 检查。发布记录、踩坑和公开镜像已同步。下一项是 TODO-2；原型中已有部分图/引用逻辑，但还没有完成该 TODO 的统一公开事实模型。后续任务保持未完成状态。
 
 ## 下一步计划
 
@@ -42,7 +42,7 @@
 2. TODO-3：将原型字符串状态升级为统一 Capability/Coverage/Decision 和 Pass/Fail/Incomplete/Unsupported；区分未检查、不存在与不支持。
 3. TODO-4～6：扩到真实 DOCM VBA 样本，补 handler/计划前置条件与源 XML 语义改写、共享依赖闭包、完整 Receipt 和专属保留断言；每项有独立客户端证据。
 4. SDK 可用后启动 TODO-11 真实需求/下游验证。自建 example 只算示例；外部消息、PR 与公开发布按计划需要明确授权，先准备具体可审查的集成方案。
-5. 按依赖推进外部模板和 OLE/ActiveX handler、完整样本/CI/benchmark/兼容矩阵和演示；没有真实采用证据时不能扩充顶奖宣称。发布前再确认名字、规则和授权。
+5. 按依赖推进外部模板和 OLE/ActiveX handler、完整样本/CI/benchmark/兼容矩阵和演示；没有真实采用证据时不能扩充顶奖宣称。后续版本发布前复核命名、规则、分发和本轮授权范围。
 
 ## 踩过的坑
 
@@ -78,5 +78,10 @@
 - 作者明确授权 GitHub `https://github.com/zlhahaha/partsieve` 和原型 Mooncakes 发布；该授权更新此前暂不发布的执行范围。指定公开仓库已经存在且为空、账号具备写权限，直接初始化已有仓库。
 - 首次有效提交 `21f10e4` 包含已验证的完整原型，未伪造开发日期或提交记录。章程申报要求至少 10 个有效提交，当前未达门槛，随后续真实开发积累。
 - 版本定为 `0.1.0-spike`，Native 预发布；元数据、第三方说明、分发过滤与 CI 已配置。发布包没有凭据、缓存、临时文件和客户端证据，完整证据保留在 GitHub。
-- 服务器 dry-run 通过，HTTP 202 明确表示成功且未改索引；当前 moon CLI 对此仍返回退出码 1。`--frozen` 会阻止临时解包目录安装依赖，普通 dry-run 已验证干净包编译。正式推送、CI 和 Mooncakes 成功状态仍待实际确认。
-- 仓库中的 HANDOFF.md / plan.md 是本工作区文件的公开镜像，通过 `tools/sync_workspace_docs.py` 同步；持续以当前文档为交接基线。发布准备不等于 TODO-13 顶奖成品完成，也没有代作者提交报名表或联系主办方。
+- 服务器 dry-run 通过，HTTP 202 明确表示成功且未改索引；当前 moon CLI 对此仍返回退出码 1。`--frozen` 会阻止临时解包目录安装依赖，普通 dry-run 已验证干净包编译。正式推送已完成；CI run 37176472295 的两个 job 全部成功，正式 `moon publish` 返回 HTTP 200、退出 0；独立目录 `moon add zlhahaha/partsieve@0.1.0-spike` 从注册表下载，Native audit/rebuild/verify 与 hash 检查通过。
+- 仓库中的 HANDOFF.md / plan.md 是本工作区文件的公开镜像，通过 `tools/sync_workspace_docs.py` 同步；持续以当前文档为交接基线。原型发布不等于 TODO-13 顶奖成品完成，也没有代作者提交报名表或联系主办方。
+
+- 发布源码对应 `a7be1e1d5ddec1af5cc822014fc61ddddb45adc9`；GitHub 标签 `v0.1.0-spike` 指向该提交。后续发布记录提交只补充文档与证据。发布 zip SHA-256：`66ecd3b5f2e91b2690da9d3d9ec95494ba44e2a7192823dc32b3a8e94f4faa19`，79,929 bytes / 51 files。包内容不因仓库后续更新而改变。
+- 当前累计 5 次真实有效提交（含发布结果归档），仍未满足章程 10 次门槛。没有人为凑提交，也没有提交报名材料。
+- 新增踩坑：干净 Runner 必须先 `moon update` 再安装依赖，之后才能核验源码 hash；本地已有缓存不能证明 CI 可复现。调用方直接使用 x/fs 时必须显式声明 x，传递依赖不能替代直接依赖。
+- 完整发布证据：`partsieve/docs/evidence/release-validation.json`；注册表消费者源码：`partsieve/docs/evidence/registry-consumer/`；成功 CI：[37176472295](https://github.com/zlhahaha/partsieve/actions/runs/37176472295)。

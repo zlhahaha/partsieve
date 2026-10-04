@@ -1,6 +1,6 @@
 # TODO-0 Kill Spike 报告
 
-日期：2026-10-04。结论：**GO（技术闭环）**。随后完成 TODO-1 Bounded Package Loader；下一项为 TODO-2。仍为 `0.1.0-spike` 未发布原型，项目尚未 LOCK。
+日期：2026-10-04。结论：**GO（技术闭环）**。随后完成 TODO-1 Bounded Package Loader；下一项为 TODO-2。随后按作者授权发布 `0.1.0-spike` 原型，项目尚未 LOCK。发布结果见 [发布记录](https://github.com/zlhahaha/partsieve/blob/main/docs/release.md)。
 
 计划第 9.3 节的五项技术门槛已有实际证据：公开依赖的有界读写；真实 XLSM → XLSX；从实际输出重解析验证；所有未改写 payload 的保留；独立 ZIP/Open XML SDK 与客户端检查。用户允许使用 WPS，故客户端验收记录为 WPS，未声称测过 Microsoft Excel 或 LibreOffice。
 

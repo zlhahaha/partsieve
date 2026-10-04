@@ -1,4 +1,4 @@
-"""Hash current project sources/docs and the workspace's handoff/plan."""
+"""Hash current project sources/docs, including mirrored handoff/plan."""
 import hashlib
 import json
 import os
@@ -23,5 +23,5 @@ records.sort(key=lambda item: item["path"])
 report = {"schema": "partsieve.artifact-manifest.spike-v1", "date": "2026-10-04", "files": records,
           "excluded": sorted(SKIP), "excluded_file_prefixes": ["~$", ".~lock."],
           "note": "Local review snapshot, not an authenticity signature. Regenerate after edits."}
-DEST.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+DEST.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8", newline="\n")
 print(json.dumps({"hashed_files": len(records), "manifest": DEST.relative_to(ROOT).as_posix()}))
