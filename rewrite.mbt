@@ -16,7 +16,11 @@ fn make_plan(pkg : Package) -> RewritePlan {
       part: rel.source,
       relationship_id: rel.id,
       rule: "vba-v1",
-      reason: "VBA is an implicit workbook relationship; no supported source XML references it.",
+      reason: if is_word_format(report.format) {
+        "VBA is an implicit main-document relationship; no supported source XML references it."
+      } else {
+        "VBA is an implicit workbook relationship; no supported source XML references it."
+      },
     })
     ops.push({
       kind: "RewriteRelationshipPart",
@@ -26,13 +30,28 @@ fn make_plan(pkg : Package) -> RewritePlan {
       reason: "Regenerate validated relationship metadata without VBA relation.",
     })
   }
-  if report.format == "XLSM" {
+  for part in controlled_vba_parts(pkg) {
+    if !report.findings.any(fn(f) { f.part == part }) {
+      ops.push({
+        kind: "RemovePart",
+        part,
+        relationship_id: "",
+        rule: "vba-v1",
+        reason: "Remove exclusively owned Word VBA supporting metadata and its relationship part.",
+      })
+    }
+  }
+  if is_macro_format(report.format) {
     ops.push({
       kind: "ChangeMainContentType",
       part: report.main_part,
       relationship_id: "",
       rule: "format-v1",
-      reason: "Convert macro-enabled workbook to ordinary XLSX, including macro-enabled files with no VBA.",
+      reason: if is_word_format(report.format) {
+        "Convert DOCM to DOCX, including macro-enabled formats without actual VBA."
+      } else {
+        "Convert macro-enabled workbook to ordinary XLSX, including macro-enabled files with no VBA."
+      },
     })
     ops.push({
       kind: "RewriteContentTypes",
@@ -43,7 +62,11 @@ fn make_plan(pkg : Package) -> RewritePlan {
     })
   }
   {
-    schema: "partsieve.plan.spike-v1",
+    schema: if is_word_format(report.format) {
+      "partsieve.plan.word-dev-v1"
+    } else {
+      "partsieve.plan.spike-v1"
+    },
     input_hash: report.input_hash,
     policy: "passive-office-v1",
     profile: report.profile,
@@ -85,7 +108,7 @@ fn write_content_types(pkg : Package) -> Bytes raise {
   extensions.sort()
   for ext in extensions {
     let ct = pkg.defaults[ext]
-    if ct != vba_ct {
+    if ct != vba_ct && ct != word_vba_data_ct {
       writer.empty_element("Default", [("Extension", ext), ("ContentType", ct)])
     }
   }
@@ -93,12 +116,19 @@ fn write_content_types(pkg : Package) -> Bytes raise {
   names.sort()
   for name in names {
     let ct = pkg.overrides[name]
-    if ct == vba_ct {
+    if ct == vba_ct || controlled_vba_parts(pkg).contains(name) {
       continue
     }
     writer.empty_element("Override", [
       ("PartName", "/" + name),
-      ("ContentType", if name == pkg.audit.main_part { xlsx_ct } else { ct }),
+      (
+        "ContentType",
+        if name == pkg.audit.main_part {
+          plain_content_type(pkg)
+        } else {
+          ct
+        },
+      ),
     ])
   }
   // The workbook main type can legally come from a default mapping. Convert
@@ -106,7 +136,7 @@ fn write_content_types(pkg : Package) -> Bytes raise {
   if !pkg.overrides.contains(pkg.audit.main_part) {
     writer.empty_element("Override", [
       ("PartName", "/" + pkg.audit.main_part),
-      ("ContentType", xlsx_ct),
+      ("ContentType", plain_content_type(pkg)),
     ])
   }
   writer.end_element("Types")
@@ -116,8 +146,8 @@ fn write_content_types(pkg : Package) -> Bytes raise {
 ///|
 fn execute(pkg : Package, limits : Limits) -> Bytes raise {
   let archive = pkg.archive.clone()
-  for f in pkg.audit.findings {
-    guard archive.remove(f.part[:]) else {
+  for part in controlled_vba_parts(pkg) {
+    guard archive.remove(part[:]) else {
       raise Refused("plan RemovePart precondition failed")
     }
   }
@@ -130,7 +160,7 @@ fn execute(pkg : Package, limits : Limits) -> Bytes raise {
       raise Refused("plan relationship precondition failed")
     }
   }
-  if pkg.audit.format == "XLSM" {
+  if is_macro_format(pkg.audit.format) {
     guard archive.replace("[Content_Types].xml", write_content_types(pkg)[:]) else {
       raise Refused("content types precondition failed")
     }
@@ -148,7 +178,9 @@ fn verify_parts(
   expected : Package,
 ) -> Array[Disposition] raise {
   let dispositions : Array[Disposition] = []
-  guard after.audit.format == "XLSX" && after.audit.findings.length() == 0 else {
+  guard after.audit.format ==
+    (if is_word_format(before.audit.format) { "DOCX" } else { "XLSX" }) &&
+    after.audit.findings.length() == 0 else {
     raise Invalid("output has forbidden VBA or macro-enabled type")
   }
   guard after.graph.graph == expected.graph.graph else {
@@ -157,8 +189,8 @@ fn verify_parts(
   for p in before.audit.parts {
     let matches = after.audit.parts.filter(fn(q) { q.name == p.name })
     let out = if matches.length() == 0 { None } else { Some(matches[0]) }
-    let removed = before.audit.findings.any(fn(f) { f.part == p.name })
-    let metadata = before.audit.format == "XLSM" &&
+    let removed = controlled_vba_parts(before).contains(p.name)
+    let metadata = is_macro_format(before.audit.format) &&
       (
         p.name == "[Content_Types].xml" ||
         (
@@ -209,9 +241,21 @@ pub fn verify(
   let after = load_package(output, limits)
   let dispositions = verify_parts(before, after, expected)
   {
-    schema: "partsieve.receipt.spike-v1",
-    tool: "partsieve/0.1.0-spike",
-    rules: "spike-rules-v1",
+    schema: if is_word_format(before.audit.format) {
+      "partsieve.receipt.word-dev-v1"
+    } else {
+      "partsieve.receipt.spike-v1"
+    },
+    tool: if is_word_format(before.audit.format) {
+      "partsieve/0.2.0-dev"
+    } else {
+      "partsieve/0.1.0-spike"
+    },
+    rules: if is_word_format(before.audit.format) {
+      "word-vba-dev-v1"
+    } else {
+      "spike-rules-v1"
+    },
     policy: "passive-office-v1",
     profile: before.audit.profile,
     input_hash: before.audit.input_hash,

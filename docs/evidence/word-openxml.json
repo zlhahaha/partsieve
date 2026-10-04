@@ -1,0 +1,44 @@
+{
+  "tool": "DocumentFormat.OpenXml",
+  "version": "3.3.0",
+  "target": "Office2007",
+  "reports": [
+    {
+      "path": "tests/fixtures/poi/SimpleMacro.docm",
+      "sha256": "fd591958fcf5322f72c0a740e9606309c949254bda4c3d9bd966481ddf220563",
+      "status": "Pass",
+      "errors": []
+    },
+    {
+      "path": "docs/evidence/word-verified.docx",
+      "sha256": "4bb624cf9a6e465b1658c69f6d0bc607ccccf25e2ee1e3048b3e11376d8aa65e",
+      "status": "Pass",
+      "errors": []
+    },
+    {
+      "path": "docs/evidence/word-wps-saved.docx",
+      "sha256": "b01d8798a6d805d50c5380199d2594dbdee7234553e5da7f6e638b981fbbbb19",
+      "status": "Fail",
+      "errors": [
+        {
+          "Id": "Sch_UnexpectedElementContentExpectingComplex",
+          "Description": "The element has unexpected child element \u0027http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority\u0027.",
+          "Part": "/word/styles.xml",
+          "XPath": "/w:styles[1]/w:style[3]"
+        },
+        {
+          "Id": "Sch_UnexpectedElementContentExpectingComplex",
+          "Description": "The element has unexpected child element \u0027http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority\u0027.",
+          "Part": "/word/styles.xml",
+          "XPath": "/w:styles[1]/w:style[2]"
+        },
+        {
+          "Id": "Sch_UnexpectedElementContentExpectingComplex",
+          "Description": "The element has unexpected child element \u0027http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority\u0027.",
+          "Part": "/word/styles.xml",
+          "XPath": "/w:styles[1]/w:style[1]"
+        }
+      ]
+    }
+  ]
+}

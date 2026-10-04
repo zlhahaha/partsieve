@@ -27,6 +27,10 @@ let supported_content_types : Array[String] = [
 
 ///|
 fn validate_profile(pkg : Package) -> Unit raise {
+  if is_word_format(pkg.audit.format) {
+    validate_word_profile(pkg)
+    return
+  }
   let report = pkg.audit
   guard pkg.graph.graph.coverage_gaps.length() == 0 else {
     raise Refused("graph coverage gap: " + pkg.graph.graph.coverage_gaps[0])
@@ -95,220 +99,251 @@ fn validate_profile(pkg : Package) -> Unit raise {
   }
 
   for p in report.parts {
-    if p.name == "[Content_Types].xml" {
-      continue
+    validate_static_xml_part(pkg, p)
+  }
+}
+
+///|
+fn validate_static_xml_part(pkg : Package, p : PartRecord) -> Unit raise {
+  let report = pkg.audit
+  if p.name == "[Content_Types].xml" {
+    return
+  }
+  guard supported_content_types.contains(p.content_type) else {
+    raise Refused("unknown/unsupported part content type")
+  }
+  if p.content_type == vba_ct {
+    return
+  }
+  if p.name.has_suffix(".rels") {
+    guard p.content_type ==
+      "application/vnd.openxmlformats-package.relationships+xml" else {
+      raise Refused("relationship part content type mismatch")
     }
-    guard supported_content_types.contains(p.content_type) else {
-      raise Refused("unknown/unsupported part content type")
+    return
+  }
+  guard pkg.xml_nodes.get(p.name) is Some(nodes) else {
+    raise Refused("XML content type on unsupported payload name")
+  }
+  let root = nodes[0].element.name.local_name
+  let expected_root = if p.name == report.main_part {
+    "workbook"
+  } else if p.content_type.contains(".worksheet+") {
+    "worksheet"
+  } else if p.content_type.contains(".styles+") {
+    "styleSheet"
+  } else if p.content_type.contains(".sharedStrings+") {
+    "sst"
+  } else if p.content_type.contains(".theme+") {
+    "theme"
+  } else if p.content_type.contains("core-properties") {
+    "coreProperties"
+  } else {
+    "Properties"
+  }
+  guard root == expected_root else {
+    raise Refused("part root/content type mismatch")
+  }
+  let parents : Array[String] = []
+  let sheet_refs : Array[String] = []
+  let sheet_names : Array[String] = []
+  for node in nodes {
+    let ns = node.element.name.namespace_uri.unwrap_or("")
+    let local_name = node.element.name.local_name
+    while parents.length() > node.depth {
+      ignore(parents.pop())
     }
-    if p.content_type == vba_ct {
-      continue
-    }
-    if p.name.has_suffix(".rels") {
-      guard p.content_type ==
-        "application/vnd.openxmlformats-package.relationships+xml" else {
-        raise Refused("relationship part content type mismatch")
-      }
-      continue
-    }
-    guard pkg.xml_nodes.get(p.name) is Some(nodes) else {
-      raise Refused("XML content type on unsupported payload name")
-    }
-    let root = nodes[0].element.name.local_name
-    let expected_root = if p.name == report.main_part {
-      "workbook"
-    } else if p.content_type.contains(".worksheet+") {
-      "worksheet"
-    } else if p.content_type.contains(".styles+") {
-      "styleSheet"
-    } else if p.content_type.contains(".sharedStrings+") {
-      "sst"
-    } else if p.content_type.contains(".theme+") {
-      "theme"
-    } else if p.content_type.contains("core-properties") {
-      "coreProperties"
+    let parent = if parents.length() > 0 {
+      parents[parents.length() - 1]
     } else {
-      "Properties"
-    }
-    guard root == expected_root else {
-      raise Refused("part root/content type mismatch")
-    }
-    let parents : Array[String] = []
-    let sheet_refs : Array[String] = []
-    let sheet_names : Array[String] = []
-    for node in nodes {
-      let ns = node.element.name.namespace_uri.unwrap_or("")
-      let local_name = node.element.name.local_name
-      while parents.length() > node.depth {
-        ignore(parents.pop())
-      }
-      let parent = if parents.length() > 0 {
-        parents[parents.length() - 1]
-      } else {
-        ""
-      }
-      if expected_root == "workbook" {
-        let shape_ok = match local_name {
-          "workbook" => node.depth == 0
-          "fileVersion" | "workbookPr" | "bookViews" | "sheets" | "calcPr" =>
-            parent == "workbook"
-          "workbookView" => parent == "bookViews"
-          "sheet" => parent == "sheets"
-          _ => false
-        }
-        guard shape_ok else {
-          raise Refused("unsupported workbook element placement")
-        }
-        if local_name == "sheet" {
-          let refs = node.element.attributes.filter(fn(a) {
-            a.name.namespace_uri ==
-            Some(office_rel[0:office_rel.length() - 1].to_owned()) &&
-            a.name.local_name == "id"
-          })
-          guard refs.length() == 1 && !sheet_refs.contains(refs[0].value) else {
-            raise Refused("missing or reused worksheet XML relationship ID")
-          }
-          sheet_refs.push(refs[0].value)
-          let sheet_name = attr(node, "name")
-          guard sheet_name.length() > 0 &&
-            sheet_name.length() <= 31 &&
-            !sheet_names.contains(sheet_name.to_lower()) else {
-            raise Refused("invalid or duplicate sheet name")
-          }
-          sheet_names.push(sheet_name.to_lower())
-          ignore(attr(node, "sheetId"))
-        }
-      } else if expected_root == "worksheet" {
-        let shape_ok = match local_name {
-          "worksheet" => node.depth == 0
-          "sheetPr"
-          | "dimension"
-          | "sheetViews"
-          | "sheetFormatPr"
-          | "cols"
-          | "sheetData"
-          | "pageMargins"
-          | "pageSetup"
-          | "printOptions"
-          | "mergeCells" => parent == "worksheet"
-          "pageSetUpPr" | "outlinePr" => parent == "sheetPr"
-          "sheetView" => parent == "sheetViews"
-          "selection" => parent == "sheetView"
-          "col" => parent == "cols"
-          "row" => parent == "sheetData"
-          "c" => parent == "row"
-          "v" | "is" => parent == "c"
-          "t" => parent == "is" || parent == "r"
-          "r" => parent == "is"
-          "rPr" => parent == "r"
-          "mergeCell" => parent == "mergeCells"
-          _ => false
-        }
-        guard shape_ok else {
-          raise Refused("unsupported worksheet element placement")
-        }
-      }
-      parents.push(local_name)
-      let permitted = if expected_root == "workbook" {
-        ns == spreadsheet_ns &&
-        [
-          "workbook", "fileVersion", "workbookPr", "bookViews", "workbookView", "sheets",
-          "sheet", "calcPr",
-        ].contains(local_name)
-      } else if expected_root == "worksheet" {
-        ns == spreadsheet_ns &&
-        [
-          "worksheet", "sheetPr", "pageSetUpPr", "outlinePr", "dimension", "sheetViews",
-          "sheetView", "selection", "sheetFormatPr", "cols", "col", "sheetData",
-          "row", "c", "v", "is", "t", "r", "rPr", "pageMargins", "pageSetup", "printOptions",
-          "mergeCells", "mergeCell",
-        ].contains(local_name)
-      } else if expected_root == "sst" {
-        ns == spreadsheet_ns &&
-        [
-          "sst", "si", "t", "r", "rPr", "b", "i", "u", "sz", "color", "rFont", "family",
-          "scheme", "vertAlign",
-        ].contains(local_name)
-      } else if expected_root == "styleSheet" {
-        ns == spreadsheet_ns &&
-        [
-          "styleSheet", "numFmts", "numFmt", "fonts", "font", "b", "i", "u", "sz",
-          "color", "name", "family", "scheme", "vertAlign", "fills", "fill", "patternFill",
-          "fgColor", "bgColor", "borders", "border", "left", "right", "top", "bottom",
-          "diagonal", "cellStyleXfs", "cellXfs", "xf", "alignment", "protection",
-          "cellStyles", "cellStyle", "dxfs", "tableStyles",
-        ].contains(local_name)
-      } else if expected_root == "theme" {
-        ns == drawing_ns &&
-        [
-          "theme", "themeElements", "clrScheme", "dk1", "lt1", "dk2", "lt2", "accent1",
-          "accent2", "accent3", "accent4", "accent5", "accent6", "hlink", "folHlink",
-          "sysClr", "srgbClr", "fontScheme", "majorFont", "minorFont", "latin", "ea",
-          "cs", "font", "fmtScheme", "fillStyleLst", "solidFill", "schemeClr", "gradFill",
-          "gsLst", "gs", "tint", "satMod", "shade", "lin", "path", "fillToRect",
-          "lnStyleLst", "ln", "prstDash", "miter", "effectStyleLst", "effectStyle",
-          "effectLst", "outerShdw", "alpha", "bgFillStyleLst", "objectDefaults",
-          "extraClrSchemeLst", "scene3d", "camera", "lightRig", "rot", "sp3d", "bevelT",
-        ].contains(local_name)
-      } else if expected_root == "coreProperties" {
-        [
-          "http://schemas.openxmlformats.org/package/2006/metadata/core-properties",
-          "http://purl.org/dc/elements/1.1/", "http://purl.org/dc/terms/",
-        ].contains(ns) &&
-        [
-          "coreProperties", "title", "subject", "creator", "keywords", "description",
-          "lastModifiedBy", "revision", "created", "modified", "category", "contentStatus",
-          "lastPrinted", "version", "identifier", "language",
-        ].contains(local_name)
-      } else {
-        [
-          "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties",
-          "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes",
-        ].contains(ns) &&
-        [
-          "Properties", "Application", "AppVersion", "DocSecurity", "ScaleCrop",
-          "HeadingPairs", "TitlesOfParts", "Company", "LinksUpToDate", "SharedDoc",
-          "HyperlinksChanged", "vector", "variant", "lpstr", "i4",
-        ].contains(local_name)
-      }
-      guard permitted else {
-        raise Refused("unsupported XML namespace or feature: " + local_name)
-      }
-      for a in node.element.attributes {
-        let ans = a.name.namespace_uri.unwrap_or("")
-        guard ans == "" ||
-          ans == "http://www.w3.org/XML/1998/namespace" ||
-          ans == office_rel[0:office_rel.length() - 1].to_owned() ||
-          (
-            expected_root == "coreProperties" &&
-            ans == "http://www.w3.org/2001/XMLSchema-instance"
-          ) else {
-          raise Refused("unsupported namespaced XML attribute")
-        }
-        if ans == office_rel[0:office_rel.length() - 1].to_owned() {
-          guard expected_root == "workbook" &&
-            local_name == "sheet" &&
-            a.name.local_name == "id" else {
-            raise Refused("unsupported source XML relationship reference")
-          }
-          guard graph_relationship(pkg.graph, p.name, a.value)
-            is Some(match_rel) &&
-            match_rel.kind == office_rel + "worksheet" else {
-            raise Refused("dangling or wrongly-bound source XML reference")
-          }
-        }
-      }
+      ""
     }
     if expected_root == "workbook" {
-      guard sheet_refs.length() > 0 else {
-        raise Refused("workbook has no supported sheet")
+      let shape_ok = match local_name {
+        "workbook" => node.depth == 0
+        "fileVersion" | "workbookPr" | "bookViews" | "sheets" | "calcPr" =>
+          parent == "workbook"
+        "workbookView" => parent == "bookViews"
+        "sheet" => parent == "sheets"
+        _ => false
       }
-      for relation in report.relationships {
-        if relation.source == p.name &&
-          relation.kind == office_rel + "worksheet" {
-          guard sheet_refs.contains(relation.id) else {
-            raise Refused("unreferenced worksheet relationship")
-          }
+      guard shape_ok else {
+        raise Refused("unsupported workbook element placement")
+      }
+      if local_name == "sheet" {
+        let refs = node.element.attributes.filter(fn(a) {
+          a.name.namespace_uri ==
+          Some(office_rel[0:office_rel.length() - 1].to_owned()) &&
+          a.name.local_name == "id"
+        })
+        guard refs.length() == 1 && !sheet_refs.contains(refs[0].value) else {
+          raise Refused("missing or reused worksheet XML relationship ID")
+        }
+        sheet_refs.push(refs[0].value)
+        let sheet_name = attr(node, "name")
+        guard sheet_name.length() > 0 &&
+          sheet_name.length() <= 31 &&
+          !sheet_names.contains(sheet_name.to_lower()) else {
+          raise Refused("invalid or duplicate sheet name")
+        }
+        sheet_names.push(sheet_name.to_lower())
+        ignore(attr(node, "sheetId"))
+      }
+    } else if expected_root == "worksheet" {
+      let shape_ok = match local_name {
+        "worksheet" => node.depth == 0
+        "sheetPr"
+        | "dimension"
+        | "sheetViews"
+        | "sheetFormatPr"
+        | "cols"
+        | "sheetData"
+        | "pageMargins"
+        | "pageSetup"
+        | "printOptions"
+        | "mergeCells" => parent == "worksheet"
+        "pageSetUpPr" | "outlinePr" => parent == "sheetPr"
+        "sheetView" => parent == "sheetViews"
+        "selection" => parent == "sheetView"
+        "col" => parent == "cols"
+        "row" => parent == "sheetData"
+        "c" => parent == "row"
+        "v" | "is" => parent == "c"
+        "t" => parent == "is" || parent == "r"
+        "r" => parent == "is"
+        "rPr" => parent == "r"
+        "mergeCell" => parent == "mergeCells"
+        _ => false
+      }
+      guard shape_ok else {
+        raise Refused("unsupported worksheet element placement")
+      }
+    }
+    parents.push(local_name)
+    let permitted = if expected_root == "workbook" {
+      ns == spreadsheet_ns &&
+      [
+        "workbook", "fileVersion", "workbookPr", "bookViews", "workbookView", "sheets",
+        "sheet", "calcPr",
+      ].contains(local_name)
+    } else if expected_root == "worksheet" {
+      ns == spreadsheet_ns &&
+      [
+        "worksheet", "sheetPr", "pageSetUpPr", "outlinePr", "dimension", "sheetViews",
+        "sheetView", "selection", "sheetFormatPr", "cols", "col", "sheetData", "row",
+        "c", "v", "is", "t", "r", "rPr", "pageMargins", "pageSetup", "printOptions",
+        "mergeCells", "mergeCell",
+      ].contains(local_name)
+    } else if expected_root == "sst" {
+      ns == spreadsheet_ns &&
+      [
+        "sst", "si", "t", "r", "rPr", "b", "i", "u", "sz", "color", "rFont", "family",
+        "scheme", "vertAlign",
+      ].contains(local_name)
+    } else if expected_root == "styleSheet" {
+      ns == spreadsheet_ns &&
+      [
+        "styleSheet", "numFmts", "numFmt", "fonts", "font", "b", "i", "u", "sz",
+        "color", "name", "family", "scheme", "vertAlign", "fills", "fill", "patternFill",
+        "fgColor", "bgColor", "borders", "border", "left", "right", "top", "bottom",
+        "diagonal", "cellStyleXfs", "cellXfs", "xf", "alignment", "protection", "cellStyles",
+        "cellStyle", "dxfs", "tableStyles",
+      ].contains(local_name)
+    } else if expected_root == "theme" {
+      ns == drawing_ns &&
+      [
+        "theme", "themeElements", "clrScheme", "dk1", "lt1", "dk2", "lt2", "accent1",
+        "accent2", "accent3", "accent4", "accent5", "accent6", "hlink", "folHlink",
+        "sysClr", "srgbClr", "fontScheme", "majorFont", "minorFont", "latin", "ea",
+        "cs", "font", "fmtScheme", "fillStyleLst", "solidFill", "schemeClr", "gradFill",
+        "gsLst", "gs", "tint", "satMod", "shade", "lin", "path", "fillToRect", "lnStyleLst",
+        "ln", "prstDash", "miter", "effectStyleLst", "effectStyle", "effectLst",
+        "outerShdw", "alpha", "bgFillStyleLst", "objectDefaults", "extraClrSchemeLst",
+        "scene3d", "camera", "lightRig", "rot", "sp3d", "bevelT",
+      ].contains(local_name)
+    } else if expected_root == "coreProperties" {
+      [
+        "http://schemas.openxmlformats.org/package/2006/metadata/core-properties",
+        "http://purl.org/dc/elements/1.1/", "http://purl.org/dc/terms/",
+      ].contains(ns) &&
+      [
+        "coreProperties", "title", "subject", "creator", "keywords", "description",
+        "lastModifiedBy", "revision", "created", "modified", "category", "contentStatus",
+        "lastPrinted", "version", "identifier", "language",
+      ].contains(local_name)
+    } else {
+      [
+        "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties",
+        "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes",
+      ].contains(ns) &&
+      [
+        "Properties", "Application", "AppVersion", "DocSecurity", "ScaleCrop", "HeadingPairs",
+        "TitlesOfParts", "Company", "LinksUpToDate", "SharedDoc", "HyperlinksChanged",
+        "vector", "variant", "lpstr", "i4",
+      ].contains(local_name)
+    }
+    let permitted = permitted ||
+      (
+        is_word_format(report.format) &&
+        expected_root == "Properties" &&
+        ns ==
+        "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" &&
+        [
+          "Template", "TotalTime", "Pages", "Words", "Characters", "Lines", "Paragraphs",
+          "CharactersWithSpaces",
+        ].contains(local_name)
+      )
+    if is_word_format(report.format) && expected_root == "Properties" {
+      guard ns ==
+        "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" &&
+        (if local_name == "Properties" {
+          node.depth == 0
+        } else {
+          node.depth == 1
+        }) else {
+        raise Refused("unsupported Word document-property placement")
+      }
+      if local_name == "Template" {
+        guard node.text_fragments.join("").trim() == "Normal.dotm" else {
+          raise Refused("non-default Word template property unsupported")
+        }
+      }
+    }
+    guard permitted else {
+      raise Refused("unsupported XML namespace or feature: " + local_name)
+    }
+    for a in node.element.attributes {
+      let ans = a.name.namespace_uri.unwrap_or("")
+      guard ans == "" ||
+        ans == "http://www.w3.org/XML/1998/namespace" ||
+        ans == office_rel[0:office_rel.length() - 1].to_owned() ||
+        (
+          expected_root == "coreProperties" &&
+          ans == "http://www.w3.org/2001/XMLSchema-instance"
+        ) else {
+        raise Refused("unsupported namespaced XML attribute")
+      }
+      if ans == office_rel[0:office_rel.length() - 1].to_owned() {
+        guard expected_root == "workbook" &&
+          local_name == "sheet" &&
+          a.name.local_name == "id" else {
+          raise Refused("unsupported source XML relationship reference")
+        }
+        guard graph_relationship(pkg.graph, p.name, a.value) is Some(match_rel) &&
+          match_rel.kind == office_rel + "worksheet" else {
+          raise Refused("dangling or wrongly-bound source XML reference")
+        }
+      }
+    }
+  }
+  if expected_root == "workbook" {
+    guard sheet_refs.length() > 0 else {
+      raise Refused("workbook has no supported sheet")
+    }
+    for relation in report.relationships {
+      if relation.source == p.name && relation.kind == office_rel + "worksheet" {
+        guard sheet_refs.contains(relation.id) else {
+          raise Refused("unreferenced worksheet relationship")
         }
       }
     }

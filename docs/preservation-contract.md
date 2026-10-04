@@ -16,3 +16,11 @@
 完整 verify 需要原文件。从原件重新生成预期有限修改，重新读取实际输出、核验每个 input part 去向。Receipt 与重新计算结果须完全一致，不能只信任其 Pass 或 hash。无 original 时脚本报告 preservation NotChecked、整体 Incomplete，退出 3。
 
 发布先将文档临时文件写在输出文件系统，从实际文件重新 verify；再发布文档、最后发布带 `publication: pair-complete` 的 Receipt。使用 exclusive hard link 防止覆盖。任一步失败返回非零并报告回滚/清理。不承诺两路径事务原子性，也不承诺停电后 fsync 级目录持久化；消费者只接受存在且 hash 匹配的完整文件对。
+
+## main 开发版 Word VBA 契约
+
+`simple-word-vba-dev-v1` 使用同一图/引用索引和验证管线。DOCM 的单一实际 VBA 项目、其专属 relationship part、至多一个由 `wordVbaData` 关系独占的 supporting XML 为 RemovedByPolicy；主 document 的 VBA 关系和 Content Types 是 RegeneratedMetadata。正文、样式、设置、字体、主题、属性等其他 payload 必须 BytePreserved。共享项目/元数据、原有孤儿 VBA、保留 XML 引用、未知 companion 均拒绝；不做通用孤儿 GC。
+
+真实 fixture 的 14 个 parts 中删除 3 个、重写 2 个元数据、保留 9 个。源正文没有 VBA relationship ID，因此没有正文语义改写。宏启用类型没有实际 VBA 时仅转换主类型，不制造 finding。输出必须为实际 DOCX 主类型且使用 .docx 扩展名。Word schema/规则标为开发版，尚未进入已发布 0.1.0-spike；完整 typed Receipt 仍属 TODO-6。
+
+WPS 保存副本属于客户端重写，不属于 PartSieve 的 BytePreserved 契约。该 Word 副本正文一致、可以重开，但独立 SDK 发现 styles 中三个元素顺序错误，见 [Word handler 报告](word-vba.md)；不得把客户端另存副本当成 PartSieve 完整 verify 成功产物。

@@ -2,7 +2,7 @@
 
 > 项目名称：**PartSieve**。副标题：OOXML Capability Auditor & Verified Rebuilder。  
 > `Part` 对应 OOXML 部件，`Sieve` 表达按策略筛选；目录 `partsieve`，CLI `partsieve`，Mooncakes 模块候选 `zlhahaha/partsieve`。  
-> 修订日期：2026-10-04。状态：**TODO-0 技术 GO；TODO-1/2/3 已验收；下一项 TODO-4；尚未 LOCK；原型 0.1.0-spike 已公开发布**。
+> 修订日期：2026-10-04。状态：**TODO-0 技术 GO；TODO-1/2/3/4 已验收；下一项 TODO-5；尚未 LOCK；原型 0.1.0-spike 已公开发布**。
 > 定位：用 MoonBit 对 OOXML 文档中的已建模活动能力进行审计、策略化移除和结果验证。  
 > 目标：做成可复用、可审查、工程扎实的生态项目，争取季度奖项；奖项是竞争目标，不是技术验收标准。
 
@@ -469,23 +469,23 @@ Result:
 
 **依赖：TODO-3**
 
-- [ ] 检出 `vbaProject.bin`。
-- [ ] 检出 VBA relationship。
-- [ ] 检出 macro-enabled main content type。
-- [ ] 区分“宏启用格式”和“实际存在 VBA”。
-- [ ] 处理 XLSM → XLSX。
-- [ ] 处理 DOCM → DOCX。
-- [ ] 处理 shared reference。
-- [ ] 处理孤儿/异常 VBA 结构。
-- [ ] unsupported 变体 Refuse。
-- [ ] 正例 / 干净负例 / 混合样本 / 不支持变体测试。
+- [x] 检出 `vbaProject.bin`。
+- [x] 检出 VBA relationship。
+- [x] 检出 macro-enabled main content type。
+- [x] 区分“宏启用格式”和“实际存在 VBA”。
+- [x] 处理 XLSM → XLSX。
+- [x] 处理 DOCM → DOCX。
+- [x] 处理 shared reference。
+- [x] 处理孤儿/异常 VBA 结构。
+- [x] unsupported 变体 Refuse。
+- [x] 正例 / 干净负例 / 混合样本 / 不支持变体测试。
 
 **验收**：
 
-- [ ] 输出中声明范围内 VBA capability 为 0。
-- [ ] 主 content type 与输出格式一致。
-- [ ] 不误删无关 part。
-- [ ] 输出客户端无修复提示。
+- [x] 输出中声明范围内 VBA capability 为 0。
+- [x] 主 content type 与输出格式一致。
+- [x] 不误删无关 part。
+- [x] 输出客户端无修复提示。
 
 ---
 
@@ -972,9 +972,10 @@ SDK 可用后必须推进真实 MoonBit 下游验证。作者自建示例只能�
 - [x] TODO-1：收敛 Bounded Package Loader 的解析截断/限额失败状态和边界验收。
 - [x] TODO-2：共用 PackageGraph/XML 引用与关系索引、迭代可达性、孤儿候选和覆盖缺口验收通过。
 - [x] TODO-3：统一 CapabilityFinding/Coverage/Decision；assess SDK/CLI、typed gate 和失败状态验收。
-- [ ] TODO-4 至后续任务：依赖逐项满足后推进，不提前勾选。
+- [x] TODO-4：受限真实 DOCM→DOCX VBA/supporting 元数据删除、保留与独立客户端验收。
+- [ ] TODO-5 至后续任务：依赖逐项满足后推进，不提前勾选。
 
-TODO-0/1/2/3 已验收，下一开发 P0 为 TODO-4。25 个单元测试、48 个特征样本、17 项端到端检查、11 项图宿主检查和 17 项覆盖/决策检查通过；统计不扩大支持范围。DOCM、规划/完整新版 Receipt 与后续 handler、真实下游、benchmark 校准与最终成品发布仍未完成；原型的 Native/独立格式 CI 和 Mooncakes 预发布已完成。
+TODO-0/1/2/3/4 已验收，下一开发 P0 为 TODO-5。25 个单元测试、48 个特征样本、17 项端到端检查、11 项图宿主检查和 17 项覆盖/决策检查通过；统计不扩大支持范围。新增 29 项 Word 回归通过；DOCM 支持在 main 开发版，规划/完整新版 Receipt 与后续 handler、真实下游、benchmark 校准与最终成品发布仍未完成；原型的 Native/独立格式 CI 和 Mooncakes 预发布已完成。
 
 ## 16. 参考依据与待复核项
 
@@ -998,3 +999,5 @@ TODO-0/1/2/3 已验收，下一开发 P0 为 TODO-4。25 个单元测试、48 �
 TODO-2 后续开发：新增 Graph API 位于 main，原型已发布标签不包含此 API。用户已确认暂无第三方下游；office.mbt #265 经公开 GitHub API 重新读取仍 open，说明全量重写保留问题，不等于清洗需求或采用承诺。TODO-11 保持未完成。
 
 TODO-3：统一类型与 profile_decision 进入 audit/plan/rebuild/verify 门槛；assess 是结构化 coverage 一级报告。保留旧原型 Audit/Receipt JSON 为兼容接口，TODO-6 才升级完整 Receipt，不提前勾选。9 类声明能力、未知特征、Incomplete/Unknown 与拒绝无产物已验收；人工声明分类不代表新 handler 兼容完成。
+
+TODO-4：固定 Apache POI SimpleMacro.docm，独占 VBA/supporting 三部件删除、主类型转换、9 payload 保留。输出通过独立 ZIP/Open XML SDK，WPS 打开无修复提示。客户端另存副本有 styles 的 3 个 schema 顺序错误，保存失败证据，不冒充全兼容。29 项 Word 回归及旧全部回归通过。main 0.2.0-dev 未发布；原型 Mooncakes 0.1.0-spike 保持不变。

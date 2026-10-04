@@ -4,7 +4,7 @@
 
 ## 任务目标
 
-按计划建设 MoonBit OOXML 能力审计与验证重建项目 PartSieve。当前已完成 TODO-0 Kill Spike 技术 GO 和 TODO-1 Bounded Package Loader 和 TODO-2 OPC Graph + XML Reference Index、TODO-3 Capability/Coverage/Decision；下一个主线任务是 TODO-4 VBA Handler。完整路线图尚未完成，项目尚未 LOCK；原型已按作者新增授权发布到 GitHub 和 Mooncakes 0.1.0-spike。当前真实、无害 VBA XLSM → XLSX 已完成 audit → plan → rebuild → verify、部件保留、Receipt、独立校验和 WPS 客户端证据。原型完成时未联系外部维护者或发布包；作者随后明确授权创建指定 GitHub 仓库并发布 Mooncakes。
+按计划建设 MoonBit OOXML 能力审计与验证重建项目 PartSieve。当前已完成 TODO-0 Kill Spike 技术 GO 和 TODO-1 Bounded Package Loader 和 TODO-2 OPC Graph + XML Reference Index、TODO-3 Capability/Coverage/Decision；TODO-4 受限 VBA Handler 已验收，下一个主线任务是 TODO-5 Rewrite Planner。完整路线图尚未完成，项目尚未 LOCK；原型已按作者新增授权发布到 GitHub 和 Mooncakes 0.1.0-spike。当前真实、无害 VBA XLSM → XLSX 已完成 audit → plan → rebuild → verify、部件保留、Receipt、独立校验和 WPS 客户端证据。原型完成时未联系外部维护者或发布包；作者随后明确授权创建指定 GitHub 仓库并发布 Mooncakes。
 
 ## 已完成内容
 
@@ -25,7 +25,8 @@
 
 ## 当前问题
 
-- 配置仅为 simple-spreadsheet-spike-v1；不支持 DOCM、外链、公式、图片、控件、未知扩展；不声称通用 OOXML 安全或视觉保真。
+- 已发布配置为 simple-spreadsheet-spike-v1；main 0.2.0-dev 新增 simple-word-vba-dev-v1。外链、公式、图片、控件、未知扩展仍不支持；不声称通用 OOXML 安全或视觉保真。
+- WPS Word 保存副本有 3 个 styles schema 顺序错误。PartSieve 输出原始 payload 通过同一 SDK 校验；副本失败另列，不能当完整保留成功。
 - 真实可编辑 OOXML 接入工作流和非作者维护的 MoonBit 下游需求证据尚缺。
 - 现有 Audit/Receipt 的兼容 JSON 仍为原型字符串 Coverage；PackageGraph/XmlReference 与内部索引已完成，统一 CapabilityFinding/Coverage/Decision 与 Fail/Incomplete/Unsupported 已完成；新版 Receipt 的完整 typed 状态还需 TODO-6。
 - 资源数字仍为 PROVISIONAL；微型 benchmark 已跑，未完成 1/10/30 MiB 校准、完整工作预算/取消接口。
@@ -34,11 +35,11 @@
 
 ## 正在做什么
 
-TODO-0/1 原型公开发布已收尾：CI 成功、Mooncakes 返回 200、独立目录从注册表下载并运行 SDK，通过真实 fixture 与准确输出 hash 检查。发布记录、踩坑和公开镜像已同步。随后 TODO-2 已完成，新增结构检查 API、source-local XML 绑定、入出边/内容类型索引、隐式引用和迭代遍历；22 单元、11 图宿主检查与原 48/17 回归全过，独立证据复核 Pass。随后 TODO-3 的结构化 assess API/CLI 与共用 typed gate 已通过 25 单元、17 覆盖/决策检查，原回归/真实输出一致；下一项是 TODO-4。后续任务保持未完成状态。
+TODO-0/1 原型公开发布已收尾：CI 成功、Mooncakes 返回 200、独立目录从注册表下载并运行 SDK，通过真实 fixture 与准确输出 hash 检查。发布记录、踩坑和公开镜像已同步。随后 TODO-2 已完成，新增结构检查 API、source-local XML 绑定、入出边/内容类型索引、隐式引用和迭代遍历；22 单元、11 图宿主检查与原 48/17 回归全过，独立证据复核 Pass。随后 TODO-3 的结构化 assess API/CLI 与共用 typed gate 已通过 25 单元、17 覆盖/决策检查，原回归/真实输出一致；TODO-4 随后已验收：真实 DOCM→DOCX、29 Word 回归、独立 ZIP/SDK 和 WPS 输出打开通过；下一项 TODO-5。后续任务保持未完成状态。
 
 ## 下一步计划
 
-1. TODO-4～6：扩到真实 DOCM VBA 样本，补 handler/计划前置条件与源 XML 语义改写、共享依赖闭包、完整 Receipt 和专属保留断言；每项有独立客户端证据。
+1. TODO-5～6：补计划前置 hash/冲突检查与可追溯决策、共享依赖闭包、完整 typed Receipt 和专属保留断言。已完成的 Word handler 继续作为真实回归基线。
 2. SDK 可用后启动 TODO-11 真实需求/下游验证。自建 example 只算示例；外部消息、PR 与公开发布按计划需要明确授权，先准备具体可审查的集成方案。
 3. 按依赖推进外部模板和 OLE/ActiveX handler、完整样本/CI/benchmark/兼容矩阵和演示；没有真实采用证据时不能扩充顶奖宣称。后续版本发布前复核命名、规则、分发和本轮授权范围。
 
@@ -103,3 +104,18 @@ TODO-0/1 原型公开发布已收尾：CI 成功、Mooncakes 返回 200、独立
 - 新 API 在 main，未重复发布已有不可变版本。公开提交按真实功能完成点记录，仍不足章程 10 次；真实第三方下游仍缺，用户已答复暂无。
 - 下一主线 TODO-4：获取来源/许可固定的真实 DOCM，并静态审查宏；将 VBA handler 扩到 DOCM→DOCX，补共享/孤儿结构拒绝、独立格式及 WPS 宏移除后客户端证据。原始含宏文档不在客户端打开。
 - 踩坑：结构解析成功与规则覆盖完成必须分别表示；元数据 capability 声明不意味着存在自动网络获取，也不意味着清洗 handler 可用；完整性 Fail 与能力 Unsupported 不应混为一个错误。
+
+## TODO-4 验收更新
+
+- TODO-3 CI 37178928370（f3a56bc）全部通过；TODO-2 CI 37177859901（5aa5a1b）全部通过。
+- 已固定 Apache POI commit `12c3688d130035f3dc2ca2a0f50d929456435a93` 的真实 SimpleMacro.docm，15,517 bytes，SHA-256 `fd591958fcf5322f72c0a740e9606309c949254bda4c3d9bd966481ddf220563`；来源、完整 LICENSE/NOTICE 与宏源存 `tests/fixtures/poi/`。
+- oletools 静态提取实际 ThisDocument/Module1，只有 TestMacro 手动设置首段文字，没有自动事件；原件未在 Office 打开、宏没有执行。证据 `docs/evidence/docm-macro-static-review.json`。
+- Word fixture 有 14 个 parts，VBA 必须连同其受控 companion `.rels` 和 `vbaData.xml` 一起移除，不能套用 XLSM 的无 companion 假设。settings 含数学默认设置/Office 默认 shape layout，需精确静态允许或拒绝，不能将所有 VML 都放行。
+- 已完成受限 DOCM→DOCX：14 parts 删除 3、元数据重写 2、其余 9 payload 字节保留；主类型/扩展名一致，共享/孤儿/未知 companion/保留 XML 引用拒绝。输出 9,029 bytes，SHA-256 `4bb624cf9a6e465b1658c69f6d0bc607ccccf25e2ee1e3048b3e11376d8aa65e`。
+- 29 Word 宿主检查与原 25 单元/48 特征/17 端到端/11 图/17 coverage 全过；旧 XLSM 输出 hash 与 Receipt 独立重算保持不变。独立 ZIP/ElementTree 和 Open XML SDK 3.3.0 Office2007 对原 DOCM、PartSieve DOCX 均 0 errors。
+- WPS 可见打开输出无修复提示；COM 另存、关闭、重开正文/1 段/1 节一致。UI 只读重开保存副本无修复提示；COM 占用导致文件占用提示，非修复提示。
+- WPS 保存副本 Open XML SDK 报 3 个 styles 的 uiPriority 元素顺序错误；原输出 styles 是原件字节保留且 SDK Pass。保存失败证据与兼容矩阵，不掩盖、不把另存副本当成 PartSieve 验证产物。
+- main 版本 0.2.0-dev 未发布，Word Receipt 为开发 schema；0.1.0-spike 公开包/标签保持不变。报告 `docs/word-vba.md`，证据 `word-regression.json` / `word-independent-zip.json` / `word-openxml.json` / `word-wps-client.json`。
+- 踩坑：Word 支持元数据关系不能套 XLSM 假设；Template 元数据只允许字面 Normal.dotm，不等同外部 attachedTemplate 关系；WPS COM 是独立实例，不能假设能枚举 UI 已开文档。真实 SampleDoc.docx 有 customXml，保留为不支持样本；干净支持负例明确是 DOCM 清洗输出衍生样本。
+
+用户再次明确答复“无”真实第三方下游，TODO-11 未完成，没有联系维护者或发送 PR。TODO-5/6 的 P0 核心可继续；新增 P1 能力前按计划复核真实可编辑输出需求，不用自建示例代替采用。

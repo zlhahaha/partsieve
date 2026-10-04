@@ -1,4 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
+// See https://aka.ms/new-console-template for more information
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Validation;
 using System.Security.Cryptography;
@@ -22,7 +22,9 @@ foreach (var path in args) {
         }
         var sha256 = Convert.ToHexString(SHA256.HashData(snapshot.ToArray())).ToLowerInvariant();
         snapshot.Position = 0;
-        using var document = SpreadsheetDocument.Open(snapshot, false);
+        using OpenXmlPackage document = Path.GetExtension(path).ToLowerInvariant() is ".docx" or ".docm"
+            ? WordprocessingDocument.Open(snapshot, false)
+            : SpreadsheetDocument.Open(snapshot, false);
         var validator = new OpenXmlValidator(DocumentFormat.OpenXml.FileFormatVersions.Office2007);
         var errors = validator.Validate(document).Take(100).Select(e => new {
             e.Id, e.Description, Part = e.Part?.Uri.ToString(), XPath = e.Path?.XPath

@@ -1,0 +1,55 @@
+{
+  "schema": "partsieve.word-client-evidence.v1",
+  "date": "2026-10-04",
+  "client": "WPS 12.1.0.28505",
+  "source": "only verified macro-free output opened; raw DOCM never opened, VBA never executed",
+  "ui": {
+    "output_open": "Pass: visible original text, no repair dialog observed",
+    "saved_reopen": "Pass: visible original text, no repair dialog observed; file held by COM, UI opened read-only",
+    "screenshot_crop": "Only test page and relevant WPS UI retained; other user document tabs omitted"
+  },
+  "roundtrip": {
+    "paragraphs": 1,
+    "sections": 1,
+    "text": "This is a macro word processing document",
+    "openxml_original_and_partsieve_output": "Pass",
+    "openxml_wps_saved": "Fail: 3 styles.xml uiPriority ordering errors; not a PartSieve artifact preservation success"
+  },
+  "files": [
+    {
+      "path": "docs/evidence/word-verified.docx",
+      "bytes": 9029,
+      "sha256": "4bb624cf9a6e465b1658c69f6d0bc607ccccf25e2ee1e3048b3e11376d8aa65e"
+    },
+    {
+      "path": "docs/evidence/word-wps-saved.docx",
+      "bytes": 11302,
+      "sha256": "b01d8798a6d805d50c5380199d2594dbdee7234553e5da7f6e638b981fbbbb19"
+    },
+    {
+      "path": "docs/evidence/word-wps-open.png",
+      "bytes": 95842,
+      "sha256": "8c40654ea22c4b5ae36e8e32bc3daea76b55b4eaf14636812a5e1cda18b78529"
+    },
+    {
+      "path": "docs/evidence/word-wps-reopen.png",
+      "bytes": 96726,
+      "sha256": "8e4b27f35ff706c9a10e3904835031be0cc72ce498174a5d398a470c894f000b"
+    },
+    {
+      "path": "docs/evidence/word-wps-open-com.json",
+      "bytes": 194,
+      "sha256": "f596847bb09e77a9d573233849ef34fed0fd24a822d45b68a52f59b935ea0837"
+    },
+    {
+      "path": "docs/evidence/word-wps-reopen-com.json",
+      "bytes": 215,
+      "sha256": "0fc955020984127440ba5efd578cbeb25fc48514ceaf72efc705ea56d1ca1206"
+    },
+    {
+      "path": "docs/evidence/word-openxml.json",
+      "bytes": 1652,
+      "sha256": "b44cf37482ac7193955c7e94ef90e075a205c25d4c43778bb49dbabccd943237"
+    }
+  ]
+}

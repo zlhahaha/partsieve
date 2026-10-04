@@ -1,0 +1,99 @@
+{
+  "tool": "CPython zipfile + ElementTree",
+  "version": "3.12.7",
+  "status": "Pass",
+  "input_sha256": "fd591958fcf5322f72c0a740e9606309c949254bda4c3d9bd966481ddf220563",
+  "output_sha256": "4bb624cf9a6e465b1658c69f6d0bc607ccccf25e2ee1e3048b3e11376d8aa65e",
+  "text": "This is a macro word processing document",
+  "counts": {
+    "RegeneratedMetadata": 2,
+    "BytePreserved": 9,
+    "RemovedByPolicy": 3
+  },
+  "parts": [
+    {
+      "part": "[Content_Types].xml",
+      "before": "271a41658fdd7f567b133f154ad77a7fbd291f1c1ca282a4dcfe92136263ead6",
+      "after": "93e08150d320e15ccaac3ad1d96d81df5c9ba9670ce9f7934e6b11fc065889ca",
+      "classification": "RegeneratedMetadata"
+    },
+    {
+      "part": "_rels/.rels",
+      "before": "e19238d7a71fa7a2490776252686f70e2de6238c87cd509b5e3a3cc07c2ea4df",
+      "after": "e19238d7a71fa7a2490776252686f70e2de6238c87cd509b5e3a3cc07c2ea4df",
+      "classification": "BytePreserved"
+    },
+    {
+      "part": "word/_rels/document.xml.rels",
+      "before": "49d2bc305daf1fcca84d6a282e52d1dfd2d79e9ca9f96a3a435d058ae2d8f755",
+      "after": "3db95ab153299fcf42e18c234ec086dff5e4616caf37e4f756d3bfe99c52cc26",
+      "classification": "RegeneratedMetadata"
+    },
+    {
+      "part": "word/document.xml",
+      "before": "90106e65744bb0a314c84aa587ca51e569b2ad346a44a0a76c2adf14558dd9ee",
+      "after": "90106e65744bb0a314c84aa587ca51e569b2ad346a44a0a76c2adf14558dd9ee",
+      "classification": "BytePreserved"
+    },
+    {
+      "part": "word/vbaProject.bin",
+      "before": "921bbf317d6bf7c46d4c425977ed22a0c18a364427c387327bc1792f3f43b837",
+      "after": null,
+      "classification": "RemovedByPolicy"
+    },
+    {
+      "part": "word/_rels/vbaProject.bin.rels",
+      "before": "c97833e6456aa2bfe9be614f9c3ae41a8ef764b1cc3af92c6a6f273c62309122",
+      "after": null,
+      "classification": "RemovedByPolicy"
+    },
+    {
+      "part": "word/theme/theme1.xml",
+      "before": "bf4992e3fa7832e5c68fdbc4ec5189c8e5d347fef03c5ba2522ad704bde5078f",
+      "after": "bf4992e3fa7832e5c68fdbc4ec5189c8e5d347fef03c5ba2522ad704bde5078f",
+      "classification": "BytePreserved"
+    },
+    {
+      "part": "word/vbaData.xml",
+      "before": "6d94c5b23c8b9c9ed4e1c1922e4be3ce620b243f9a9d0a3fb9818d1679743c0f",
+      "after": null,
+      "classification": "RemovedByPolicy"
+    },
+    {
+      "part": "word/settings.xml",
+      "before": "87362c4bd6bfa85161567c1bff3d31e7542c53b38efbb57b81b4de5c15f86ff8",
+      "after": "87362c4bd6bfa85161567c1bff3d31e7542c53b38efbb57b81b4de5c15f86ff8",
+      "classification": "BytePreserved"
+    },
+    {
+      "part": "docProps/app.xml",
+      "before": "65d86eaf0f22f19dd168fb10fb504c2414ad8608728cba715fbc183d0a7de0cc",
+      "after": "65d86eaf0f22f19dd168fb10fb504c2414ad8608728cba715fbc183d0a7de0cc",
+      "classification": "BytePreserved"
+    },
+    {
+      "part": "word/styles.xml",
+      "before": "f1f58f3b21bccb2c9a5d2b9583d2e38f18a7d9e976afabb344b4ceffc4f43369",
+      "after": "f1f58f3b21bccb2c9a5d2b9583d2e38f18a7d9e976afabb344b4ceffc4f43369",
+      "classification": "BytePreserved"
+    },
+    {
+      "part": "docProps/core.xml",
+      "before": "069cc39dce0c467d7469ec27f95a5be8228661465e67869579d05f7b43642eba",
+      "after": "069cc39dce0c467d7469ec27f95a5be8228661465e67869579d05f7b43642eba",
+      "classification": "BytePreserved"
+    },
+    {
+      "part": "word/fontTable.xml",
+      "before": "a15b932b478236a91dcfe2e6eedc2a1fe3fec825c11913d40a3cffacf819e9c1",
+      "after": "a15b932b478236a91dcfe2e6eedc2a1fe3fec825c11913d40a3cffacf819e9c1",
+      "classification": "BytePreserved"
+    },
+    {
+      "part": "word/webSettings.xml",
+      "before": "cbc26fa167e8052d5ddfb37bd843233f1e61843cce11c730ca50b27afc60cf93",
+      "after": "cbc26fa167e8052d5ddfb37bd843233f1e61843cce11c730ca50b27afc60cf93",
+      "classification": "BytePreserved"
+    }
+  ]
+}

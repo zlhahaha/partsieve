@@ -2,6 +2,7 @@
 priv struct Node {
   element : @xml.NamespaceElement
   depth : Int
+  text_fragments : Array[String]
 }
 
 ///|
@@ -116,26 +117,43 @@ fn read_xml_checked(
   let reader = @xml.NamespaceReader::from_string(text)
   let result : Array[Node] = []
   let mut current = 0
+  let open_nodes : Array[Int] = []
   while true {
     let event = reader.read_event()
     match event.kind {
       Start(element) => {
-        result.push({ element, depth: current, })
+        open_nodes.push(result.length())
+        result.push({ element, depth: current, text_fragments: [], })
         current += 1
       }
-      Empty(element) => result.push({ element, depth: current, })
-      End(_) => current -= 1
+      Empty(element) =>
+        result.push({ element, depth: current, text_fragments: [], })
+      End(_) => {
+        current -= 1
+        ignore(open_nodes.pop())
+      }
       DocType(_) => raise Refused("DTD forbidden")
       Decl(encoding~, ..) =>
         if encoding is Some(e) && e != "UTF-8" && e != "utf-8" {
           raise Refused("only UTF-8 XML supported")
         }
       PI(..) => raise Refused("processing instructions unsupported")
-      Text(value) =>
+      Text(value) => {
         if metadata && value.trim() != "" {
           raise Refused("text in package metadata")
         }
-      CData(_) => if metadata { raise Refused("CDATA in package metadata") }
+        if !metadata && open_nodes.length() > 0 {
+          result[open_nodes[open_nodes.length() - 1]].text_fragments.push(value)
+        }
+      }
+      CData(value) => {
+        if metadata {
+          raise Refused("CDATA in package metadata")
+        }
+        if open_nodes.length() > 0 {
+          result[open_nodes[open_nodes.length() - 1]].text_fragments.push(value)
+        }
+      }
       Eof => break
       _ => ()
     }

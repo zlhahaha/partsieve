@@ -1,0 +1,44 @@
+{
+  "schema": "partsieve.fixture-provenance.poi-v1",
+  "date": "2026-10-04",
+  "upstream": "apache/poi",
+  "commit": "12c3688d130035f3dc2ca2a0f50d929456435a93",
+  "files": [
+    {
+      "path": "tests/fixtures/poi/SimpleMacro.docm",
+      "bytes": 15517,
+      "sha256": "fd591958fcf5322f72c0a740e9606309c949254bda4c3d9bd966481ddf220563",
+      "license": "Apache-2.0; preserve full upstream LICENSE and NOTICE",
+      "source": "https://github.com/apache/poi/blob/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/SimpleMacro.docm"
+    },
+    {
+      "path": "tests/fixtures/poi/SimpleMacro.vba",
+      "bytes": 172,
+      "sha256": "adfa5f1157daf9b7983aa6fc36dc4308f960b10fbfb2de26bc487b6747c5b859",
+      "license": "Apache-2.0; preserve full upstream LICENSE and NOTICE",
+      "source": "https://github.com/apache/poi/blob/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/SimpleMacro.vba"
+    },
+    {
+      "path": "tests/fixtures/poi/LICENSE",
+      "bytes": 14416,
+      "sha256": "6e7c918e5a49f677c1b85a9eb2d035cd85c217fc42af6b4a336964a434001a9c",
+      "license": "Apache-2.0; preserve full upstream LICENSE and NOTICE",
+      "source": "https://github.com/apache/poi/blob/12c3688d130035f3dc2ca2a0f50d929456435a93/legal/LICENSE"
+    },
+    {
+      "path": "tests/fixtures/poi/NOTICE",
+      "bytes": 1571,
+      "sha256": "a89ff8b670bcacd3e98ebee64979e0569181c7942e9ad795f4222b25e5637a61",
+      "license": "Apache-2.0; preserve full upstream LICENSE and NOTICE",
+      "source": "https://github.com/apache/poi/blob/12c3688d130035f3dc2ca2a0f50d929456435a93/legal/NOTICE"
+    },
+    {
+      "path": "tests/fixtures/poi/SampleDoc.docx",
+      "bytes": 11611,
+      "sha256": "ea2c517bd7be4628887eb97f630334b93b894f4522d2c0adae263e602d76df92",
+      "license": "Apache-2.0; preserve full upstream LICENSE and NOTICE",
+      "source": "https://github.com/apache/poi/blob/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/SampleDoc.docx"
+    }
+  ],
+  "usage": "Real benign Word DOCM VBA handler fixture. Original is never opened in Office. Macro is only statically extracted, never executed."
+}

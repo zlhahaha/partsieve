@@ -85,7 +85,7 @@ def main():
             if args.original is None:
                 audit = worker("audit", snapshot)
                 result = {"schema": "partsieve.verify.spike-v1",
-                          "structure": "Pass" if audit["format"] == "XLSX" and not audit["findings"] else "Fail",
+                          "structure": "Pass" if audit["format"] in ("XLSX", "DOCX") and not audit["findings"] else "Fail",
                           "preservation": "NotChecked", "status": "Incomplete", "audit": audit}
                 print(json.dumps(result, ensure_ascii=True))
                 return 3
@@ -102,8 +102,8 @@ def main():
                 raise Diagnostic("rebuild requires -o and --receipt", 4)
             output = args.output.absolute()
             receipt_path = args.receipt.absolute()
-            if output.suffix.lower() != ".xlsx":
-                raise Diagnostic("restricted spreadsheet output must use .xlsx", 4)
+            if output.suffix.lower() not in (".xlsx", ".docx"):
+                raise Diagnostic("output must use .xlsx or .docx", 4)
             if output == receipt_path or output == args.input.absolute() or receipt_path == args.input.absolute():
                 raise Diagnostic("input/document/Receipt paths must differ", 4)
             if output.exists() or receipt_path.exists():
@@ -117,6 +117,9 @@ def main():
                 temp_output = Path(temp_name)
                 temporary_paths.append(temp_output)
                 result = worker("rebuild", snapshot, temp_output)
+                expected_suffix = {"XLSX": ".xlsx", "DOCX": ".docx"}.get(result["output_format"])
+                if output.suffix.lower() != expected_suffix:
+                    raise Diagnostic("output extension differs from verified main document type", 4)
                 actual = bounded_bytes(temp_output, 64 * 1024 * 1024)
                 if hashlib.sha256(actual).hexdigest() != result["output_hash"]:
                     raise Diagnostic("temporary output hash mismatch", 2)

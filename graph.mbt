@@ -90,17 +90,26 @@ fn build_graph(
     } else if part_index.get(r.source) is Some(source_part) &&
       (
         parts[source_part].content_type == xlsm_ct ||
-        parts[source_part].content_type == xlsx_ct
+        parts[source_part].content_type == xlsx_ct ||
+        parts[source_part].content_type == docm_ct ||
+        parts[source_part].content_type == docx_ct
       ) &&
       (
         r.kind == vba_rel ||
         r.kind == office_rel + "styles" ||
         r.kind == office_rel + "theme" ||
-        r.kind == office_rel + "sharedStrings"
+        r.kind == office_rel + "sharedStrings" ||
+        r.kind == office_rel + "settings" ||
+        r.kind == office_rel + "fontTable" ||
+        r.kind == office_rel + "webSettings"
       ) {
       Some(
-        "workbook implicit relationship; retained indices are not garbage-collected",
+        "main-document implicit relationship; retained indices are not garbage-collected",
       )
+    } else if r.kind == word_vba_data_rel &&
+      part_index.get(r.source) is Some(source_part) &&
+      parts[source_part].content_type == vba_ct {
+      Some("Word VBA supporting metadata owned by its VBA project")
     } else {
       None
     }
@@ -113,7 +122,8 @@ fn build_graph(
   let references : Array[XmlReference] = []
   let relationship_ns = office_rel[0:office_rel.length() - 1].to_owned()
   let known_namespaces = [
-    ct_ns, rel_ns, spreadsheet_ns, drawing_ns, "http://schemas.openxmlformats.org/package/2006/metadata/core-properties",
+    ct_ns, rel_ns, spreadsheet_ns, drawing_ns, word_ns, word_math_ns, word_office_ns,
+    word_macro_ns, "http://schemas.openxmlformats.org/package/2006/metadata/core-properties",
     "http://purl.org/dc/elements/1.1/", "http://purl.org/dc/terms/", "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties",
     "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes",
   ]
@@ -132,8 +142,19 @@ fn build_graph(
         }
         for a in node.element.attributes {
           let attribute_ns = a.name.namespace_uri.unwrap_or("")
-          if attribute_ns != "" &&
+          let inert_shape_attribute = part.content_type ==
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml" &&
+            ns == word_office_ns &&
+            ["shapedefaults", "shapelayout", "idmap"].contains(local_name) &&
+            attribute_ns == "urn:schemas-microsoft-com:vml" &&
+            a.name.local_name == "ext" &&
+            a.value == "edit"
+          if !inert_shape_attribute &&
+            attribute_ns != "" &&
             attribute_ns != relationship_ns &&
+            attribute_ns != word_ns &&
+            attribute_ns != word_math_ns &&
+            attribute_ns != word_macro_ns &&
             attribute_ns != "http://www.w3.org/XML/1998/namespace" &&
             attribute_ns != "http://www.w3.org/2001/XMLSchema-instance" {
             has_opaque_content = true

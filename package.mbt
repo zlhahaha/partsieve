@@ -172,7 +172,11 @@ fn load_package(
   }
   let main = mains[0].resolved
   let main_ct = parts.filter(fn(p) { p.name == main })[0].content_type
-  guard !enforce_profile || main_ct == xlsm_ct || main_ct == xlsx_ct else {
+  guard !enforce_profile ||
+    main_ct == xlsm_ct ||
+    main_ct == xlsx_ct ||
+    main_ct == docm_ct ||
+    main_ct == docx_ct else {
     raise Refused("unsupported main document type")
   }
   let graph = build_graph(parts, relationships, nodes)
@@ -192,18 +196,30 @@ fn load_package(
     }
   }
   let report : Audit = {
-    schema: "partsieve.audit.spike-v1",
+    schema: if main_ct == docm_ct || main_ct == docx_ct {
+      "partsieve.audit.word-dev-v1"
+    } else {
+      "partsieve.audit.spike-v1"
+    },
     input_hash: digest(input[:]),
     format: if main_ct == xlsm_ct {
       "XLSM"
     } else if main_ct == xlsx_ct {
       "XLSX"
+    } else if main_ct == docm_ct {
+      "DOCM"
+    } else if main_ct == docx_ct {
+      "DOCX"
     } else {
       "Unsupported"
     },
     main_part: main,
     coverage: "CompleteWithinProfile",
-    profile: "simple-spreadsheet-spike-v1",
+    profile: if main_ct == docm_ct || main_ct == docx_ct {
+      "simple-word-vba-dev-v1"
+    } else {
+      "simple-spreadsheet-spike-v1"
+    },
     checked_rules: [
       "bounded-zip-v1", "crc-v1", "opc-subset-v1", "namespace-xml-v1", "vba-v1",
       "profile-v1",

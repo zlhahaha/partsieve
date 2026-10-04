@@ -1,0 +1,123 @@
+{
+  "schema": "partsieve.word-regression.v1",
+  "status": "Pass",
+  "checks": [
+    {
+      "name": "real DOCM records main type, actual VBA relationship and companion evidence",
+      "status": "Pass"
+    },
+    {
+      "name": "real DOCM converts deterministically; all fourteen input parts have checked dispositions",
+      "status": "Pass"
+    },
+    {
+      "name": "derived clean DOCX negative has no VBA and preserves all eleven payloads",
+      "status": "Pass"
+    },
+    {
+      "name": "Word verify without original remains Incomplete even with valid output structure",
+      "status": "Pass"
+    },
+    {
+      "name": "macro-enabled main type without VBA converts without invented macro evidence",
+      "status": "Pass"
+    },
+    {
+      "name": "renamed VBA project, relationship part and data removed by semantic evidence",
+      "status": "Pass"
+    },
+    {
+      "name": "package absolute controlled targets have the same removal semantics",
+      "status": "Pass"
+    },
+    {
+      "name": "shared-project refuses and publishes neither document nor Receipt",
+      "status": "Pass"
+    },
+    {
+      "name": "shared-data refuses and publishes neither document nor Receipt",
+      "status": "Pass"
+    },
+    {
+      "name": "orphan-project refuses and publishes neither document nor Receipt",
+      "status": "Pass"
+    },
+    {
+      "name": "orphan-data refuses and publishes neither document nor Receipt",
+      "status": "Pass"
+    },
+    {
+      "name": "nested-data-dependencies refuses and publishes neither document nor Receipt",
+      "status": "Pass"
+    },
+    {
+      "name": "vba-in-non-macro-main refuses and publishes neither document nor Receipt",
+      "status": "Pass"
+    },
+    {
+      "name": "invalid-cfb refuses and publishes neither document nor Receipt",
+      "status": "Pass"
+    },
+    {
+      "name": "retained-reference-project refuses and publishes neither document nor Receipt",
+      "status": "Pass"
+    },
+    {
+      "name": "mixed-vba-remote-template refuses and publishes neither document nor Receipt",
+      "status": "Pass"
+    },
+    {
+      "name": "mixed-vba-http-link refuses and publishes neither document nor Receipt",
+      "status": "Pass"
+    },
+    {
+      "name": "mixed-vba-external-image refuses and publishes neither document nor Receipt",
+      "status": "Pass"
+    },
+    {
+      "name": "mixed-vba-ole refuses and publishes neither document nor Receipt",
+      "status": "Pass"
+    },
+    {
+      "name": "mixed-vba-activex refuses and publishes neither document nor Receipt",
+      "status": "Pass"
+    },
+    {
+      "name": "unknown-attribute refuses and publishes neither document nor Receipt",
+      "status": "Pass"
+    },
+    {
+      "name": "field-semantics refuses and publishes neither document nor Receipt",
+      "status": "Pass"
+    },
+    {
+      "name": "template-property-uri refuses and publishes neither document nor Receipt",
+      "status": "Pass"
+    },
+    {
+      "name": "vml-shape refuses and publishes neither document nor Receipt",
+      "status": "Pass"
+    },
+    {
+      "name": "attached-template-without-rel refuses and publishes neither document nor Receipt",
+      "status": "Pass"
+    },
+    {
+      "name": "Word body payload mismatch fails independent recomputation",
+      "status": "Pass"
+    },
+    {
+      "name": "word-wrong-suffix never publishes misleading format extension",
+      "status": "Pass"
+    },
+    {
+      "name": "sheet-wrong-suffix never publishes misleading format extension",
+      "status": "Pass"
+    },
+    {
+      "name": "real clean DOCX with custom XML is refused; clean does not imply supported",
+      "status": "Pass"
+    }
+  ],
+  "source": "one pinned real DOCM; its macro-free derived clean negative; one real clean DOCX outside profile. Artificial mutations are refusal/ownership tests, not extra client evidence."
+}

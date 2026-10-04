@@ -1,8 +1,8 @@
 # PartSieve
 
-MoonBit OOXML Capability Auditor & Verified Rebuilder。首次原型版本为 **0.1.0-spike**，该发布包已完成 TODO-0 技术 GO 与 TODO-1 Bounded Package Loader；GitHub main 后续已完成 TODO-2 OPC 图与 XML 引用索引、TODO-3 结构化能力/覆盖/决策。完整路线图见 [plan.md](https://github.com/zlhahaha/partsieve/blob/main/plan.md)，交接记录见 [HANDOFF.md](https://github.com/zlhahaha/partsieve/blob/main/HANDOFF.md)，发布与章程要求的实际状态见 [发布记录](https://github.com/zlhahaha/partsieve/blob/main/docs/release.md)。
+MoonBit OOXML Capability Auditor & Verified Rebuilder。首次原型版本为 **0.1.0-spike**，该发布包已完成 TODO-0 技术 GO 与 TODO-1 Bounded Package Loader；GitHub main 开发版 **0.2.0-dev（未发布）** 后续已完成 TODO-2 OPC 图与 XML 引用索引、TODO-3 结构化能力/覆盖/决策、TODO-4 受限 Word VBA handler。完整路线图见 [plan.md](https://github.com/zlhahaha/partsieve/blob/main/plan.md)，交接记录见 [HANDOFF.md](https://github.com/zlhahaha/partsieve/blob/main/HANDOFF.md)，发布与章程要求的实际状态见 [发布记录](https://github.com/zlhahaha/partsieve/blob/main/docs/release.md)。
 
-首个配置 `simple-spreadsheet-spike-v1` 支持简单 XLSX/XLSM：受限读取、VBA 证据、固定策略计划、重建、重新读取验证和所有 part 的 payload hash。真实样本经独立 ZIP、Open XML SDK 3.3.0、WPS 12.1.0.28505 检查。外链、公式、hyperlink、图片、OLE、ActiveX、未知部件/扩展及 DOCX/DOCM 当前拒绝，不宣称通用文档安全或视觉保真。
+首个配置 `simple-spreadsheet-spike-v1` 支持简单 XLSX/XLSM：受限读取、VBA 证据、固定策略计划、重建、重新读取验证和所有 part 的 payload hash。main 的 `simple-word-vba-dev-v1` 新增受限 DOCM→DOCX，删除独占 VBA supporting 元数据，正文与其他 payload 字节保留；详见 [Word handler](docs/word-vba.md)。真实样本经独立 ZIP、Open XML SDK 3.3.0、WPS 12.1.0.28505 检查。外链、公式、hyperlink、图片、OLE、ActiveX、未知部件/扩展仍拒绝，不宣称通用文档安全或视觉保真。WPS Word 另存副本存在三个 styles 顺序校验错误，原始 PartSieve 输出通过校验；该差异在矩阵中单列。
 
 ## 本地运行
 
@@ -55,7 +55,7 @@ python tests/independent_zip.py tests/fixtures/upstream/macro01.xlsm docs/eviden
 dotnet run --project tests/OpenXmlValidation -- tests/fixtures/upstream/macro01.xlsm docs/evidence/verified.xlsx
 ```
 
-执行 [tools/check.ps1](tools/check.ps1) 可复核版本、依赖源码、格式与公开接口漂移、编译和回归。main 当前 25 个单元测试、48 个特征样本、17 项端到端检查、11 项图宿主检查和 17 项覆盖/决策检查通过；首次发布包对应 15 个单元测试。WPS 检查是独立客户端证据，不宣称已由 CI 自动完成。大量样本为人工变体；真实兼容样本只有上游 macro01.xlsm/simple01.xlsx，不能靠样本数量扩大支持范围。
+执行 [tools/check.ps1](tools/check.ps1) 可复核版本、依赖源码、格式与公开接口漂移、编译和回归。main 当前 25 个单元测试、48 个特征样本、17 项端到端检查、11 项图宿主检查、17 项覆盖/决策检查和 29 项 Word 检查通过；首次发布包对应 15 个单元测试。WPS 检查是独立客户端证据，不宣称已由 CI 自动完成。大量样本为人工变体；真实支持证据来自上游 macro01.xlsm/simple01.xlsx/SimpleMacro.docm，另有真实 SampleDoc.docx 作为超出配置的拒绝负例，不能靠样本数量扩大支持范围。
 
 详见 [Spike 报告](https://github.com/zlhahaha/partsieve/blob/main/docs/spike-report.md)、[实际兼容矩阵](docs/compatibility-matrix.md)、[保留契约](docs/preservation-contract.md)、[威胁模型](docs/threat-model.md)、[架构](docs/architecture.md)、[来源](tests/fixtures/provenance.json)、[Receipt schema](docs/receipt.schema.json)。依赖来源/许可见 [第三方说明](docs/third-party.md)。本项目并非通用 Office 读写库或宏行为检测器，核心贡献为已声明配置内的能力证据、策略变换和实际产物保留复核。
 
@@ -69,4 +69,4 @@ dotnet run --project tests/OpenXmlValidation -- tests/fixtures/upstream/macro01.
 
 ## 许可
 
-项目 Apache-2.0。核心第三方依赖 Apache-2.0；真实 fixture 与上游测试 BSD-2-Clause，其许可在 `tests/fixtures/upstream/LICENSE.txt`，来源与 hash 在 provenance.json。不保存用户文档或执行宏。
+项目 Apache-2.0。核心第三方依赖 Apache-2.0；XlsxWriter fixture 与上游测试 BSD-2-Clause，许可在 `tests/fixtures/upstream/LICENSE.txt`；Apache POI Word fixture 为 Apache-2.0，完整 LICENSE/NOTICE 在 `tests/fixtures/poi/`。两处 provenance 记录固定来源与 hash。不保存用户文档或执行宏。

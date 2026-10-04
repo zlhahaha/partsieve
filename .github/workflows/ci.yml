@@ -55,6 +55,7 @@ jobs:
             docs/evidence/regression.json
             docs/evidence/graph-regression.json
             docs/evidence/coverage-regression.json
+            docs/evidence/word-regression.json
 
   independent:
     name: Independent ZIP and Open XML SDK
@@ -75,6 +76,8 @@ jobs:
           python tests/independent_zip.py tests/fixtures/upstream/macro01.xlsm docs/evidence/verified.xlsx > independent-zip-ci.json
           dotnet restore tests/OpenXmlValidation
           dotnet run --no-restore --project tests/OpenXmlValidation -- tests/fixtures/upstream/macro01.xlsm docs/evidence/verified.xlsx tests/fixtures/upstream/simple01.xlsx docs/evidence/wps-saved.xlsx > openxml-ci.json
+          python tests/independent_word.py tests/fixtures/poi/SimpleMacro.docm docs/evidence/word-verified.docx > word-independent-zip-ci.json
+          dotnet run --no-restore --project tests/OpenXmlValidation -- tests/fixtures/poi/SimpleMacro.docm docs/evidence/word-verified.docx > word-openxml-ci.json
       - name: Keep independent validation evidence
         uses: actions/upload-artifact@v4
         with:
@@ -82,3 +85,5 @@ jobs:
           path: |
             independent-zip-ci.json
             openxml-ci.json
+            word-independent-zip-ci.json
+            word-openxml-ci.json

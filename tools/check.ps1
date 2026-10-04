@@ -37,5 +37,7 @@ python tests/graph_regression.py
 if ($LASTEXITCODE -ne 0) { throw 'Graph regression failed' }
 python tests/coverage_regression.py
 if ($LASTEXITCODE -ne 0) { throw 'Coverage regression failed' }
+python tests/word_regression.py
+if ($LASTEXITCODE -ne 0) { throw 'Word regression failed' }
 moon run examples/sdk --target native
 if ($LASTEXITCODE -ne 0) { throw 'SDK example failed' }

@@ -1,0 +1,359 @@
+{
+  "publication": "pair-complete",
+  "receipt": {
+    "schema": "partsieve.receipt.word-dev-v1",
+    "tool": "partsieve/0.2.0-dev",
+    "rules": "word-vba-dev-v1",
+    "policy": "passive-office-v1",
+    "profile": "simple-word-vba-dev-v1",
+    "input_hash": "fd591958fcf5322f72c0a740e9606309c949254bda4c3d9bd966481ddf220563",
+    "output_hash": "4bb624cf9a6e465b1658c69f6d0bc607ccccf25e2ee1e3048b3e11376d8aa65e",
+    "input_size": 15517,
+    "output_size": 9029,
+    "input_format": "DOCM",
+    "output_format": "DOCX",
+    "limits": {
+      "input_bytes": 33554432,
+      "entry_bytes": 33554432,
+      "total_bytes": 134217728,
+      "entries": 4096,
+      "xml_bytes": 8388608,
+      "xml_depth": 128,
+      "xml_nodes": 200000,
+      "xml_attributes": 400000,
+      "output_bytes": 67108864
+    },
+    "audit": {
+      "schema": "partsieve.audit.word-dev-v1",
+      "input_hash": "fd591958fcf5322f72c0a740e9606309c949254bda4c3d9bd966481ddf220563",
+      "format": "DOCM",
+      "main_part": "word/document.xml",
+      "coverage": "CompleteWithinProfile",
+      "profile": "simple-word-vba-dev-v1",
+      "checked_rules": [
+        "bounded-zip-v1",
+        "crc-v1",
+        "opc-subset-v1",
+        "namespace-xml-v1",
+        "vba-v1",
+        "profile-v1"
+      ],
+      "limitations": [
+        "Restricted element/part allowlist; formulas, hyperlinks, drawings, controls, signatures and unknown extensions refused.",
+        "No VBA execution or malicious-code analysis. No visual fidelity claim. Client/SDK checks recorded separately."
+      ],
+      "parts": [
+        {
+          "name": "_rels/.rels",
+          "content_type": "application/vnd.openxmlformats-package.relationships+xml",
+          "sha256": "e19238d7a71fa7a2490776252686f70e2de6238c87cd509b5e3a3cc07c2ea4df"
+        },
+        {
+          "name": "word/styles.xml",
+          "content_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml",
+          "sha256": "f1f58f3b21bccb2c9a5d2b9583d2e38f18a7d9e976afabb344b4ceffc4f43369"
+        },
+        {
+          "name": "docProps/app.xml",
+          "content_type": "application/vnd.openxmlformats-officedocument.extended-properties+xml",
+          "sha256": "65d86eaf0f22f19dd168fb10fb504c2414ad8608728cba715fbc183d0a7de0cc"
+        },
+        {
+          "name": "word/vbaData.xml",
+          "content_type": "application/vnd.ms-word.vbaData+xml",
+          "sha256": "6d94c5b23c8b9c9ed4e1c1922e4be3ce620b243f9a9d0a3fb9818d1679743c0f"
+        },
+        {
+          "name": "docProps/core.xml",
+          "content_type": "application/vnd.openxmlformats-package.core-properties+xml",
+          "sha256": "069cc39dce0c467d7469ec27f95a5be8228661465e67869579d05f7b43642eba"
+        },
+        {
+          "name": "word/document.xml",
+          "content_type": "application/vnd.ms-word.document.macroEnabled.main+xml",
+          "sha256": "90106e65744bb0a314c84aa587ca51e569b2ad346a44a0a76c2adf14558dd9ee"
+        },
+        {
+          "name": "word/settings.xml",
+          "content_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml",
+          "sha256": "87362c4bd6bfa85161567c1bff3d31e7542c53b38efbb57b81b4de5c15f86ff8"
+        },
+        {
+          "name": "word/fontTable.xml",
+          "content_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.fontTable+xml",
+          "sha256": "a15b932b478236a91dcfe2e6eedc2a1fe3fec825c11913d40a3cffacf819e9c1"
+        },
+        {
+          "name": "[Content_Types].xml",
+          "content_type": "application/xml",
+          "sha256": "271a41658fdd7f567b133f154ad77a7fbd291f1c1ca282a4dcfe92136263ead6"
+        },
+        {
+          "name": "word/vbaProject.bin",
+          "content_type": "application/vnd.ms-office.vbaProject",
+          "sha256": "921bbf317d6bf7c46d4c425977ed22a0c18a364427c387327bc1792f3f43b837"
+        },
+        {
+          "name": "word/webSettings.xml",
+          "content_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.webSettings+xml",
+          "sha256": "cbc26fa167e8052d5ddfb37bd843233f1e61843cce11c730ca50b27afc60cf93"
+        },
+        {
+          "name": "word/theme/theme1.xml",
+          "content_type": "application/vnd.openxmlformats-officedocument.theme+xml",
+          "sha256": "bf4992e3fa7832e5c68fdbc4ec5189c8e5d347fef03c5ba2522ad704bde5078f"
+        },
+        {
+          "name": "word/_rels/document.xml.rels",
+          "content_type": "application/vnd.openxmlformats-package.relationships+xml",
+          "sha256": "49d2bc305daf1fcca84d6a282e52d1dfd2d79e9ca9f96a3a435d058ae2d8f755"
+        },
+        {
+          "name": "word/_rels/vbaProject.bin.rels",
+          "content_type": "application/vnd.openxmlformats-package.relationships+xml",
+          "sha256": "c97833e6456aa2bfe9be614f9c3ae41a8ef764b1cc3af92c6a6f273c62309122"
+        }
+      ],
+      "relationships": [
+        {
+          "source": "/",
+          "id": "rId3",
+          "kind": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties",
+          "target": "docProps/app.xml",
+          "resolved": "docProps/app.xml",
+          "external": false
+        },
+        {
+          "source": "/",
+          "id": "rId2",
+          "kind": "http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties",
+          "target": "docProps/core.xml",
+          "resolved": "docProps/core.xml",
+          "external": false
+        },
+        {
+          "source": "/",
+          "id": "rId1",
+          "kind": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument",
+          "target": "word/document.xml",
+          "resolved": "word/document.xml",
+          "external": false
+        },
+        {
+          "source": "word/document.xml",
+          "id": "rId3",
+          "kind": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings",
+          "target": "settings.xml",
+          "resolved": "word/settings.xml",
+          "external": false
+        },
+        {
+          "source": "word/document.xml",
+          "id": "rId2",
+          "kind": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles",
+          "target": "styles.xml",
+          "resolved": "word/styles.xml",
+          "external": false
+        },
+        {
+          "source": "word/document.xml",
+          "id": "rId1",
+          "kind": "http://schemas.microsoft.com/office/2006/relationships/vbaProject",
+          "target": "vbaProject.bin",
+          "resolved": "word/vbaProject.bin",
+          "external": false
+        },
+        {
+          "source": "word/document.xml",
+          "id": "rId6",
+          "kind": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme",
+          "target": "theme/theme1.xml",
+          "resolved": "word/theme/theme1.xml",
+          "external": false
+        },
+        {
+          "source": "word/document.xml",
+          "id": "rId5",
+          "kind": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/fontTable",
+          "target": "fontTable.xml",
+          "resolved": "word/fontTable.xml",
+          "external": false
+        },
+        {
+          "source": "word/document.xml",
+          "id": "rId4",
+          "kind": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/webSettings",
+          "target": "webSettings.xml",
+          "resolved": "word/webSettings.xml",
+          "external": false
+        },
+        {
+          "source": "word/vbaProject.bin",
+          "id": "rId1",
+          "kind": "http://schemas.microsoft.com/office/2006/relationships/wordVbaData",
+          "target": "vbaData.xml",
+          "resolved": "word/vbaData.xml",
+          "external": false
+        }
+      ],
+      "findings": [
+        {
+          "rule": "vba-v1",
+          "capability": "VBA",
+          "part": "word/vbaProject.bin",
+          "evidence": [
+            "content-type:application/vnd.ms-office.vbaProject",
+            "relationship:word/document.xml#rId1:http://schemas.microsoft.com/office/2006/relationships/vbaProject"
+          ]
+        }
+      ]
+    },
+    "plan": {
+      "schema": "partsieve.plan.word-dev-v1",
+      "input_hash": "fd591958fcf5322f72c0a740e9606309c949254bda4c3d9bd966481ddf220563",
+      "policy": "passive-office-v1",
+      "profile": "simple-word-vba-dev-v1",
+      "operations": [
+        {
+          "kind": "RemovePart",
+          "part": "word/vbaProject.bin",
+          "relationship_id": "",
+          "rule": "vba-v1",
+          "reason": "Remove VBA payload; macro functionality is lost."
+        },
+        {
+          "kind": "RemoveRelationship",
+          "part": "word/document.xml",
+          "relationship_id": "rId1",
+          "rule": "vba-v1",
+          "reason": "VBA is an implicit main-document relationship; no supported source XML references it."
+        },
+        {
+          "kind": "RewriteRelationshipPart",
+          "part": "word/_rels/document.xml.rels",
+          "relationship_id": "rId1",
+          "rule": "vba-v1",
+          "reason": "Regenerate validated relationship metadata without VBA relation."
+        },
+        {
+          "kind": "RemovePart",
+          "part": "word/vbaData.xml",
+          "relationship_id": "",
+          "rule": "vba-v1",
+          "reason": "Remove exclusively owned Word VBA supporting metadata and its relationship part."
+        },
+        {
+          "kind": "RemovePart",
+          "part": "word/_rels/vbaProject.bin.rels",
+          "relationship_id": "",
+          "rule": "vba-v1",
+          "reason": "Remove exclusively owned Word VBA supporting metadata and its relationship part."
+        },
+        {
+          "kind": "ChangeMainContentType",
+          "part": "word/document.xml",
+          "relationship_id": "",
+          "rule": "format-v1",
+          "reason": "Convert DOCM to DOCX, including macro-enabled formats without actual VBA."
+        },
+        {
+          "kind": "RewriteContentTypes",
+          "part": "[Content_Types].xml",
+          "relationship_id": "",
+          "rule": "format-v1",
+          "reason": "Remove VBA mappings and change main type; retain other mappings."
+        }
+      ]
+    },
+    "dispositions": [
+      {
+        "part": "_rels/.rels",
+        "classification": "BytePreserved",
+        "before_hash": "e19238d7a71fa7a2490776252686f70e2de6238c87cd509b5e3a3cc07c2ea4df",
+        "after_hash": "e19238d7a71fa7a2490776252686f70e2de6238c87cd509b5e3a3cc07c2ea4df"
+      },
+      {
+        "part": "word/styles.xml",
+        "classification": "BytePreserved",
+        "before_hash": "f1f58f3b21bccb2c9a5d2b9583d2e38f18a7d9e976afabb344b4ceffc4f43369",
+        "after_hash": "f1f58f3b21bccb2c9a5d2b9583d2e38f18a7d9e976afabb344b4ceffc4f43369"
+      },
+      {
+        "part": "docProps/app.xml",
+        "classification": "BytePreserved",
+        "before_hash": "65d86eaf0f22f19dd168fb10fb504c2414ad8608728cba715fbc183d0a7de0cc",
+        "after_hash": "65d86eaf0f22f19dd168fb10fb504c2414ad8608728cba715fbc183d0a7de0cc"
+      },
+      {
+        "part": "word/vbaData.xml",
+        "classification": "RemovedByPolicy",
+        "before_hash": "6d94c5b23c8b9c9ed4e1c1922e4be3ce620b243f9a9d0a3fb9818d1679743c0f"
+      },
+      {
+        "part": "docProps/core.xml",
+        "classification": "BytePreserved",
+        "before_hash": "069cc39dce0c467d7469ec27f95a5be8228661465e67869579d05f7b43642eba",
+        "after_hash": "069cc39dce0c467d7469ec27f95a5be8228661465e67869579d05f7b43642eba"
+      },
+      {
+        "part": "word/document.xml",
+        "classification": "BytePreserved",
+        "before_hash": "90106e65744bb0a314c84aa587ca51e569b2ad346a44a0a76c2adf14558dd9ee",
+        "after_hash": "90106e65744bb0a314c84aa587ca51e569b2ad346a44a0a76c2adf14558dd9ee"
+      },
+      {
+        "part": "word/settings.xml",
+        "classification": "BytePreserved",
+        "before_hash": "87362c4bd6bfa85161567c1bff3d31e7542c53b38efbb57b81b4de5c15f86ff8",
+        "after_hash": "87362c4bd6bfa85161567c1bff3d31e7542c53b38efbb57b81b4de5c15f86ff8"
+      },
+      {
+        "part": "word/fontTable.xml",
+        "classification": "BytePreserved",
+        "before_hash": "a15b932b478236a91dcfe2e6eedc2a1fe3fec825c11913d40a3cffacf819e9c1",
+        "after_hash": "a15b932b478236a91dcfe2e6eedc2a1fe3fec825c11913d40a3cffacf819e9c1"
+      },
+      {
+        "part": "[Content_Types].xml",
+        "classification": "RegeneratedMetadata",
+        "before_hash": "271a41658fdd7f567b133f154ad77a7fbd291f1c1ca282a4dcfe92136263ead6",
+        "after_hash": "93e08150d320e15ccaac3ad1d96d81df5c9ba9670ce9f7934e6b11fc065889ca"
+      },
+      {
+        "part": "word/vbaProject.bin",
+        "classification": "RemovedByPolicy",
+        "before_hash": "921bbf317d6bf7c46d4c425977ed22a0c18a364427c387327bc1792f3f43b837"
+      },
+      {
+        "part": "word/webSettings.xml",
+        "classification": "BytePreserved",
+        "before_hash": "cbc26fa167e8052d5ddfb37bd843233f1e61843cce11c730ca50b27afc60cf93",
+        "after_hash": "cbc26fa167e8052d5ddfb37bd843233f1e61843cce11c730ca50b27afc60cf93"
+      },
+      {
+        "part": "word/theme/theme1.xml",
+        "classification": "BytePreserved",
+        "before_hash": "bf4992e3fa7832e5c68fdbc4ec5189c8e5d347fef03c5ba2522ad704bde5078f",
+        "after_hash": "bf4992e3fa7832e5c68fdbc4ec5189c8e5d347fef03c5ba2522ad704bde5078f"
+      },
+      {
+        "part": "word/_rels/document.xml.rels",
+        "classification": "RegeneratedMetadata",
+        "before_hash": "49d2bc305daf1fcca84d6a282e52d1dfd2d79e9ca9f96a3a435d058ae2d8f755",
+        "after_hash": "3db95ab153299fcf42e18c234ec086dff5e4616caf37e4f756d3bfe99c52cc26"
+      },
+      {
+        "part": "word/_rels/vbaProject.bin.rels",
+        "classification": "RemovedByPolicy",
+        "before_hash": "c97833e6456aa2bfe9be614f9c3ae41a8ef764b1cc3af92c6a6f273c62309122"
+      }
+    ],
+    "structure": "Pass",
+    "preservation": "Pass",
+    "independent_validation": "NotChecked",
+    "limitations": [
+      "Restricted element/part allowlist; formulas, hyperlinks, drawings, controls, signatures and unknown extensions refused.",
+      "No VBA execution or malicious-code analysis. No visual fidelity claim. Client/SDK checks recorded separately."
+    ]
+  }
+}

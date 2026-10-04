@@ -28,7 +28,7 @@ fn capability_rule(capability : Capability) -> String {
 
 ///|
 fn relationship_capability(r : Relationship) -> Capability? {
-  if r.kind == vba_rel {
+  if r.kind == vba_rel || r.kind == word_vba_data_rel {
     return Some(Vba)
   }
   if r.kind == office_rel + "attachedTemplate" && r.external {
@@ -73,7 +73,7 @@ fn profile_decision(pkg : Package) -> Decision {
       result: Pass,
       rebuild_allowed: true,
       profile: pkg.audit.profile,
-      reason: "Checks complete within declared simple-spreadsheet profile; supported VBA removal is permitted. This is not a claim that input is passive.",
+      reason: "Checks complete within declared profile; supported VBA removal is permitted. This is not a claim that input is passive.",
     }
   } catch {
     Invalid(reason) =>
@@ -164,7 +164,8 @@ fn assess_package(pkg : Package) -> Assessment {
   let index : Map[String, Int] = Map([])
   for part in pkg.audit.parts {
     let ct = part.content_type.to_lower()
-    let capability = if part.content_type == vba_ct {
+    let capability = if part.content_type == vba_ct ||
+      part.content_type == word_vba_data_ct {
       Some(Vba)
     } else if ct.contains("activex") {
       Some(ActiveX)
@@ -175,7 +176,11 @@ fn assess_package(pkg : Package) -> Assessment {
       ct.contains(".querytable+") {
       Some(ExternalData)
     } else if part.name != "[Content_Types].xml" &&
-      !supported_content_types.contains(part.content_type) {
+      !(if is_word_format(pkg.audit.format) {
+        word_content_types
+      } else {
+        supported_content_types
+      }).contains(part.content_type) {
       Some(UnknownPotentiallyActiveExtension)
     } else {
       None
@@ -207,7 +212,11 @@ fn assess_package(pkg : Package) -> Assessment {
         "relationship:" + r.source + "#" + r.id + ":" + r.kind + ":" + r.target,
         decision.rebuild_allowed,
       )
-    } else if !supported_relationship_types.contains(r.kind) {
+    } else if !(if is_word_format(pkg.audit.format) {
+        word_relationship_types
+      } else {
+        supported_relationship_types
+      }).contains(r.kind) {
       add_capability_finding(
         findings,
         index,

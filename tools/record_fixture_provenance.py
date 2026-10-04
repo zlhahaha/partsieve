@@ -41,3 +41,17 @@ result = {
 }
 (ROOT / "tests/fixtures/provenance.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
 print(json.dumps({"pinned_fixture_files": len(records), "status": "Pass"}))
+
+# POI provenance is reviewed and pinned alongside the downloaded bytes. Do not
+# regenerate expected hashes from local bytes, which would conceal drift.
+poi = json.loads((ROOT / "tests/fixtures/poi/provenance.json").read_text(encoding="utf8"))
+assert poi["commit"] == "12c3688d130035f3dc2ca2a0f50d929456435a93"
+assert len(poi["files"]) == 5
+for record in poi["files"]:
+    path = ROOT / record["path"]
+    assert path.parent == ROOT / "tests/fixtures/poi"
+    payload = path.read_bytes()
+    assert len(payload) == record["bytes"]
+    assert hashlib.sha256(payload).hexdigest() == record["sha256"], f"POI fixture drift: {path.name}"
+    assert poi["commit"] in record["source"] and record["license"].startswith("Apache-2.0")
+print(json.dumps({"pinned_poi_fixture_files": len(poi["files"]), "status": "Pass"}))

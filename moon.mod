@@ -11,7 +11,7 @@
 
 name = "zlhahaha/partsieve"
 
-version = "0.1.0-spike"
+version = "0.2.0-dev"
 
 readme = "README.md"
 
@@ -19,13 +19,13 @@ repository = "https://github.com/zlhahaha/partsieve.git"
 
 license = "Apache-2.0"
 
-keywords = [ "ooxml", "xlsx", "vba", "audit", "verified-rebuild" ]
+keywords = [ "ooxml", "xlsx", "docx", "vba", "audit", "verified-rebuild" ]
 
 preferred_target = "native"
 
 supported_targets = "native"
 
-description = "OOXML capability audit and verified rebuild; restricted XLSM spike"
+description = "OOXML capability audit and verified rebuild; restricted Word and spreadsheet profiles"
 
 import {
   "moonbit-community/flate@0.8.4",

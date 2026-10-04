@@ -180,6 +180,49 @@ let xlsm_ct = "application/vnd.ms-excel.sheet.macroEnabled.main+xml"
 let xlsx_ct = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"
 
 ///|
+let docm_ct = "application/vnd.ms-word.document.macroEnabled.main+xml"
+
+///|
+let docx_ct = "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"
+
+///|
+let word_vba_data_ct = "application/vnd.ms-word.vbaData+xml"
+
+///|
+let word_vba_data_rel = "http://schemas.microsoft.com/office/2006/relationships/wordVbaData"
+
+///|
+let word_ns = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+
+///|
+let word_math_ns = "http://schemas.openxmlformats.org/officeDocument/2006/math"
+
+///|
+let word_office_ns = "urn:schemas-microsoft-com:office:office"
+
+///|
+let word_macro_ns = "http://schemas.microsoft.com/office/word/2006/wordml"
+
+///|
+fn is_word_format(format : String) -> Bool {
+  format == "DOCM" || format == "DOCX"
+}
+
+///|
+fn is_macro_format(format : String) -> Bool {
+  format == "DOCM" || format == "XLSM"
+}
+
+///|
+fn plain_content_type(pkg : Package) -> String {
+  if is_word_format(pkg.audit.format) {
+    docx_ct
+  } else {
+    xlsx_ct
+  }
+}
+
+///|
 pub extend Limits with ToJson::{to_json}
 
 ///|
