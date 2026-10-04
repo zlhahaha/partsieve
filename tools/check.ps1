@@ -4,6 +4,8 @@ $taskVersion = moon version --all
 if ($LASTEXITCODE -ne 0 -or ($taskVersion -join "`n") -notmatch 'moonc v0\.10\.14\+7d59c7ec9') {
   throw 'Toolchain differs from dependency evidence; review before upgrading'
 }
+moon update
+if ($LASTEXITCODE -ne 0) { throw 'Registry update failed' }
 moon install
 if ($LASTEXITCODE -ne 0) { throw 'Dependency installation failed' }
 python tools/lock_evidence.py

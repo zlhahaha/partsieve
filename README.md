@@ -9,6 +9,7 @@ MoonBit OOXML Capability Auditor & Verified Rebuilder。首次原型版本为 **
 Mooncakes SDK 使用：
 
 ```powershell
+moon update
 moon add zlhahaha/partsieve@0.1.0-spike
 ```
 
@@ -22,6 +23,7 @@ cd partsieve
 使用记录在 [dependency-lock.json](docs/dependency-lock.json) 的 MoonBit 工具链与依赖：
 
 ```powershell
+moon update
 moon add moonbit-community/flate@0.8.4
 moon add Milky2018/xml@0.5.0
 moon add moonbitlang/x@0.5.5
