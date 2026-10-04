@@ -28,20 +28,23 @@ jobs:
           Invoke-WebRequest https://cli.moonbitlang.com/install/powershell.ps1 -OutFile "$env:RUNNER_TEMP\install-moonbit.ps1"
           & "$env:RUNNER_TEMP\install-moonbit.ps1"
           "$env:USERPROFILE\.moon\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-      - name: Set up MSVC
+      - name: Check and build with MSVC
         shell: pwsh
         run: |
           $taskVswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
           $taskVs = & $taskVswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
           if (-not $taskVs) { throw 'MSVC installation missing' }
           $taskDev = Join-Path $taskVs 'Common7\Tools\VsDevCmd.bat'
-          $taskEnv = & cmd.exe /c "`"$taskDev`" -arch=x64 -host_arch=x64 >nul && set"
+          $taskEnv = & cmd.exe /c "call `"$taskDev`" -arch=x64 -host_arch=x64 >nul && set"
           if ($LASTEXITCODE -ne 0) { throw 'MSVC environment failed' }
           foreach ($taskLine in $taskEnv) {
             if ($taskLine -match '^([^=]+)=(.*)$') {
               [Environment]::SetEnvironmentVariable($matches[1], $matches[2], 'Process')
             }
           }
+          $taskPathLine = $taskEnv | Where-Object { $_ -match '^Path=' } | Select-Object -First 1
+          if (-not $taskPathLine) { throw 'MSVC PATH missing' }
+          $env:PATH = $taskPathLine.Substring(5)
           Get-Command cl.exe
           .\tools\check.ps1
       - name: Keep actual regression evidence
