@@ -21,14 +21,20 @@ fn load_package(
   input : Bytes,
   limits : Limits,
   enforce_profile? : Bool = true,
+  output? : Bool = false,
 ) -> Package raise {
   limits.validate()
+  let package_limit = if output {
+    limits.output_bytes
+  } else {
+    limits.input_bytes
+  }
   let zl = @zip.ReadLimits::default()
-    .with_package_limit(limits.input_bytes)
+    .with_package_limit(package_limit)
     .with_entry_limit(limits.entry_bytes)
     .with_total_limit(limits.total_bytes)
     .with_entries_limit(limits.entries)
-    .with_preserved_source_limit(limits.input_bytes * 2)
+    .with_preserved_source_limit(package_limit * 2)
   let archive = @zip.read(input[:], limits=zl) catch {
     @zip.ZipError(_, message) =>
       raise Incomplete("ZIP parsing did not complete: " + message)

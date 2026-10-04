@@ -138,7 +138,7 @@ def main():
     verify_command = "verify-v2" if args.receipt_format == "v2" else "verify"
     if not WORKER.is_file():
         raise Diagnostic("build first: moon build " + ("--release " if args.release else "") + "--target native", 4)
-    data = bounded_bytes(args.input)
+    data = bounded_bytes(args.input, 64 * 1024 * 1024 if args.command == "verify" else CAP)
     with tempfile.TemporaryDirectory(prefix="partsieve-") as private_dir:
         snapshot = Path(private_dir) / "input.zip"
         snapshot.write_bytes(data)

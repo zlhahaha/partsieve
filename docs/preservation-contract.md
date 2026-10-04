@@ -29,4 +29,6 @@
 
 独立 schema/客户端检查在 SDK 中是 NotChecked，不产生 Pass 或工具记录。外部证据必须另行绑定实际输出 hash。Receipt 不带真实性签名；CLI 比较的是原件/输出重新计算的整份报告。输入或输出、决策、计划、覆盖、部件去向及伪造客户端证据的修改均不能通过该比较。Receipt/计划 JSON 的字节、深度、token 与项数有界，重复键拒绝。
 
+输入读取受 input_bytes 限制；预期输出和实际输出的包读取受 output_bytes 限制，并继续应用 entry/total/XML 等限额。类型转换可能增加元数据大小，输出不得误用原件的更小输入限额。CLI 原件读取上限 32 MiB、输出 verify 读取上限 64 MiB，二者均以实际读取核对。
+
 WPS 保存副本属于客户端重写，不属于 PartSieve 的 BytePreserved 契约。该 Word 副本正文一致、可以重开，但独立 SDK 发现 styles 中三个元素顺序错误，兼容矩阵单列该失败；不得把客户端另存副本当成 PartSieve 完整 verify 成功产物。

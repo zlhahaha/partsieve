@@ -58,3 +58,36 @@ test "typed rebuild binds supplied plan and incomplete output never returns a Re
   })
   expect_incomplete(fn() raise { ignore(verify_contract(b"PK\x03\x04", input)) })
 }
+
+///|
+test "output growth is checked against output limit rather than original input limit" {
+  let archive = @zip.read(planner_fixture()[:])
+  let ct = "<Types xmlns='" +
+    ct_ns +
+    "'><Default Extension='rels' ContentType='application/vnd.openxmlformats-package.relationships+xml'/><Default Extension='xml' ContentType='" +
+    xlsm_ct +
+    "'/><Override PartName='/xl/worksheets/sheet1.xml' ContentType='application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml'/></Types>"
+  assert_true(archive.replace("[Content_Types].xml", @utf8.encode(ct[:])[:]))
+  let input = @zip.write(archive)
+  let baseline = rebuild(input)
+  assert_true(baseline.bytes.length() > input.length())
+  let limits = {
+    ..Limits::default(),
+    input_bytes: input.length(),
+    output_bytes: baseline.bytes.length(),
+  }
+  let actual = rebuild_verified(input, limits~)
+  assert_eq(actual.bytes, baseline.bytes)
+  assert_eq(rebuild(input, limits~).bytes, baseline.bytes)
+  assert_eq(verify(actual.bytes, input, limits~).preservation, "Pass")
+  assert_eq(verify_contract(actual.bytes, input, limits~).result, Pass)
+  expect_incomplete(fn() raise {
+    ignore(
+      rebuild_verified(input, limits={
+        ..limits,
+        output_bytes: limits.output_bytes - 1,
+      }),
+    )
+  })
+  expect_incomplete(fn() raise { ignore(audit(actual.bytes, limits~)) })
+}

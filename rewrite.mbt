@@ -221,8 +221,8 @@ fn verify_packages(
   }
   let before = load_package(original, limits)
   let expected_bytes = execute(before, limits)
-  let expected = load_package(expected_bytes, limits)
-  let after = load_package(output, limits)
+  let expected = load_package(expected_bytes, limits, output=true)
+  let after = load_package(output, limits, output=true)
   let dispositions = verify_parts(before, after, expected)
   { before, after, dispositions, }
 }
