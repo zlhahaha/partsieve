@@ -145,30 +145,7 @@ fn write_content_types(pkg : Package) -> Bytes raise {
 
 ///|
 fn execute(pkg : Package, limits : Limits) -> Bytes raise {
-  let archive = pkg.archive.clone()
-  for part in controlled_vba_parts(pkg) {
-    guard archive.remove(part[:]) else {
-      raise Refused("plan RemovePart precondition failed")
-    }
-  }
-  if pkg.audit.findings.length() > 0 {
-    let name = relationship_part(pkg.audit.main_part)
-    guard archive.replace(
-      name[:],
-      write_relationships(pkg, pkg.audit.main_part)[:],
-    ) else {
-      raise Refused("plan relationship precondition failed")
-    }
-  }
-  if is_macro_format(pkg.audit.format) {
-    guard archive.replace("[Content_Types].xml", write_content_types(pkg)[:]) else {
-      raise Refused("content types precondition failed")
-    }
-  }
-  @zip.write_preserving_limited(archive, max_output_bytes=limits.output_bytes) catch {
-    @zip.ZipError(_, message) =>
-      raise Incomplete("bounded output writing did not complete: " + message)
-  }
+  execute_prepared(pkg, make_prepared_plan(pkg, limits), limits)
 }
 
 ///|

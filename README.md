@@ -11,7 +11,7 @@ moon update
 moon add zlhahaha/partsieve@0.1.0-spike
 ```
 
-调用方 `moon.pkg` 导入 `"zlhahaha/partsieve" @sieve`。公开 SDK：`audit(bytes, limits?)`、`plan(bytes, limits?)`、`rebuild(bytes, limits?)`、`verify(output, original, limits?)`；main 另有 `inspect_graph`、`assess`。`rebuild` 仅在重解析和保留验证通过后返回 bytes + Receipt。调用方负责有界文件读取、取消/超时和发布。
+调用方 `moon.pkg` 导入 `"zlhahaha/partsieve" @sieve`。公开 SDK：`audit(bytes, limits?)`、`plan(bytes, limits?)`、`rebuild(bytes, limits?)`、`verify(output, original, limits?)`；main 另有 `inspect_graph`、`assess`、`prepare`、`rebuild_with_plan(input, prepared_json, limits?)`。`rebuild` 仅在重解析和保留验证通过后返回 bytes + Receipt。调用方负责有界文件读取、取消/超时和发布。
 
 本地 CLI 与测试：
 
@@ -28,6 +28,8 @@ python tools/partsieve.py verify result.xlsx --original tests/fixtures/upstream/
 ```
 
 Word 示例替换输入为 `tests/fixtures/poi/SimpleMacro.docm`，输出使用 `.docx`。格式以主关系与 content type 判断，输出扩展名必须一致。宏启用主类型不等于存在 VBA。
+
+`python tools/partsieve.py prepare INPUT` 返回绑定输入、全部 part hash、生效限额、finding→policy decision→operation、依赖及元数据预期 hash 的计划；保存 UTF-8 JSON 后用 `rebuild INPUT --plan PLAN.json -o RESULT --receipt RECEIPT` 执行。执行前独立重算整份计划，过期或修改的字段均 Fail。当前 source XML handler 尚未验收，`RewriteSourceXml` 不接受执行；计划声明该缺口，不扩大 VBA 配置范围。
 
 Python `tools/partsieve.py` 是有界 I/O 宿主；全部 OOXML 逻辑在 MoonBit。不要直接将私有 Native worker 用于不可信文件：worker 只接收宿主已限制的快照。固定策略为 `passive-office-v1`。输出与 Receipt 不覆盖已有文件；实际文件重读验证后才成对发布，两个路径不保证事务原子性。
 

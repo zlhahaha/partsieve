@@ -56,6 +56,7 @@ jobs:
             docs/evidence/graph-regression.json
             docs/evidence/coverage-regression.json
             docs/evidence/word-regression.json
+            docs/evidence/planner-regression.json
             docs/evidence/verified.xlsx
             docs/evidence/verified.receipt.json
             docs/evidence/word-verified.docx

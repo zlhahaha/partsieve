@@ -26,6 +26,19 @@ fn main {
       emit(@lib.inspect_graph(input).to_json())
     } else if command == "plan" {
       emit(@lib.plan(input).to_json())
+    } else if command == "prepare" {
+      emit(@lib.prepare(input).to_json())
+    } else if command == "rebuild-plan" {
+      guard args.length() == 5 else {
+        fail("private worker: rebuild-plan INPUT TEMP_OUTPUT PLAN_SNAPSHOT")
+      }
+      let plan_bytes = @fs.read_file_to_bytes(args[4])
+      let supplied = @json.parse(@utf8.decode(plan_bytes[:])[:]) catch {
+        _ => raise @lib.Invalid("malformed supplied plan JSON")
+      }
+      let result = @lib.rebuild_with_plan(input, supplied)
+      @fs.write_bytes_to_file(args[3], result.bytes)
+      emit(result.receipt.to_json())
     } else if command == "rebuild" {
       guard args.length() == 4 else {
         fail("private worker: rebuild INPUT TEMP_OUTPUT")

@@ -16,7 +16,11 @@ pub fn inspect_graph(Bytes, limits? : Limits) -> PackageGraph raise
 
 pub fn plan(Bytes, limits? : Limits) -> RewritePlan raise
 
+pub fn prepare(Bytes, limits? : Limits) -> PreparedPlan raise
+
 pub fn rebuild(Bytes, limits? : Limits) -> Rebuilt raise
+
+pub fn rebuild_with_plan(Bytes, Json, limits? : Limits) -> Rebuilt raise
 
 pub fn resolve_target(String, String) -> String raise
 
@@ -111,6 +115,24 @@ pub fn CheckState::equal(Self, Self) -> Bool
 pub fn CheckState::not_equal(Self, Self) -> Bool
 pub fn CheckState::to_json(Self) -> Json
 pub fn CheckState::to_repr(Self) -> @debug.Repr
+
+pub(all) struct CheckedOperation {
+  operation_id : String
+  kind : PlanOperationKind
+  part : String
+  source : String
+  relationship_id : String
+  rule_id : String
+  decision_id : String
+  before_hash : String
+  expected_after_hash : String?
+  depends_on : Array[String]
+  reason : String
+} derive(Eq, ToJson, @debug.Debug)
+pub fn CheckedOperation::equal(Self, Self) -> Bool
+pub fn CheckedOperation::not_equal(Self, Self) -> Bool
+pub fn CheckedOperation::to_json(Self) -> Json
+pub fn CheckedOperation::to_repr(Self) -> @debug.Repr
 
 pub(all) struct ContentTypeIndex {
   content_type : String
@@ -245,6 +267,67 @@ pub fn PartRecord::equal(Self, Self) -> Bool
 pub fn PartRecord::not_equal(Self, Self) -> Bool
 pub fn PartRecord::to_json(Self) -> Json
 pub fn PartRecord::to_repr(Self) -> @debug.Repr
+
+pub(all) enum PlanOperationKind {
+  RemovePart
+  RemoveRelationship
+  RewriteSourceXml
+  RewriteRelationshipPart
+  RewriteContentTypes
+  ChangeMainContentType
+} derive(Eq, @debug.Debug)
+pub fn PlanOperationKind::equal(Self, Self) -> Bool
+pub fn PlanOperationKind::not_equal(Self, Self) -> Bool
+pub fn PlanOperationKind::to_json(Self) -> Json
+pub fn PlanOperationKind::to_repr(Self) -> @debug.Repr
+
+pub(all) enum PolicyAction {
+  AllowAction
+  RemoveAction
+  RefuseAction
+} derive(Eq, @debug.Debug)
+pub fn PolicyAction::equal(Self, Self) -> Bool
+pub fn PolicyAction::not_equal(Self, Self) -> Bool
+pub fn PolicyAction::to_json(Self) -> Json
+pub fn PolicyAction::to_repr(Self) -> @debug.Repr
+
+pub(all) struct PolicyDecision {
+  decision_id : String
+  finding_index : Int?
+  action : PolicyAction
+  rule_id : String
+  part : String
+  reason : String
+} derive(Eq, ToJson, @debug.Debug)
+pub fn PolicyDecision::equal(Self, Self) -> Bool
+pub fn PolicyDecision::not_equal(Self, Self) -> Bool
+pub fn PolicyDecision::to_json(Self) -> Json
+pub fn PolicyDecision::to_repr(Self) -> @debug.Repr
+
+pub(all) struct PreparedPlan {
+  schema : String
+  tool : String
+  rules : String
+  input_hash : String
+  input_format : String
+  output_format : String
+  policy : String
+  profile : String
+  limits : Limits
+  preconditions : Array[PartRecord]
+  findings : Array[CapabilityFinding]
+  decisions : Array[PolicyDecision]
+  operations : Array[CheckedOperation]
+  controlled_removals : Array[String]
+  orphan_candidates : Array[String]
+  coverage : Coverage
+  gate : Decision
+  unavailable_handlers : Array[String]
+} derive(Eq, ToJson, @debug.Debug)
+pub fn PreparedPlan::equal(Self, Self) -> Bool
+pub fn PreparedPlan::not_equal(Self, Self) -> Bool
+pub fn PreparedPlan::to_json(Self) -> Json
+pub fn PreparedPlan::to_repr(Self) -> @debug.Repr
 
 pub(all) enum Presence {
   Present

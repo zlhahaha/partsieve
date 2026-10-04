@@ -34,10 +34,60 @@ def bounded_bytes(path, cap=CAP):
         return data
 
 
+def bounded_plan(path):
+    raw = bounded_bytes(path, REPORT_CAP)
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeError as exc:
+        raise Diagnostic("supplied plan is not UTF-8 JSON", 2) from exc
+    depth = token = tokens = 0
+    quoted = escaped = False
+    for char in text:
+        token += 1
+        if quoted:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                quoted = False
+                token = 0
+        elif char == '"':
+            quoted = True
+            tokens += 1
+            token = 1
+        elif char in "[{":
+            depth += 1
+            tokens += 1
+            token = 0
+        elif char in "]}":
+            depth -= 1
+            token = 0
+        elif char in ",:" or char.isspace():
+            token = 0
+        if depth > 32 or token > 65536 or tokens > 200000:
+            raise Diagnostic("supplied plan JSON resource limit", status="Incomplete")
+
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError("duplicate JSON key")
+            result[key] = value
+        return result
+
+    try:
+        json.loads(text, object_pairs_hook=unique_object,
+                   parse_constant=lambda value: (_ for _ in ()).throw(ValueError("non-finite JSON value")))
+    except (ValueError, RecursionError) as exc:
+        raise Diagnostic("malformed or ambiguous supplied plan JSON", 2) from exc
+    return raw
+
+
 def worker(command, input_path, extra=None):
     args = [str(WORKER), command, str(input_path)]
     if extra is not None:
-        args.append(str(extra))
+        args.extend(map(str, extra)) if isinstance(extra, list) else args.append(str(extra))
     # Worker is trusted local code, never a user-supplied executable. A file
     # avoids an unbounded Python stdout capture. SDK report is also bounded.
     with tempfile.TemporaryFile() as log:
@@ -62,24 +112,27 @@ def worker(command, input_path, extra=None):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=["audit", "assess", "graph", "plan", "rebuild", "verify"])
+    parser.add_argument("command", choices=["audit", "assess", "graph", "plan", "prepare", "rebuild", "verify"])
     parser.add_argument("input", type=Path)
     parser.add_argument("--json", action="store_true", help="JSON is always used by the spike")
     parser.add_argument("--policy", default="passive-office-v1", choices=["passive-office-v1"])
     parser.add_argument("-o", "--output", type=Path)
     parser.add_argument("--receipt", type=Path)
     parser.add_argument("--original", type=Path)
+    parser.add_argument("--plan", type=Path, help="rebuild using an independently recomputed prepared plan")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
-    if args.command in ("assess", "graph") and args.dry_run:
+    if args.command in ("assess", "graph", "prepare") and args.dry_run:
         raise Diagnostic("--dry-run does not apply to structural/coverage inspection", 4)
+    if args.plan and (args.command != "rebuild" or args.dry_run):
+        raise Diagnostic("--plan applies only to rebuild without --dry-run", 4)
     if not WORKER.is_file():
         raise Diagnostic("build first: moon build --target native", 4)
     data = bounded_bytes(args.input)
     with tempfile.TemporaryDirectory(prefix="partsieve-") as private_dir:
         snapshot = Path(private_dir) / "input.zip"
         snapshot.write_bytes(data)
-        if args.command in ("audit", "assess", "graph", "plan") or args.dry_run:
+        if args.command in ("audit", "assess", "graph", "plan", "prepare") or args.dry_run:
             result = worker("plan" if args.dry_run else args.command, snapshot)
         elif args.command == "verify":
             if args.original is None:
@@ -116,7 +169,12 @@ def main():
                 os.close(fd)
                 temp_output = Path(temp_name)
                 temporary_paths.append(temp_output)
-                result = worker("rebuild", snapshot, temp_output)
+                if args.plan:
+                    plan_snapshot = Path(private_dir) / "plan.json"
+                    plan_snapshot.write_bytes(bounded_plan(args.plan))
+                    result = worker("rebuild-plan", snapshot, [temp_output, plan_snapshot])
+                else:
+                    result = worker("rebuild", snapshot, temp_output)
                 expected_suffix = {"XLSX": ".xlsx", "DOCX": ".docx"}.get(result["output_format"])
                 if output.suffix.lower() != expected_suffix:
                     raise Diagnostic("output extension differs from verified main document type", 4)

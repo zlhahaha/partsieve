@@ -41,5 +41,7 @@ python tests/coverage_regression.py
 if ($LASTEXITCODE -ne 0) { throw 'Coverage regression failed' }
 python tests/word_regression.py
 if ($LASTEXITCODE -ne 0) { throw 'Word regression failed' }
+python tests/planner_regression.py
+if ($LASTEXITCODE -ne 0) { throw 'Planner regression failed' }
 moon run examples/sdk --target native
 if ($LASTEXITCODE -ne 0) { throw 'SDK example failed' }
