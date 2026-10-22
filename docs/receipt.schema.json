@@ -96,7 +96,7 @@
       "type": "object", "additionalProperties": false,
       "required": ["schema", "tool", "rules", "policy", "profile", "input_hash", "output_hash", "input_size", "output_size", "input_format", "output_format", "limits", "audit", "plan", "dispositions", "structure", "preservation", "independent_validation", "limitations"],
       "properties": {
-        "schema": {"const": "partsieve.receipt.spike-v1"}, "tool": {"const": "partsieve/0.3.0-spike"},
+        "schema": {"const": "partsieve.receipt.spike-v1"}, "tool": {"const": "partsieve/0.4.0-spike"},
         "rules": {"const": "business-rules-v1"}, "policy": {"const": "passive-office-v1"},
         "profile": {"const": "business-spreadsheet-v1"},
         "input_hash": {"$ref": "#/$defs/hash"}, "output_hash": {"$ref": "#/$defs/hash"},

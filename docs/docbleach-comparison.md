@@ -11,7 +11,7 @@ Reviewed `module/module-office/src/main/java/xyz/docbleach/module/ooxml/`
 fixtures from that project are copied into PartSieve. The implementation uses
 the existing MoonBit ZIP/XML graph and verifier; it does not invoke Java/POI.
 
-| Concern | DocBleach source behavior | PartSieve 0.3.0-spike |
+| Concern | DocBleach source behavior | PartSieve 0.4.0-spike |
 | --- | --- | --- |
 | VBA | Filters VBA types/relationships; remaps macro main types | Removes supported Word/spreadsheet VBA ownership sets and converts main types; verifies actual output |
 | Normal content | General OPC processing through Apache POI; aims to retain ordinary content | Explicitly tested business spreadsheet content and Word tables, inline PNG/JPEG, headers/footers; other content refuses |

@@ -1,0 +1,6 @@
+import {
+  "zlhahaha/partsieve/native_host" @host,
+  "moonbitlang/core/env",
+}
+
+pkgtype(kind: "executable")

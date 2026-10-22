@@ -16,7 +16,7 @@
 
 Apache POI fixture 的完整原始 LICENSE/NOTICE 位于 `tests/fixtures/poi/`，固定字节与来源在 [POI provenance](../tests/fixtures/poi/provenance.json)。NOTICE 中上游其他依赖说明随原文保留，不代表本项目使用那些依赖。宏仅静态提取；原始 DOCM 未在 Office 打开，未执行宏。衍生 Word 变体保留上游测试数据许可。
 
-Python 标准库承担有界 I/O 宿主和独立 ZIP/XML 测试；jsonschema 4.23.0 仅校验测试中的 Receipt 形状。oletools 0.60.2 / olefile 0.47 仅用于本地静态检查无害 fixture 的 VBA，脚本/安装目录和提取记录不进入公开源码包。WPS 是本机独立兼容客户端，不是运行时依赖，未分发其程序或用户文档。
+正常运行使用MoonBit和项目自有C系统接口适配层；Python标准库只用于三个独立ZIP/XML校验器，jsonschema 4.23.0只在独立测试中校验Receipt形状。oletools 0.60.2 / olefile 0.47 仅用于本地静态检查无害 fixture 的 VBA，脚本/安装目录和提取记录不进入公开源码包。WPS 是本机独立兼容客户端，不是运行时依赖，未分发其程序或用户文档。
 
 新增 business fixtures 为作者自建组合文档，布局、文本和测试图片采用 Apache-2.0；由 XlsxWriter 3.2.9、CPython XML/Pillow 离线生成。宏字节不变，沿用既有 XlsxWriter/POI 的对应来源许可。来源、固定 hash 及声明见 [business provenance](../tests/fixtures/business/provenance.json)，不能将这些自建样本记为真实第三方采用。
 

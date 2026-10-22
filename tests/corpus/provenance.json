@@ -1,0 +1,9 @@
+{
+  "origin": "293 public CLI invocations from the seven passing 0.3 regression suites, migrated and checked against the native CLI",
+  "files": {
+    "commands.json": "d2d1551a3b840742e0297366de45ff18843bffc4b267f5df19e0d425fa264fb7",
+    "commands.zip": "90cdbf20271a91e7edfc5051933841b79ec96baee0488e273b0adbf2e7c21334"
+  },
+  "schema": "partsieve.native-corpus-provenance.v1",
+  "recorded": "2026-10-23"
+}

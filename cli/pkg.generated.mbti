@@ -1,0 +1,29 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "zlhahaha/partsieve/cli"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn bounded_report(Json) -> String raise
+
+pub fn diagnostic(Error) -> (Json, Int)
+
+pub fn execute(Array[String]) -> (Json, Int) raise
+
+pub fn parse_json(Bytes) -> Json raise
+
+pub fn worker(Array[String]) -> (Json, Int) raise
+
+// Errors
+pub(all) suberror Usage {
+  Usage(String)
+} derive(@debug.Debug)
+pub fn Usage::to_repr(Self) -> @debug.Repr
+
+// Types and methods
+
+// Type aliases
+
+// Traits

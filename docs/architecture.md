@@ -1,6 +1,6 @@
 # 原型架构
 
-当前提供 `business-spreadsheet-v1` 与 `business-word-v1` 配置（0.3.0-spike）。
+当前提供 `business-spreadsheet-v1` 与 `business-word-v1` 配置（0.4.0-spike）。
 
 - `model.mbt`：限制、Audit、Finding、Relationship、RewritePlan、Receipt。
 - `graph_model.mbt` / `graph.mbt`：共用 PackageGraph、source-local XML 引用、入出边/内容类型索引、迭代可达性与只报告的 orphan candidates。
@@ -15,8 +15,8 @@
 - `package.mbt`：受限 ZIP、CRC、内容类型、根与 source-local 关系。检查所有条目，包括不可达部件。
 - `profile.mbt`：允许的 part/relationship/XML vocabulary、源 `r:id` 绑定、工作簿/工作表元素位置、VBA 交叉证据和共享/孤儿拒绝。
 - `rewrite.mbt`：固定策略的计划、克隆 archive 后有限修改、重新读取输出、对预期 metadata 和每个输入 payload 核验。
-- `cmd/main`：私有 Native worker，只对宿主准备的受限临时文件做 I/O。
-- `tools/partsieve.py`：对外原型脚本入口，读取前 stat + cap+1 受限读取、私有快照、60 秒进程超时、成对发布。没有 OOXML detector 或 rewrite 逻辑。
+- `cmd/main`：原生命令行入口，分发公开命令与内部 `_worker` 子命令；工作进程同样有读取上限。
+- `cli/`：MoonBit公开命令行，参数与有界JSON校验、私有快照、受限子进程和配套发布。`native_host/host.mbt`实现读取限额、管道上限及超时轮询，`host.c`只封装Windows/Linux系统调用。
 
 ZIP、XML、SHA-256 均复用公共库。删除 VBA 是 workbook 的隐式关系处理；支持配置禁止任何指向该关系的源 XML 属性，因此正文/工作簿 payload 无需改写。宏格式但无 VBA 时仍转换主类型，并不报告发现宏代码。
 

@@ -16,17 +16,17 @@ To publish actual local files through the bounded CLI, choose new destinations:
 
 ```powershell
 # Report delivery: Chinese text, dates, three sheets and styles.
-python tools/partsieve.py rebuild tests/fixtures/business/report-1900.xlsm -o report.xlsx --receipt report.json --receipt-format v2
+moon run cmd/main --target native -- rebuild tests/fixtures/business/report-1900.xlsm -o report.xlsx --receipt report.json --receipt-format v2
 # Document intake: table, PNG/JPEG, section headers/footers and remote template.
-python tools/partsieve.py rebuild tests/fixtures/business/document-template.docm -o document.docx --receipt document.json --receipt-format v2
+moon run cmd/main --target native -- rebuild tests/fixtures/business/document-template.docm -o document.docx --receipt document.json --receipt-format v2
 # Archive verification: actual original/output/report, not just the Pass field.
-python tools/partsieve.py verify document.docx --original tests/fixtures/business/document-template.docm --receipt document.json --receipt-format v2
+moon run cmd/main --target native -- verify document.docx --original tests/fixtures/business/document-template.docm --receipt document.json --receipt-format v2
 ```
 
 For independently reproducible acceptance evidence:
 
 ```powershell
-python tests/business_regression.py
+.\tools\check.ps1
 python tests/independent_business.py
 dotnet run --project tests/OpenXmlValidation -- tests/generated/business-v3/document-template.docx tests/generated/business-v3/report-1900.xlsx
 ```

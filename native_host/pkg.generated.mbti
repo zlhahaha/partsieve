@@ -1,0 +1,55 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "zlhahaha/partsieve/native_host"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn absolute(String) -> String raise
+
+pub fn executable() -> String raise
+
+pub fn exists(String) -> Bool raise
+
+pub fn link_new(String, String) -> Unit raise
+
+pub fn parent(String) -> String raise
+
+pub fn pause(Int) -> Unit
+
+pub fn read_bounded(String, Int) -> Bytes raise
+
+pub fn remove_dir(String) -> Unit raise
+
+pub fn remove_file(String) -> Unit raise
+
+pub fn remove_same(String, String) -> Unit raise
+
+pub fn run(String, Array[String], timeout_ms? : Int, output_limit? : Int) -> ProcessResult raise
+
+pub fn same_path(String, String) -> Bool raise
+
+pub fn temp_dir(parent? : String) -> String raise
+
+pub fn warning(String) -> Unit
+
+pub fn write_new(String, Bytes) -> Unit raise
+
+// Errors
+pub(all) suberror HostError {
+  Io(String)
+  Limit(String)
+} derive(@debug.Debug)
+pub fn HostError::to_repr(Self) -> @debug.Repr
+
+// Types and methods
+pub(all) struct ProcessResult {
+  code : Int
+  stdout : Bytes
+} derive(@debug.Debug)
+pub fn ProcessResult::to_repr(Self) -> @debug.Repr
+
+// Type aliases
+
+// Traits

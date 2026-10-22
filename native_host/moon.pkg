@@ -1,0 +1,9 @@
+import {
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/buffer",
+  "moonbitlang/core/env",
+}
+
+options(
+  "native-stub": [ "host.c" ],
+)

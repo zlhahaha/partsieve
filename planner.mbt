@@ -210,7 +210,7 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
   }
   let prepared : PreparedPlan = {
     schema: "partsieve.prepared-plan.v1",
-    tool: "partsieve/0.3.0-spike",
+    tool: "partsieve/0.4.0-spike",
     rules: "bounded-business-plan-v1",
     input_hash: pkg.audit.input_hash,
     input_format: pkg.audit.format,

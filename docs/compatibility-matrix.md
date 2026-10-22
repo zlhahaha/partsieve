@@ -1,6 +1,6 @@
 # 兼容矩阵（2026-10-22）
 
-当前配置 business-spreadsheet-v1 / business-word-v1，版本0.3.0-spike。结果只适用于已验证范围，不表示任意同格式文档均支持。
+当前配置 business-spreadsheet-v1 / business-word-v1，版本0.4.0-spike。结果只适用于已验证范围，不表示任意同格式文档均支持。
 
 | 场景 | SDK/CLI保留验证 | 独立ZIP/XML / Open XML SDK3.3.0 Office2007 | WPS12.1.0.28505 |
 | --- | --- | --- | --- |

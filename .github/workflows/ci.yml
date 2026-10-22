@@ -11,14 +11,11 @@ permissions:
 
 jobs:
   native:
-    name: Native SDK and bounded-host regression
+    name: Windows Native CLI and SDK regression
     runs-on: windows-2022
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12.7'
       - name: Install pinned MoonBit toolchain
         shell: pwsh
         env:
@@ -46,21 +43,13 @@ jobs:
           if (-not $taskPathLine) { throw 'MSVC PATH missing' }
           $env:PATH = $taskPathLine.Substring(5)
           Get-Command cl.exe
-          python -m pip install jsonschema==4.23.0
-          if ($LASTEXITCODE -ne 0) { throw 'Test dependency installation failed' }
           .\tools\check.ps1
       - name: Keep actual regression evidence
         uses: actions/upload-artifact@v4
         with:
           name: native-regression
           path: |
-            docs/evidence/regression.json
-            docs/evidence/graph-regression.json
-            docs/evidence/coverage-regression.json
-            docs/evidence/word-regression.json
-            docs/evidence/planner-regression.json
-            docs/evidence/receipt-regression.json
-            docs/evidence/business-regression.json
+            tests/generated/business-v3/*.receipt.json
             tests/generated/business-v3/report-1900.xlsx
             tests/generated/business-v3/report-1904.xlsx
             tests/generated/business-v3/report-inline.xlsx
@@ -71,16 +60,30 @@ jobs:
             docs/evidence/word-verified.docx
             docs/evidence/word-verified.receipt.json
 
+  linux-native:
+    name: Linux Native CLI and SDK regression
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned MoonBit toolchain
+        env:
+          MOONBIT_INSTALL_VERSION: '0.10.14+7d59c7ec9'
+        run: |
+          curl --fail --silent --show-error https://cli.moonbitlang.com/install/unix.sh -o "$RUNNER_TEMP/install-moonbit.sh"
+          bash "$RUNNER_TEMP/install-moonbit.sh"
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+      - name: Check dependency hashes and run native regression
+        shell: pwsh
+        run: ./tools/check.ps1
+
   independent:
     name: Independent ZIP and Open XML SDK
     runs-on: ubuntu-24.04
-    needs: native
+    needs: [native, linux-native]
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12.7'
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.0.x'
@@ -90,7 +93,13 @@ jobs:
           name: native-regression
           path: .
       - name: Check pinned fixture provenance
-        run: python tools/record_fixture_provenance.py
+        shell: pwsh
+        run: ./tools/check-fixtures.ps1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.7'
+      - name: Install independent schema validator
+        run: python -m pip install jsonschema==4.23.0
       - name: Independently validate the published example pair
         run: |
           python tests/independent_zip.py tests/fixtures/upstream/macro01.xlsm docs/evidence/verified.xlsx > independent-zip-ci.json

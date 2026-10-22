@@ -97,7 +97,7 @@ pub fn verify_contract(
   })
   {
     schema: "partsieve.receipt.v2-dev",
-    tool: "partsieve/0.3.0-spike",
+    tool: "partsieve/0.4.0-spike",
     rules: prepared.rules,
     policy: prepared.policy,
     profile: prepared.profile,

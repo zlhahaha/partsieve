@@ -1,0 +1,9 @@
+import {
+  "zlhahaha/partsieve/native_host" @host,
+  "zlhahaha/partsieve/cli",
+  "moonbit-community/flate/zip",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/x/crypto",
+} for "test"

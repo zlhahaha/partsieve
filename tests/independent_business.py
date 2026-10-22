@@ -2,6 +2,7 @@
 from pathlib import Path
 import hashlib, json, sys, zipfile
 import xml.etree.ElementTree as E
+from jsonschema import Draft202012Validator
 
 ROOT=Path(__file__).resolve().parents[1]
 DEST=Path(sys.argv[1]) if len(sys.argv)>1 else ROOT/'tests/generated/business-v3'
@@ -11,6 +12,8 @@ reports=[]
 for name,suffix in [('report-1900','.xlsx'),('report-1904','.xlsx'),('report-inline','.xlsx'),('document-layout','.docx'),('document-template','.docx')]:
     source=ROOT/'tests/fixtures/business'/(name+('.xlsm' if suffix=='.xlsx' else '.docm'))
     output=DEST/(name+suffix)
+    saved=json.loads(output.with_suffix('.receipt.json').read_text(encoding='utf8'))
+    Draft202012Validator(json.loads((ROOT/'docs/receipt-v2.schema.json').read_text(encoding='utf8'))).validate(saved)
     with zipfile.ZipFile(source) as z,zipfile.ZipFile(output) as out:
         assert z.testzip() is None and out.testzip() is None
         before={n:z.read(n) for n in z.namelist()};after={n:out.read(n) for n in out.namelist()}

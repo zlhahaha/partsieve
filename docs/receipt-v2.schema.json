@@ -326,7 +326,7 @@
           "const": "partsieve.prepared-plan.v1"
         },
         "tool": {
-          "const": "partsieve/0.3.0-spike"
+          "const": "partsieve/0.4.0-spike"
         },
         "rules": {
           "const": "bounded-business-plan-v1"
@@ -628,7 +628,7 @@
           "const": "partsieve.receipt.v2-dev"
         },
         "tool": {
-          "const": "partsieve/0.3.0-spike"
+          "const": "partsieve/0.4.0-spike"
         },
         "rules": {
           "const": "bounded-business-plan-v1"

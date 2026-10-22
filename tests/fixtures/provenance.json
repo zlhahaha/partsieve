@@ -43,8 +43,8 @@
     }
   },
   "derived_cases": {
-    "generator": "tests/regression.py",
-    "manifest": "docs/evidence/regression.json",
+    "generator": "tests/native/native_test.mbt",
+    "manifest": "tests/corpus/commands.json",
     "purpose": "bounded-reader, URI, XML, capability and refusal variants; not additional real-client compatibility evidence",
     "license": "BSD-2-Clause for upstream-derived fixture payloads"
   },

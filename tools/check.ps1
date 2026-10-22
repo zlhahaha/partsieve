@@ -8,9 +8,9 @@ moon update
 if ($LASTEXITCODE -ne 0) { throw 'Registry update failed' }
 moon install
 if ($LASTEXITCODE -ne 0) { throw 'Dependency installation failed' }
-python tools/lock_evidence.py
+.\tools\check-dependencies.ps1
 if ($LASTEXITCODE -ne 0) { throw 'Dependency source drift' }
-python tools/record_fixture_provenance.py
+.\tools\check-fixtures.ps1
 if ($LASTEXITCODE -ne 0) { throw 'Fixture drift' }
 $taskInterfaces = @{}
 Get-ChildItem -Filter pkg.generated.mbti -Recurse |
@@ -27,28 +27,14 @@ moon fmt --check
 if ($LASTEXITCODE -ne 0) { throw 'Format check failed' }
 moon check --target native --deny-warn
 if ($LASTEXITCODE -ne 0) { throw 'moon check failed' }
-moon test --target native --deny-warn
-if ($LASTEXITCODE -ne 0) { throw 'moon test failed' }
 moon build --target native --deny-warn
 if ($LASTEXITCODE -ne 0) { throw 'moon build failed' }
 moon build --release --target native --deny-warn
 if ($LASTEXITCODE -ne 0) { throw 'Release build failed' }
-python tools/generate_test_evidence.py
-if ($LASTEXITCODE -ne 0) { throw 'Generated SDK evidence failed' }
-python tests/regression.py
-if ($LASTEXITCODE -ne 0) { throw 'Regression failed' }
-python tests/graph_regression.py
-if ($LASTEXITCODE -ne 0) { throw 'Graph regression failed' }
-python tests/coverage_regression.py
-if ($LASTEXITCODE -ne 0) { throw 'Coverage regression failed' }
-python tests/word_regression.py
-if ($LASTEXITCODE -ne 0) { throw 'Word regression failed' }
-python tests/planner_regression.py
-if ($LASTEXITCODE -ne 0) { throw 'Planner regression failed' }
-python tests/receipt_regression.py
-if ($LASTEXITCODE -ne 0) { throw 'Typed Receipt regression failed' }
-python tests/business_regression.py
-if ($LASTEXITCODE -ne 0) { throw 'Business profile regression failed' }
+# Native integration tests execute these already built CLI/probe binaries.
+moon test --target native --deny-warn
+if ($LASTEXITCODE -ne 0) { throw 'moon test failed' }
+.\tools\generate-test-evidence.ps1
 moon run examples/sdk --target native
 if ($LASTEXITCODE -ne 0) { throw 'SDK example failed' }
 moon run examples/business --target native

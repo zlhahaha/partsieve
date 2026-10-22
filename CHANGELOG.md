@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0-spike（2026-10-23）
+
+- MoonBit Native CLI replaces the Python runtime host; a small original C adapter provides filesystem/process syscalls for Windows and Linux.
+- Preserve bounded reads, private snapshots, worker timeouts, capped stdout, exclusive publication and identity-checked rollback. Reject non-finite JSON numbers and distinguish boolean from numeric Receipt fields.
+- Migrate seven Python regression drivers to 293 native command replays with pinned input states and exact report/document expectations; add host resource and argument boundary tests.
+- Keep only three independent Python ZIP/XML/JSON Schema validators. Move dependency and fixture checks/evidence export to PowerShell; exclude the development corpus from Mooncakes packages.
+- OOXML support profiles and document output bytes are unchanged; reports carry the new tool version and need regeneration for verification with this release.
+
 ## 0.3.0-spike（2026-10-22）
 
 - 业务表格配置：共享/内联中文文本、1900/1904日期、多工作表、常见样式与合并；补样式/共享字符串索引检查。

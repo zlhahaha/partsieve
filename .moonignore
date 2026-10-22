@@ -27,3 +27,8 @@ tools/validate_evidence.py
 tools/validate_word_evidence.py
 tests/fixtures/upstream/test_macro01.py
 tests/fixtures/upstream/test_simple01.py
+
+# Large historical regression corpus is development-only.
+tests/corpus/
+tests/native/
+tests/probe/

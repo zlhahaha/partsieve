@@ -36,3 +36,5 @@ report = {"tool": "CPython zipfile + ElementTree", "version": sys.version.split(
           "output_sha256": hashlib.sha256(after.read_bytes()).hexdigest(),
           "a1": 123, "parts": records}
 print(json.dumps(report, indent=2))
+import jsonschema
+jsonschema.Draft202012Validator(json.loads((Path(__file__).resolve().parents[1] / 'docs/receipt.schema.json').read_text(encoding='utf8'))).validate(json.loads(after.with_suffix('.receipt.json').read_text(encoding='utf8')))
