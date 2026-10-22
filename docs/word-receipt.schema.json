@@ -246,6 +246,7 @@
             "RemovePart",
             "RemoveRelationship",
             "RewriteRelationshipPart",
+            "RewriteSourceXml",
             "ChangeMainContentType",
             "RewriteContentTypes"
           ]

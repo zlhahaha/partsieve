@@ -149,6 +149,13 @@ assert code==2,(code,report);check('changed preserved image output fails indepen
 changed=parts(outputs[-1]);changed['word/settings.xml']=changed['word/settings.xml'].replace(b'100',b'101')
 code,report=call('verify',write('tampered-settings-output',changed),'--original',SOURCE/'document-template.docm','--receipt-format','v2')
 assert code==2,(code,report);check('changed unrelated settings fail source XML preservation verification')
+legacy_out,legacy_receipt=DEST/'template-legacy.docx',DEST/'template-legacy.receipt.json'
+legacy_out.unlink(missing_ok=True);legacy_receipt.unlink(missing_ok=True)
+code,legacy=call('rebuild',SOURCE/'document-template.docm','-o',legacy_out,'--receipt',legacy_receipt)
+assert code==0,legacy
+Draft202012Validator(json.loads((ROOT/'docs/word-receipt.schema.json').read_text(encoding='utf-8'))).validate(json.loads(legacy_receipt.read_text(encoding='utf-8')))
+assert call('verify',legacy_out,'--original',SOURCE/'document-template.docm','--receipt',legacy_receipt)==(0,legacy)
+check('legacy Word report schema and recomputation support the accepted template rewrite')
 summary={'status':'Pass','checks':checks,'outputs':[str(p.relative_to(ROOT)) for p in outputs],'scope':'Synthetic combination fixtures; native SDK/host and independent byte assertions, client/schema checks recorded separately.'}
 (ROOT/'docs/evidence/business-regression.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 print(json.dumps({'status':'Pass','business_assertions':len(checks),'outputs':len(outputs)}))
