@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 $taskRoot = Split-Path -Parent $PSScriptRoot
 $taskCli = Join-Path $taskRoot '_build/native/debug/build/cmd/main/main'
-if ($IsWindows) { $taskCli += '.exe' }
+if (Test-Path -LiteralPath ($taskCli + '.exe')) { $taskCli += '.exe' }
 $taskCases = @(
   @('tests/fixtures/upstream/macro01.xlsm','docs/evidence/verified.xlsx','legacy','fcc9a0ca93810d894df21c71d5764db7252afd3b1232b5aef55c21f3efcc9e53'),
   @('tests/fixtures/poi/SimpleMacro.docm','docs/evidence/word-verified.docx','legacy','4bb624cf9a6e465b1658c69f6d0bc607ccccf25e2ee1e3048b3e11376d8aa65e'),
