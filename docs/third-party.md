@@ -10,6 +10,7 @@
 | XlsxWriter | [固定 commit](https://github.com/jmcnamara/XlsxWriter/tree/5d4606d89a955226d2d0825a0f44309043ae7251) | BSD-2-Clause | 真实 Excel XLSM/XLSX 比较 fixture；没有使用 Python Office 逻辑实现 MoonBit 核心 |
 | Apache POI | [固定 commit](https://github.com/apache/poi/tree/12c3688d130035f3dc2ca2a0f50d929456435a93) | Apache-2.0 | 真实 SimpleMacro.docm、公开宏源与超出配置的 SampleDoc.docx；只复用测试数据，没有复用 Java 核心实现 |
 | DocumentFormat.OpenXml | [Open XML SDK](https://github.com/dotnet/Open-XML-SDK), 3.3.0 | MIT | 仅独立测试校验，未进入 MoonBit 运行时 |
+| DocBleach | [固定 revision](https://github.com/docbleach/DocBleach/tree/a42309704108719dfb308783cd36ab363d185450) | MIT | 只参考 OOXML 功能划分和规则思路，无代码/fixture 复制或运行时调用；见 [功能对照](docbleach-comparison.md) |
 
 运行时依赖的精确版本、registry checksum 和源码 hash 在 [dependency-lock.json](dependency-lock.json)。fixture 原始 BSD-2-Clause 版权与许可在 `tests/fixtures/upstream/LICENSE.txt`，来源与 SHA-256 在 [provenance.json](../tests/fixtures/provenance.json)。
 
@@ -17,4 +18,6 @@ Apache POI fixture 的完整原始 LICENSE/NOTICE 位于 `tests/fixtures/poi/`�
 
 Python 标准库承担有界 I/O 宿主和独立 ZIP/XML 测试；jsonschema 4.23.0 仅校验测试中的 Receipt 形状。oletools 0.60.2 / olefile 0.47 仅用于本地静态检查无害 fixture 的 VBA，脚本/安装目录和提取记录不进入公开源码包。WPS 是本机独立兼容客户端，不是运行时依赖，未分发其程序或用户文档。
 
-分发 archive 保留本项目 LICENSE、公开 API、核心实现、测试源码及 fixture 许可；开发缓存、临时产物、客户端截图与历史测试日志通过 .moonignore 排除，完整证据保留在本地，CI 报告作为 Actions artifacts 保存。所有 fixture 都来自上述固定公开来源；不把用户文件加入测试语料。
+新增 business fixtures 为作者自建组合文档，布局、文本和测试图片采用 Apache-2.0；由 XlsxWriter 3.2.9、CPython XML/Pillow 离线生成。宏字节不变，沿用既有 XlsxWriter/POI 的对应来源许可。来源、固定 hash 及声明见 [business provenance](../tests/fixtures/business/provenance.json)，不能将这些自建样本记为真实第三方采用。
+
+分发 archive 保留本项目 LICENSE、公开 API、核心实现、测试源码及 fixture 许可；开发缓存、临时产物、客户端截图与历史测试日志通过 .moonignore 排除，完整证据保留在本地，CI 报告作为 Actions artifacts 保存。不把用户文件加入测试语料。

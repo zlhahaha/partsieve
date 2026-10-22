@@ -1,34 +1,20 @@
-# 原型保留契约
+# 0.3 保留契约
 
-对象为解压后的 part payload，不是 ZIP 容器的 bytes。
+比较对象为解压后的内部文件原始数据，不是整个ZIP容器字节。
 
-| 输入部件 | 去向 | 检查 |
+| 对象 | 分类 | 核验 |
 | --- | --- | --- |
-| 已支持 VBA 项目 | RemovedByPolicy | 精确类型+关系；单入边；无 companion；输出不存在 |
-| workbook 关系部件（有 VBA 时） | RegeneratedMetadata | 除 VBA relation 外关系字段一致；从输出重新解析 |
-| Content Types（输入主类型 XLSM 时） | RegeneratedMetadata | 删除 VBA 映射，将主 workbook 类型改为 XLSX，其余映射保留 |
-| 其余输入部件 | BytePreserved | 每个 payload SHA-256 相等，禁止新增/漏失 |
+| 支持的VBA及Word专属配套信息 | RemovedByPolicy | 类型、所有者、引用和删除范围一致，输出中不存在 |
+| VBA主关系、Content Types及模板设置关系文件 | RegeneratedMetadata | 等于从原件独立计算的预期修改，只删除已支持关系并转换主类型 |
+| 有外部模板的Word settings XML | SemanticallyRewritten | 只移除一个已验证attachedTemplate，展开名称/属性值/深度/文本逐项比较，其余设置不变 |
+| 其余正常内容、图片、工作表、表格、样式、页眉页脚 | BytePreserved | 每个内部文件SHA-256相同，不允许额外新增、删除或改动 |
 
-此配置没有 SemanticallyRewritten 正文部件；不把不存在的正文 handler 列为完成。工作簿和工作表包括 codeName 的 XML bytes 保留，VBA 关系为隐式关联，无需删源 XML 节点。
+验证从实际原件/输出重算完整图、文件集合和hash。外部计划绑定原件、全部内部文件、限制、决策和依赖，每个字段必须独立重算一致。模板先修改设置XML，再移除关系、重建关系文件；操作带明确依赖和预期hash。
 
-允许损失只有 VBA 项目及其宏功能、macro-enabled 主类型。普通单元格/工作簿/样式/主题/文档属性 payload 必须保留。不支持的图片、对象、外链、公式或扩展直接拒绝，不以文本存在推导视觉保真。
+VBA为隐式关联，保留XML不允许引用待删宏或配套信息；共享依赖拒绝。日期系统、数值、样式关联、文本和工作表保留；样式/共享字符串索引越界拒绝。图片限定受支持内嵌PNG/JPEG，数据原样保留，不提供图像解码安全鉴定。未知内容不自动删除，不按引用可达性进行全包清理。
 
-完整 verify 需要原文件。从原件重新生成预期有限修改，重新读取实际输出、核验每个 input part 去向。Receipt 与重新计算结果须完全一致，不能只信任其 Pass 或 hash。无 original 时脚本报告 preservation NotChecked、整体 Incomplete，退出 3。
+独立格式/客户端检查在SDK中NotChecked，不能继承历史Pass。无原件则保留检查NotChecked、整体Incomplete。Schema仅约束形状；原件/输出/报告要重新核验一致。0.3报告绑定新的工具、规则与业务配置，旧报告应使用对应版本或基于真实文件重新生成。
 
-发布先将文档临时文件写在输出文件系统，从实际文件重新 verify；再发布文档、最后发布带 `publication: pair-complete` 的 Receipt。使用 exclusive hard link 防止覆盖。任一步失败返回非零并报告回滚/清理。不承诺两路径事务原子性，也不承诺停电后 fsync 级目录持久化；消费者只接受存在且 hash 匹配的完整文件对。
+CLI有界读取、临时输出重读后配套发布，不覆盖目标；两个路径不保证事务原子性。hash不是签名。资源数值仍为实验值，SDK完整工作预算/取消接口尚缺。
 
-## main 开发版 Word VBA 契约
-
-`simple-word-vba-dev-v1` 使用同一图/引用索引和验证管线。DOCM 的单一实际 VBA 项目、其专属 relationship part、至多一个由 `wordVbaData` 关系独占的 supporting XML 为 RemovedByPolicy；主 document 的 VBA 关系和 Content Types 是 RegeneratedMetadata。正文、样式、设置、字体、主题、属性等其他 payload 必须 BytePreserved。共享项目/元数据、原有孤儿 VBA、保留 XML 引用、未知 companion 均拒绝；不做通用孤儿 GC。
-
-真实 fixture 的 14 个 parts 中删除 3 个、重写 2 个元数据、保留 9 个。源正文没有 VBA relationship ID，因此没有正文语义改写。宏启用类型没有实际 VBA 时仅转换主类型，不制造 finding。输出必须为实际 DOCX 主类型且使用 .docx 扩展名。Word schema/规则标为开发版，尚未进入已发布 0.1.0-spike。
-
-## main typed Receipt
-
-`verify_contract` 从实际 original/output bytes 重算完整契约；`rebuild_verified` 和 saved-plan 版本返回经过同一检查的 bytes 与 `VerifiedReceipt`。v2 包含工具/规则/配置版本、限额、入出覆盖、能力与策略决策、完整计划、每个 part 的分类/hash/变更规则及检查状态。已有 VBA 配置使用 BytePreserved、RemovedByPolicy、RegeneratedMetadata；SemanticallyRewritten 的类型仅保留接口，尚无可接受的 source XML handler 或语义保留声明。
-
-独立 schema/客户端检查在 SDK 中是 NotChecked，不产生 Pass 或工具记录。外部证据必须另行绑定实际输出 hash。Receipt 不带真实性签名；CLI 比较的是原件/输出重新计算的整份报告。输入或输出、决策、计划、覆盖、部件去向及伪造客户端证据的修改均不能通过该比较。Receipt/计划 JSON 的字节、深度、token 与项数有界，重复键拒绝。
-
-输入读取受 input_bytes 限制；预期输出和实际输出的包读取受 output_bytes 限制，并继续应用 entry/total/XML 等限额。类型转换可能增加元数据大小，输出不得误用原件的更小输入限额。CLI 原件读取上限 32 MiB、输出 verify 读取上限 64 MiB，二者均以实际读取核对。
-
-WPS 保存副本属于客户端重写，不属于 PartSieve 的 BytePreserved 契约。该 Word 副本正文一致、可以重开，但独立 SDK 发现 styles 中三个元素顺序错误，兼容矩阵单列该失败；不得把客户端另存副本当成 PartSieve 完整 verify 成功产物。
+WPS保存副本由客户端重写；当前Word副本能编辑和重开，但有三处样式顺序错误。原始输出格式通过不能替代保存副本结果，也不等于通用Office安全或视觉完全一致。

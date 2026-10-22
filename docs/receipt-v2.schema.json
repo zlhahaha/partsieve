@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:partsieve:receipt:v2-dev",
   "title": "PartSieve current accepted VBA profiles typed Receipt (development)",
-  "description": "Shape only, not verification. Recompute from actual original/output. Source XML rewrites and independent clients are not certified by this schema.",
+  "description": "Shape only, not verification. Recompute from actual original/output. Only settings-local attachedTemplate removal supports semantic rewriting; independent clients remain external evidence.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -20,8 +20,8 @@
   "$defs": {
     "profile": {
       "enum": [
-        "simple-spreadsheet-spike-v1",
-        "simple-word-vba-dev-v1"
+        "business-spreadsheet-v1",
+        "business-word-v1"
       ]
     },
     "rule": {
@@ -78,8 +78,8 @@
       "properties": {
         "declared_profile": {
           "enum": [
-            "simple-spreadsheet-spike-v1",
-            "simple-word-vba-dev-v1"
+            "business-spreadsheet-v1",
+            "business-word-v1"
           ]
         },
         "rules": {
@@ -123,10 +123,16 @@
       "additionalProperties": false,
       "properties": {
         "rule_id": {
-          "const": "vba-v1"
+          "enum": [
+            "vba-v1",
+            "remote-template-v1"
+          ]
         },
         "capability": {
-          "const": "VBA"
+          "enum": [
+            "VBA",
+            "RemoteTemplate"
+          ]
         },
         "source": {
           "type": "string"
@@ -155,6 +161,31 @@
         "certainty",
         "rebuild_support",
         "evidence"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "capability": {
+                "const": "RemoteTemplate"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "rule_id": {
+                "const": "remote-template-v1"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "rule_id": {
+                "const": "vba-v1"
+              }
+            }
+          }
+        }
       ]
     },
     "decision": {
@@ -177,7 +208,8 @@
         "rule_id": {
           "enum": [
             "vba-v1",
-            "format-v1"
+            "format-v1",
+            "remote-template-v1"
           ]
         },
         "part": {
@@ -208,7 +240,8 @@
             "RemoveRelationship",
             "RewriteRelationshipPart",
             "RewriteContentTypes",
-            "ChangeMainContentType"
+            "ChangeMainContentType",
+            "RewriteSourceXml"
           ]
         },
         "part": {
@@ -223,7 +256,8 @@
         "rule_id": {
           "enum": [
             "vba-v1",
-            "format-v1"
+            "format-v1",
+            "remote-template-v1"
           ]
         },
         "decision_id": {
@@ -292,10 +326,10 @@
           "const": "partsieve.prepared-plan.v1"
         },
         "tool": {
-          "const": "partsieve/0.2.0-spike"
+          "const": "partsieve/0.3.0-spike"
         },
         "rules": {
-          "const": "bounded-vba-plan-v1"
+          "const": "bounded-business-plan-v1"
         },
         "input_hash": {
           "type": "string",
@@ -481,7 +515,8 @@
           "enum": [
             "BytePreserved",
             "RemovedByPolicy",
-            "RegeneratedMetadata"
+            "RegeneratedMetadata",
+            "SemanticallyRewritten"
           ]
         },
         "before_hash": {
@@ -593,10 +628,10 @@
           "const": "partsieve.receipt.v2-dev"
         },
         "tool": {
-          "const": "partsieve/0.2.0-spike"
+          "const": "partsieve/0.3.0-spike"
         },
         "rules": {
-          "const": "bounded-vba-plan-v1"
+          "const": "bounded-business-plan-v1"
         },
         "policy": {
           "const": "passive-office-v1"

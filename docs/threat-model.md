@@ -1,13 +1,15 @@
-# 威胁模型与原型边界
+# 威胁模型与业务配置边界
 
-输入方可控制 ZIP、部件名、XML、关系、元数据和嵌入 bytes。PartSieve 不运行 VBA，不激活对象，不下载外部资源，不解析 DTD。支持范围内 VBA 为按 content type + 精确 relationship type 检出的 VBA 项目 payload；不判断其中代码是否恶意。
+输入可控制ZIP、文件名、XML、关系、类型和嵌入数据。PartSieve不执行宏、不激活对象、不下载资源、不解析DTD和外部实体，不判断VBA代码是否恶意。它不是通用杀毒或Office解析器漏洞防护工具。
 
-原型拒绝：超限、ZIP/CRC/XML 损坏、重复或 case-equivalent 名称、URI 编码歧义、missing target、duplicate local ID、源引用错误、未知部件类型/关系/命名空间/扩展、外部关系、公式、OLE、ActiveX、签名、非 XLSX/XLSM、孤儿/共享 VBA、VBA companion part。公式和 hyperlink 当前都不开放。重建仅输出 XLSX。
+支持DOCX/DOCM与XLSX/XLSM的明确业务子集，处理已验证的VBA所有权集合。Word只额外移除一个settings本地、恰好一个attachedTemplate引用的HTTP(S)模板关系；同时删除源XML元素并验证其他设置不变。
 
-每个 XML 最大 8 MiB、深度 128、元素节点 200,000、属性 400,000；全包元素节点/属性各最多 1,000,000。单元素属性 256，markup（含注释/CDATA/PI）与 text token 65,536 code units。ZIP 默认 input 32 MiB、entry 32 MiB、全部解压 128 MiB、4096 entries；关系最多 32768；VBA 配置最多一个项目；output writer 64 MiB。支持配置还有严格 allowlist。这些值为 PROVISIONAL，尚未进行完整 1/10/30 MiB 内存校准。
+拒绝损坏/超限、重复/等价名称、URI歧义、缺失目标、重复本地关系ID、错绑引用、未知类型/关系/命名空间/扩展、公式、超链接、外部图片/工作簿、OLE/ActiveX、签名、字段、浮动/未知图片、SVG/VML、加密和其他格式。共享宏依赖或保留XML引用待删宏也拒绝。
 
-SDK 接受宿主已取得的 bytes，并在 ZIP/parser 前检查限额。SDK 不承诺读取文件前的限额或硬时间截止；对外 Python CLI 负责有界文件读取和 60 秒 worker timeout。私有 worker 直接使用 x/fs，不能绕过脚本用于不可信文件摄入。
+图片检查类型、基础签名及来源局部引用，保留原始数据；不做完整图片格式校验、重编码或解码器漏洞防护。能打开、hash相同、格式通过均不能单独证明视觉完全一致或未知威胁不存在。
 
-当前 XML 数值、样式、主题等没有完整 OOXML schema 校验，不能把包结构 Pass 描述为通用格式合法性或视觉保真。仅公开两个真实输入样本的独立 schema/client 证据。支持配置之外拒绝；生产发布前还需 TODO-2～TODO-13。
+输入32MiB、输出64MiB、条目32MiB、累计解压128MiB、条目4096；单XML8MiB、深度128、节点200000、属性400000，包聚合节点/属性各1000000；关系/引用32768、文本/标记token65536 code units、单元素属性256。限额仍为实验值。解析未完成、资源拒绝为Incomplete，不能解释为没有禁止能力。
 
-Receipt hash 绑定 bytes，不是签名/身份认证。URI、名称与错误经 JSON 转义；当前任何 external target 均在报告发布前拒绝，不回显含凭据地址。
+SDK接收bytes，读取前限额、硬超时/取消与发布由宿主负责。Python CLI有界读取、私有快照和60秒worker超时；私有worker不能用于不可信路径。临时输出重读验证，独占发布不覆盖已有文件，两个路径不保证事务原子性。
+
+报告绑定字节和版本，不提供真实性签名；可能包含输入中的外部目标证据，宿主应按文档访问要求管理。独立格式/客户端不在SDK内执行，返回NotChecked。WPS Word保存副本的样式顺序错误、资源规模校准和真实下游尚需后续验证。

@@ -53,3 +53,18 @@ for record in poi["files"]:
     assert hashlib.sha256(payload).hexdigest() == record["sha256"], f"POI fixture drift: {path.name}"
     assert poi["commit"] in record["source"] and record["license"].startswith("Apache-2.0")
 print(json.dumps({"pinned_poi_fixture_files": len(poi["files"]), "status": "Pass"}))
+
+# Author-generated integration cases are pinned separately, not misrepresented
+# as genuine upstream documents or external adoption. Verify macro bytes too.
+import zipfile
+business = json.loads((ROOT / "tests/fixtures/business/provenance.json").read_text(encoding="utf8"))
+for name, expected in business["files"].items():
+    path = ROOT / "tests/fixtures/business" / name
+    assert path.parent == ROOT / "tests/fixtures/business"
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == expected
+    is_sheet = path.suffix == ".xlsm"
+    original = ROOT / ("tests/fixtures/upstream/macro01.xlsm" if is_sheet else "tests/fixtures/poi/SimpleMacro.docm")
+    part = "xl/vbaProject.bin" if is_sheet else "word/vbaProject.bin"
+    with zipfile.ZipFile(path) as fixture, zipfile.ZipFile(original) as upstream:
+        assert fixture.read(part) == upstream.read(part)
+print(json.dumps({"pinned_business_fixture_files": len(business["files"]), "status": "Pass"}))

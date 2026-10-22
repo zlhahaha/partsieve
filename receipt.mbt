@@ -9,6 +9,7 @@ fn contract_dispositions(
       "BytePreserved" => BytePreservedKind
       "RemovedByPolicy" => RemovedByPolicyKind
       "RegeneratedMetadata" => RegeneratedMetadataKind
+      "SemanticallyRewritten" => SemanticallyRewrittenKind
       _ =>
         raise Invalid(
           "no accepted semantic preservation handler for this disposition",
@@ -96,7 +97,7 @@ pub fn verify_contract(
   })
   {
     schema: "partsieve.receipt.v2-dev",
-    tool: "partsieve/0.2.0-spike",
+    tool: "partsieve/0.3.0-spike",
     rules: prepared.rules,
     policy: prepared.policy,
     profile: prepared.profile,
@@ -121,7 +122,7 @@ pub fn verify_contract(
     independent_tools: [],
     limitations: before.audit.limitations +
     [
-      "No accepted source XML rewrite handler: SemanticallyRewritten is not used or certified by this configuration.",
+      "Source XML semantic rewriting is limited to settings-local attachedTemplate removal; other fields/links/objects refuse.",
       "Receipt hashes bind bytes; no authenticity signature or general Office safety proof.",
       "Independent schema/client evidence is separate; WPS Word saved-copy ordering failure must not be represented as Pass.",
     ],

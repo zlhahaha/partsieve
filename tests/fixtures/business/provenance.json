@@ -1,0 +1,18 @@
+{
+  "kind": "author-generated synthetic integration fixtures; not third-party adoption",
+  "date": "2026-10-22",
+  "author_content_license": "Apache-2.0",
+  "generator": "local XlsxWriter 3.2.9 and CPython XML/Pillow; no upstream Office implementation copied",
+  "macro_sources": [
+    "../upstream/macro01.xlsm (BSD-2-Clause)",
+    "../poi/SimpleMacro.docm (Apache-2.0)"
+  ],
+  "macros": "copied verbatim, never executed; original macro source and licenses retained in upstream fixture directories",
+  "files": {
+    "document-layout.docm": "55d68e8efa7e8b29ccf87690ac347537bb751df8a1435a3aa70a18a3b245f76d",
+    "document-template.docm": "fcf80d572771fc10ff84c8c125a882195b7f1c540bbce08644dcdafb0ccb65ce",
+    "report-1900.xlsm": "bbcb28f1d9c1a6895187b15ee0e2ff98df330d473120fad7dd3ad4b2a62317d6",
+    "report-1904.xlsm": "5b3f882edfa41d8683ad6bc084e78339b33b50e963ede419c740a86e9e303bbd",
+    "report-inline.xlsm": "762171d121c2085512799a7cdf6916149c3d849caf3c8656e0c6f0a61d0bb3d8"
+  }
+}

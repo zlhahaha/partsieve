@@ -101,6 +101,7 @@ fn validate_profile(pkg : Package) -> Unit raise {
   for p in report.parts {
     validate_static_xml_part(pkg, p)
   }
+  validate_spreadsheet_values(pkg)
 }
 
 ///|

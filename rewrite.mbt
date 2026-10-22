@@ -41,6 +41,37 @@ fn make_plan(pkg : Package) -> RewritePlan {
       })
     }
   }
+  for r in report.relationships {
+    if !is_template_relationship(r) {
+      continue
+    }
+    for
+      (kind, part, reason) in [
+        (
+          "RewriteSourceXml",
+          r.source,
+          "Remove only the validated attachedTemplate element; retain all other settings semantics.",
+        ),
+        (
+          "RemoveRelationship",
+          r.source,
+          "Remove the settings-local external template relationship without fetching its target.",
+        ),
+        (
+          "RewriteRelationshipPart",
+          relationship_part(r.source),
+          "Regenerate settings relationships without the removed external template.",
+        ),
+      ] {
+      ops.push({
+        kind,
+        part,
+        relationship_id: r.id,
+        rule: "remote-template-v1",
+        reason,
+      })
+    }
+  }
   if is_macro_format(report.format) {
     ops.push({
       kind: "ChangeMainContentType",
@@ -87,7 +118,7 @@ fn write_relationships(pkg : Package, source : String) -> Bytes raise {
   let writer = @xml.Writer::new()
   writer.start_element("Relationships", [("xmlns", rel_ns)])
   for r in pkg.audit.relationships {
-    if r.source != source || r.kind == vba_rel {
+    if r.source != source || r.kind == vba_rel || is_template_relationship(r) {
       continue
     }
     writer.empty_element("Relationship", [
@@ -167,6 +198,7 @@ fn verify_parts(
     let matches = after.audit.parts.filter(fn(q) { q.name == p.name })
     let out = if matches.length() == 0 { None } else { Some(matches[0]) }
     let removed = controlled_vba_parts(before).contains(p.name)
+    let semantic = template_rewritten(before, p.name)
     let metadata = is_macro_format(before.audit.format) &&
       (
         p.name == "[Content_Types].xml" ||
@@ -175,6 +207,10 @@ fn verify_parts(
           p.name == relationship_part(before.audit.main_part)
         )
       )
+    let metadata = metadata ||
+      before.audit.relationships.any(fn(r) {
+        is_template_relationship(r) && p.name == relationship_part(r.source)
+      })
     if removed {
       guard out is None else { raise Invalid("VBA part retained") }
       dispositions.push({
@@ -185,12 +221,17 @@ fn verify_parts(
       })
     } else {
       guard out is Some(q) else { raise Invalid("preserved part missing") }
-      guard metadata || q.sha256 == p.sha256 else {
+      guard metadata || semantic || q.sha256 == p.sha256 else {
         raise Invalid("preserved payload changed")
+      }
+      if semantic {
+        verify_template_semantics(before, after, p.name)
       }
       dispositions.push({
         part: p.name,
-        classification: if metadata {
+        classification: if semantic {
+          "SemanticallyRewritten"
+        } else if metadata {
           "RegeneratedMetadata"
         } else {
           "BytePreserved"
@@ -243,14 +284,14 @@ fn legacy_receipt(
       "partsieve.receipt.spike-v1"
     },
     tool: if is_word_format(before.audit.format) {
-      "partsieve/0.2.0-spike"
+      "partsieve/0.3.0-spike"
     } else {
-      "partsieve/0.1.0-spike"
+      "partsieve/0.3.0-spike"
     },
     rules: if is_word_format(before.audit.format) {
-      "word-vba-dev-v1"
+      "word-business-v1"
     } else {
-      "spike-rules-v1"
+      "business-rules-v1"
     },
     policy: "passive-office-v1",
     profile: before.audit.profile,

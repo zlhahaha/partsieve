@@ -1,16 +1,17 @@
-# 实际兼容矩阵（2026-10-04）
+# 兼容矩阵（2026-10-22）
 
-| 配置/能力 | Audit | Rebuild | Verify | 独立校验 | 客户端 |
-| --- | --- | --- | --- | --- | --- |
-| simple-spreadsheet-spike-v1 / 真实 macro01.xlsm VBA | 支持 | XLSM → XLSX，删除 VBA | 原件+输出+Receipt | Python ZIP/XML、Open XML SDK 3.3.0 Office2007 Pass | WPS 12.1.0.28505 打开、保存、重开，A1=123；UI 无修复提示 |
-| 同配置 / simple01.xlsx 干净控制 | 支持 | 部件 payload 原样保留 | 同上 | Open XML SDK 3.3.0 Pass | 未单独 UI 检查 |
-| 同配置 / macro-enabled 无 VBA | 主类型与 VBA 证据分开报告 | 转换类型 | 支持 | 人工变体回归 | 未单独客户端检查 |
-| 同配置 / VBA 改名、namespace prefix、绝对 target | 支持 | 支持 | 支持 | 人工变体回归 | 未逐项客户端检查 |
-| main 开发版 simple-word-vba-dev-v1 / 真实 SimpleMacro.docm | 支持受限声明检查 | DOCM → DOCX；项目及独占 supporting 元数据共删 3 parts | 原件+输出+legacy 或 typed v2 Receipt；9 payload 保留 | Python ZIP/XML、Open XML SDK 3.3.0 Office2007 Pass | WPS 12.1.0.28505 输出可见打开，无修复提示；保存/重开正文一致 |
-| WPS Word 保存副本（客户端产物） | 不承诺支持 | 不属于 PartSieve 重建输出 | 不属于原输入的保留契约 | **Open XML SDK Fail：styles.xml 三处 uiPriority 顺序错误** | 可重开，正文一致；UI 因 COM 占用使用只读打开，无修复提示 |
-| main Word 配置 / 衍生干净 DOCX、无 VBA 的 DOCM、改名和绝对 target | 支持 | 支持有限转换；干净 payload 保留 | 支持 | 人工/衍生回归 | 未逐项客户端检查 |
-| 真实 SampleDoc.docx（含 customXml）、其他 Word 功能；外链、公式、hyperlink、图片、OLE、ActiveX、未知扩展 | 结构化 assess 检出声明/缺口；重建拒绝 | 不支持 | 不支持完整契约 | 拒绝回归 | 不承诺 |
+当前配置 business-spreadsheet-v1 / business-word-v1，版本0.3.0-spike。结果只适用于已验证范围，不表示任意同格式文档均支持。
 
-首个真实样本只有一个数字单元格，不含图片。WPS 客户端证据经用户指定纳入验收；没有声称 Microsoft Excel/LibreOffice 已测试。WPS 保存副本通过 SDK 格式校验和 A1 检查，但客户端重写不属于 PartSieve 的 BytePreserved 契约。
+| 场景 | SDK/CLI保留验证 | 独立ZIP/XML / Open XML SDK3.3.0 Office2007 | WPS12.1.0.28505 |
+| --- | --- | --- | --- |
+| 自建报表：中文/英文、金额、布尔、三个工作表、1900日期、共享文本、常见样式和合并 | 去宏转XLSX，普通内容原始数据保留 | 输入/输出通过 | 数据、日期与样式正确；编辑/保存/重开通过，保存副本格式通过 |
+| 相同报表使用1904日期系统 | 日期值、系统和格式保留 | 输入/输出通过 | 显示2026-10-22；编辑/保存/重开及保存副本格式通过 |
+| 相同报表使用内联文本 | 原始文本和样式保留 | 输入/输出通过 | 编辑/保存/重开及保存副本格式通过 |
+| 自建Word：表格、合并、正文PNG、两节独立页眉页脚及JPEG | 去宏转DOCX，正常内容原始数据保留 | 输入/输出通过 | 内容/图片/分节检查及编辑/保存/重开通过；**保存副本格式失败：三处styles uiPriority顺序错误** |
+| 上述Word加settings本地HTTP(S)外部模板 | 去宏、移除模板元素及关系，其他设置语义不变 | 输入/输出通过 | 未下载模板，编辑/保存/重开通过；**保存副本同样有三处样式顺序错误** |
+| 固定真实macro01.xlsm / SimpleMacro.docm | 原有路径继续回归 | 历史与本次独立记录分开 | 历史无宏输出打开证据保留；Word历史保存副本也有上述失败 |
+| 公式、外链、OLE/ActiveX、字段、未知绘图/扩展、错绑引用和宏共享依赖 | 拒绝或完整性失败，不发布成功文件对 | 拒绝回归 | 不在客户端打开原始含宏或不支持输入 |
 
-上一段 WPS 保存副本指 XLSX；Word 保存副本的独立失败在上表明确列出。Word 主体也是简单单段，无图片或复杂布局证据。Word 支持自 0.2.0-spike 加入，仍为受限实验配置；完整矩阵验收 TODO-12 未完成。
+新增样本为作者自建集成文档，固定来源/hash在 tests/fixtures/business/provenance.json；没有虚构第三方采用。报告/截图本地保存，CI上传本次实际输出和独立报告。
+
+客户端保存属于客户端重写，不属于PartSieve字节保留契约。Word保存失败没有隐藏或降低校验标准。没有本次Microsoft Office/LibreOffice验收或全面视觉保真声明。

@@ -5,7 +5,9 @@ let word_content_types : Array[String] = [
   "application/vnd.openxmlformats-officedocument.wordprocessingml.fontTable+xml",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.webSettings+xml",
   "application/vnd.openxmlformats-officedocument.theme+xml", "application/vnd.openxmlformats-package.core-properties+xml",
-  "application/vnd.openxmlformats-officedocument.extended-properties+xml",
+  "application/vnd.openxmlformats-officedocument.extended-properties+xml", "application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml", "image/png",
+  "image/jpeg",
 ]
 
 ///|
@@ -17,6 +19,10 @@ let word_relationship_types : Array[String] = [
   office_rel + "webSettings",
   office_rel + "theme",
   office_rel + "extended-properties",
+  office_rel + "header",
+  office_rel + "footer",
+  office_rel + "image",
+  office_rel + "attachedTemplate",
   vba_rel,
   word_vba_data_rel,
   "http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties",
@@ -33,7 +39,10 @@ let word_attribute_names : Array[String] = [
   "defUnhideWhenUsed", "defQFormat", "locked", "uiPriority", "semiHidden", "unhideWhenUsed",
   "qFormat", "percent", "spelling", "grammar", "bg1", "t1", "bg2", "t2", "accent1",
   "accent2", "accent3", "accent4", "accent5", "accent6", "hyperlink", "followedHyperlink",
-  "usb0", "usb1", "usb2", "usb3", "csb0", "csb1", "clear",
+  "usb0", "usb1", "usb2", "usb3", "csb0", "csb1", "clear", "sz", "color", "fill",
+  "themeColor", "themeTint", "themeShade", "gridSpan", "afterAutospacing", "beforeAutospacing",
+  "tblLook", "firstRow", "lastRow", "firstColumn", "lastColumn", "noHBand", "noVBand",
+  "hRule", "tblStyleRowBandSize",
 ]
 
 ///|
@@ -59,12 +68,19 @@ fn controlled_vba_parts(pkg : Package) -> Array[String] {
 ///|
 fn validate_word_profile(pkg : Package) -> Unit raise {
   let report = pkg.audit
+  guard report.relationships.filter(is_template_relationship).length() <= 1 else {
+    raise Refused("multiple attached template declarations unsupported")
+  }
   guard pkg.graph.graph.coverage_gaps.length() == 0 else {
     raise Refused(
       "Word graph coverage gap: " + pkg.graph.graph.coverage_gaps[0],
     )
   }
   for r in report.relationships {
+    if r.kind == office_rel + "attachedTemplate" {
+      validate_template_relationship(pkg, r)
+      continue
+    }
     guard !r.external && word_relationship_types.contains(r.kind) else {
       raise Refused("external or unsupported Word relationship")
     }
@@ -75,6 +91,8 @@ fn validate_word_profile(pkg : Package) -> Unit raise {
       target.content_type == word_vba_data_ct
     } else if r.kind == office_rel + "officeDocument" {
       target.content_type == docm_ct || target.content_type == docx_ct
+    } else if r.kind == office_rel + "image" {
+      target.content_type == "image/png" || target.content_type == "image/jpeg"
     } else if r.kind == office_rel + "theme" {
       target.content_type ==
       "application/vnd.openxmlformats-officedocument.theme+xml"
@@ -104,6 +122,18 @@ fn validate_word_profile(pkg : Package) -> Unit raise {
       ].contains(r.kind) {
       guard r.source == "/" else {
         raise Refused("Word package metadata source mismatch")
+      }
+    } else if r.kind == office_rel + "image" {
+      let source_type = match pkg.graph.part_index.get(r.source) {
+        Some(i) => report.parts[i].content_type
+        None => ""
+      }
+      guard r.source == report.main_part ||
+        source_type ==
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml" ||
+        source_type ==
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml" else {
+        raise Refused("Word image relationship has unsupported source")
       }
     } else {
       guard r.source == report.main_part else {
@@ -155,6 +185,7 @@ fn validate_word_profile(pkg : Package) -> Unit raise {
     }
   }
   let removed = controlled_vba_parts(pkg)
+  validate_word_references(pkg)
   for part in report.parts {
     if part.name == "[Content_Types].xml" {
       continue
@@ -163,6 +194,17 @@ fn validate_word_profile(pkg : Package) -> Unit raise {
       raise Refused("unknown Word part content type")
     }
     if part.content_type == vba_ct {
+      continue
+    }
+    if part.content_type == "image/png" || part.content_type == "image/jpeg" {
+      let bytes = get_part(pkg.archive, part.name)
+      guard (
+          part.content_type == "image/png" &&
+          bytes.has_prefix(b"\x89PNG\x0d\x0a\x1a\x0a")
+        ) ||
+        (part.content_type == "image/jpeg" && bytes.has_prefix(b"\xff\xd8\xff")) else {
+        raise Invalid("embedded image signature/content-type mismatch")
+      }
       continue
     }
     if part.content_type == word_vba_data_ct {
@@ -196,6 +238,10 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
     "document"
   } else if part.content_type == word_vba_data_ct {
     "vbaSuppData"
+  } else if part.content_type.contains(".header+") {
+    "hdr"
+  } else if part.content_type.contains(".footer+") {
+    "ftr"
   } else if part.content_type.contains(".styles+") {
     "styles"
   } else if part.content_type.contains(".settings+") {
@@ -220,26 +266,8 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
     } else {
       ""
     }
-    let permitted = if root == "document" {
-      ns == word_ns &&
-      (match name {
-        "document" => node.depth == 0
-        "body" => parent == "document"
-        "p" | "sectPr" => parent == "body"
-        "r" | "pPr" => parent == "p"
-        "t" | "rPr" | "br" | "cr" | "tab" => parent == "r"
-        "b" | "i" | "u" | "sz" | "szCs" | "rFonts" | "lang" | "color" =>
-          parent == "rPr"
-        "spacing"
-        | "jc"
-        | "ind"
-        | "pStyle"
-        | "keepNext"
-        | "keepLines"
-        | "widowControl" => parent == "pPr"
-        "pgSz" | "pgMar" | "cols" | "docGrid" => parent == "sectPr"
-        _ => false
-      })
+    let permitted = if ["document", "hdr", "ftr"].contains(root) {
+      word_passive_element(node, parent, root)
     } else if root == "vbaSuppData" {
       ns == word_macro_ns &&
       (match name {
@@ -271,7 +299,7 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
           [
             "zoom", "proofState", "defaultTabStop", "characterSpacingControl", "compat",
             "rsids", "themeFontLang", "clrSchemeMapping", "shapeDefaults", "decimalSymbol",
-            "listSeparator",
+            "listSeparator", "attachedTemplate",
           ].contains(name)
         ) ||
         (parent == "rsids" && ["rsidRoot", "rsid"].contains(name))
@@ -309,10 +337,45 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
     guard permitted else {
       raise Refused("unsupported Word XML feature or placement: " + name)
     }
+    if (
+        ns == word_ns &&
+        ["headerReference", "footerReference", "attachedTemplate"].contains(
+          name,
+        )
+      ) ||
+      (ns == drawing_ns && name == "blip") {
+      let required = if ns == drawing_ns { "embed" } else { "id" }
+      guard node.element.attributes
+        .filter(fn(a) {
+          a.name.namespace_uri ==
+          Some(office_rel[0:office_rel.length() - 1].to_owned()) &&
+          a.name.local_name == required
+        })
+        .length() ==
+        1 else {
+        raise Refused(
+          "Word content reference requires a source-local relationship",
+        )
+      }
+    }
     parents.push(name)
     for a in node.element.attributes {
       let ans = a.name.namespace_uri.unwrap_or("")
-      if ns == word_office_ns {
+      if ans == office_rel[0:office_rel.length() - 1].to_owned() {
+        validate_word_reference_attribute(pkg, part, node, a)
+      } else if [word_drawing_ns, picture_ns, drawing_ns].contains(ns) {
+        guard ans == "" &&
+          passive_drawing_attribute(ns, name, a.name.local_name) else {
+          raise Refused("unsupported drawing attribute")
+        }
+        if ns == drawing_ns &&
+          name == "graphicData" &&
+          a.name.local_name == "uri" {
+          guard a.value == picture_ns else {
+            raise Refused("non-picture drawing")
+          }
+        }
+      } else if ns == word_office_ns {
         guard (
             ans == "urn:schemas-microsoft-com:vml" &&
             a.name.local_name == "ext" &&

@@ -115,15 +115,21 @@ fn build_graph(
     }
     if implicit_semantics is Some(semantics) {
       implicit.push({ source: r.source, relationship_index: i, semantics, })
-    } else if r.kind != office_rel + "worksheet" {
+    } else if ![
+        office_rel + "worksheet",
+        office_rel + "header",
+        office_rel + "footer",
+        office_rel + "image",
+        office_rel + "attachedTemplate",
+      ].contains(r.kind) {
       gaps.push("unsupported relationship semantics: " + r.source + "#" + r.id)
     }
   }
   let references : Array[XmlReference] = []
   let relationship_ns = office_rel[0:office_rel.length() - 1].to_owned()
   let known_namespaces = [
-    ct_ns, rel_ns, spreadsheet_ns, drawing_ns, word_ns, word_math_ns, word_office_ns,
-    word_macro_ns, "http://schemas.openxmlformats.org/package/2006/metadata/core-properties",
+    ct_ns, rel_ns, spreadsheet_ns, drawing_ns, word_drawing_ns, picture_ns, word_ns,
+    word_math_ns, word_office_ns, word_macro_ns, "http://schemas.openxmlformats.org/package/2006/metadata/core-properties",
     "http://purl.org/dc/elements/1.1/", "http://purl.org/dc/terms/", "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties",
     "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes",
   ]
@@ -136,7 +142,7 @@ fn build_graph(
         if ns == "http://schemas.openxmlformats.org/markup-compatibility/2006" ||
           ns == "urn:schemas-microsoft-com:vml" ||
           !known_namespaces.contains(ns) ||
-          local_name == "ext" ||
+          (local_name == "ext" && ns != drawing_ns) ||
           local_name == "extLst" {
           has_opaque_content = true
         }

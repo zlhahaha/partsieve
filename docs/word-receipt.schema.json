@@ -202,7 +202,7 @@
           "const": "CompleteWithinProfile"
         },
         "profile": {
-          "const": "simple-word-vba-dev-v1"
+          "const": "business-word-v1"
         },
         "checked_rules": {
           "$ref": "#/$defs/strings"
@@ -285,7 +285,7 @@
           "const": "passive-office-v1"
         },
         "profile": {
-          "const": "simple-word-vba-dev-v1"
+          "const": "business-word-v1"
         },
         "operations": {
           "type": "array",
@@ -311,7 +311,8 @@
           "enum": [
             "BytePreserved",
             "RemovedByPolicy",
-            "RegeneratedMetadata"
+            "RegeneratedMetadata",
+            "SemanticallyRewritten"
           ]
         },
         "before_hash": {
@@ -374,16 +375,16 @@
           "const": "partsieve.receipt.word-dev-v1"
         },
         "tool": {
-          "const": "partsieve/0.2.0-spike"
+          "const": "partsieve/0.3.0-spike"
         },
         "rules": {
-          "const": "word-vba-dev-v1"
+          "const": "word-business-v1"
         },
         "policy": {
           "const": "passive-office-v1"
         },
         "profile": {
-          "const": "simple-word-vba-dev-v1"
+          "const": "business-word-v1"
         },
         "input_hash": {
           "$ref": "#/$defs/hash"

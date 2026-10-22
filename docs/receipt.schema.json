@@ -55,7 +55,7 @@
       "properties": {
         "schema": {"const": "partsieve.audit.spike-v1"}, "input_hash": {"$ref": "#/$defs/hash"},
         "format": {"enum": ["XLSM", "XLSX"]}, "main_part": {"type": "string"},
-        "coverage": {"const": "CompleteWithinProfile"}, "profile": {"const": "simple-spreadsheet-spike-v1"},
+        "coverage": {"const": "CompleteWithinProfile"}, "profile": {"const": "business-spreadsheet-v1"},
         "checked_rules": {"$ref": "#/$defs/strings"}, "limitations": {"$ref": "#/$defs/strings"},
         "parts": {"type": "array", "items": {"$ref": "#/$defs/part"}},
         "relationships": {"type": "array", "items": {"$ref": "#/$defs/relationship"}},
@@ -76,7 +76,7 @@
       "required": ["schema", "input_hash", "policy", "profile", "operations"],
       "properties": {
         "schema": {"const": "partsieve.plan.spike-v1"}, "input_hash": {"$ref": "#/$defs/hash"},
-        "policy": {"const": "passive-office-v1"}, "profile": {"const": "simple-spreadsheet-spike-v1"},
+        "policy": {"const": "passive-office-v1"}, "profile": {"const": "business-spreadsheet-v1"},
         "operations": {"type": "array", "items": {"$ref": "#/$defs/operation"}}
       }
     },
@@ -96,9 +96,9 @@
       "type": "object", "additionalProperties": false,
       "required": ["schema", "tool", "rules", "policy", "profile", "input_hash", "output_hash", "input_size", "output_size", "input_format", "output_format", "limits", "audit", "plan", "dispositions", "structure", "preservation", "independent_validation", "limitations"],
       "properties": {
-        "schema": {"const": "partsieve.receipt.spike-v1"}, "tool": {"const": "partsieve/0.1.0-spike"},
-        "rules": {"const": "spike-rules-v1"}, "policy": {"const": "passive-office-v1"},
-        "profile": {"const": "simple-spreadsheet-spike-v1"},
+        "schema": {"const": "partsieve.receipt.spike-v1"}, "tool": {"const": "partsieve/0.3.0-spike"},
+        "rules": {"const": "business-rules-v1"}, "policy": {"const": "passive-office-v1"},
+        "profile": {"const": "business-spreadsheet-v1"},
         "input_hash": {"$ref": "#/$defs/hash"}, "output_hash": {"$ref": "#/$defs/hash"},
         "input_size": {"type": "integer", "minimum": 1, "maximum": 33554432},
         "output_size": {"type": "integer", "minimum": 1, "maximum": 67108864},

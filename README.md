@@ -1,23 +1,27 @@
 # PartSieve
 
-MoonBit OOXML 能力审计与验证重建 SDK。按受限配置识别 VBA、生成删除计划、重建为普通可编辑 OOXML，再从实际输出重算结构和所有部件的保留契约。不执行宏，不获取外部资源。
+MoonBit Office 文档清理与保留验证库。面向文档接收和报表交付，在已验证范围内移除 VBA 宏及 Word 外部模板，输出可继续编辑的 DOCX/XLSX，并从实际输出重新检查引用和所有内部文件的处理结果。不执行宏，不访问外部资源。
 
-当前实验版本 **0.2.0-spike**；旧原型 **0.1.0-spike** 支持简单 XLSM→XLSX。0.2 新增受限 DOCM→DOCX、图/引用索引和结构化覆盖报告。通用 Office 文档、外链、公式、图片、OLE/ActiveX、未知扩展仍拒绝；不保证任意文档安全或视觉保真。
+当前版本 **0.3.0-spike**，范围明确的实验版本，不承诺任意 Office 文件安全或视觉完全一致。参考 [DocBleach 的功能划分](docs/docbleach-comparison.md)，核心由 MoonBit 实现；Python 只承担命令行文件读写、超时和配套输出。
+
+## 支持范围
+
+| 输入与内容 | 处理和保留 |
+| --- | --- |
+| XLSX/XLSM：中文/英文文本、数字、布尔值、日期、多工作表、常用样式 | 共享/内联文本、1900/1904日期系统、工作表名称与顺序、字体/颜色/边框/对齐/数字格式及合并单元格保留；移除 VBA、转 XLSX |
+| DOCX/DOCM：段落、表格、合并单元格、内嵌 PNG/JPEG、分节页眉页脚 | 正常内容和图片原始数据保留；校验正文、页眉和页脚各自引用；移除 VBA、转 DOCX |
+| Word 设置中一个 HTTP(S) 外部模板 | 同步移除 attachedTemplate 元素和设置本地关系；核验其余设置语义，不下载模板 |
+| 公式、普通超链接、外部图片/工作簿、OLE/ActiveX、签名、未知扩展 | 拒绝重建，返回原因，不生成成功文件对 |
+
+浮动图片、SVG、VML、复杂绘图、字段和其他未知布局仍拒绝。日期按原有值及格式保留，不提供公式计算或渲染引擎。详见 [兼容矩阵](docs/compatibility-matrix.md)。
 
 ## 安装与使用
 
 ```powershell
-moon update
-moon add zlhahaha/partsieve@0.2.0-spike
+moon add zlhahaha/partsieve@0.3.0-spike
 ```
 
-调用方 `moon.pkg` 导入 `"zlhahaha/partsieve" @sieve`。公开 SDK：`audit(bytes, limits?)`、`plan(bytes, limits?)`、`rebuild(bytes, limits?)`、`verify(output, original, limits?)`；0.2 另有 `inspect_graph`、`assess`、`prepare`、`rebuild_with_plan(input, prepared_json, limits?)`。`rebuild` 仅在重解析和保留验证通过后返回 bytes + Receipt。调用方负责有界文件读取、取消/超时和发布。
-
-0.2 的 `rebuild_verified`、`rebuild_verified_with_plan`、`verify_contract` 返回 typed v2 Receipt，含入出 coverage、finding→decision→plan、全部 part 去向/hash 和检查状态。CLI 在 rebuild/verify 加 `--receipt-format v2` 使用该格式，默认 legacy 保持原型兼容；配合 `--plan` 也可使用。SDK 没有运行独立客户端，报告明确为 `NotChecked`，不继承历史 WPS/CI 结果。
-
-legacy Spreadsheet Receipt 的 tool/rules 字段保留原型标识以兼容已有报告；需要绑定当前工具版本时使用 v2，0.2 的 v2 tool 为 `partsieve/0.2.0-spike`。
-
-本地 CLI 与测试：
+调用方导入 `"zlhahaha/partsieve" @sieve`。主要接口：`assess`、`prepare`、`rebuild_verified`、`rebuild_verified_with_plan`、`verify_contract`；传入 bytes 和可选 Limits。报告包含能力、覆盖、处理计划、逐项去向与检查状态。`audit/plan/rebuild/verify/inspect_graph` 继续提供。
 
 ```powershell
 git clone https://github.com/zlhahaha/partsieve.git
@@ -25,46 +29,34 @@ cd partsieve
 moon update
 moon install
 moon build --target native --deny-warn
-python tools/partsieve.py assess tests/fixtures/upstream/macro01.xlsm
-python tools/partsieve.py rebuild tests/fixtures/upstream/macro01.xlsm --dry-run
-python tools/partsieve.py rebuild tests/fixtures/upstream/macro01.xlsm -o result.xlsx --receipt result.receipt.json
-python tools/partsieve.py verify result.xlsx --original tests/fixtures/upstream/macro01.xlsm --receipt result.receipt.json
+moon run examples/business --target native
+python tools/partsieve.py rebuild tests/fixtures/business/report-1900.xlsm -o report.xlsx --receipt report.json --receipt-format v2
+python tools/partsieve.py rebuild tests/fixtures/business/document-template.docm -o document.docx --receipt document.json --receipt-format v2
+python tools/partsieve.py verify document.docx --original tests/fixtures/business/document-template.docm --receipt document.json --receipt-format v2
 ```
 
-Word 示例替换输入为 `tests/fixtures/poi/SimpleMacro.docm`，输出使用 `.docx`。格式以主关系与 content type 判断，输出扩展名必须一致。宏启用主类型不等于存在 VBA。
+[业务示例](examples/business/README.md) 覆盖五个支持输入和一个拒绝输入。样本为注明来源的作者自建组合文档，真实第三方采用尚未确认。CLI `prepare INPUT` 可保存计划，再以 `rebuild INPUT --plan PLAN.json` 执行；每个字段均独立重算。
 
-`python tools/partsieve.py prepare INPUT` 返回绑定输入、全部 part hash、生效限额、finding→policy decision→operation、依赖及元数据预期 hash 的计划；保存 UTF-8 JSON 后用 `rebuild INPUT --plan PLAN.json -o RESULT --receipt RECEIPT` 执行。执行前独立重算整份计划，过期或修改的字段均 Fail。当前 source XML handler 尚未验收，`RewriteSourceXml` 不接受执行；计划声明该缺口，不扩大 VBA 配置范围。
+建议使用 `--receipt-format v2`。0.3 更新配置、规则和工具标识；旧报告需用对应版本验证，或基于真实文件重新生成。独立客户端/完整格式检查在 SDK 中为 NotChecked，不沿用历史 Pass。
 
-Python `tools/partsieve.py` 是有界 I/O 宿主；全部 OOXML 逻辑在 MoonBit。不要直接将私有 Native worker 用于不可信文件：worker 只接收宿主已限制的快照。固定策略为 `passive-office-v1`。输出与 Receipt 不覆盖已有文件；实际文件重读验证后才成对发布，两个路径不保证事务原子性。
+输出与报告不覆盖已有文件，临时输出从磁盘重新验证后配套发布；两个路径不保证事务原子性。退出码：0完成，2完整性/保留/报告不符，3不支持/不完整/资源拒绝，4文件读写或用法错误。缺少原件时保留检查NotChecked、整体Incomplete、退出3。
 
-较大输入先 `moon build --release --target native --deny-warn`，再给 CLI 加 `--release` 使用优化构建。默认 Debug 保持开发行为；每次 worker 调用超时 60 秒，超时为 Incomplete。限额仍 provisional，不承诺任意限额内输入都能完成，也没有完整 SDK 工作预算/取消接口。
+输入上限32MiB、输出64MiB；其他限额见公开 Limits。数值仍为实验值，SDK完整工作预算/取消接口尚缺；CLI每次worker调用超时60秒。较大输入可先 `moon build --release --target native --deny-warn`，CLI加 `--release`。私有worker不能绕过有界CLI直接用于不可信路径。
 
-退出码：0 请求完成，2 明确完整性/保留/Receipt 不符，3 Unsupported/Incomplete/资源拒绝，4 I/O 或用法错误。没有 original 的 verify 保留检查为 NotChecked，完整结论 Incomplete，退出 3。未检查、未知和解析失败不能推导为无禁止能力。
+## 验证与兼容性
 
-## 支持与保留
-
-| 配置 | 审计与重建 | 保留与证据 |
-| --- | --- | --- |
-| simple-spreadsheet-spike-v1 | 简单 XLSX/XLSM；已支持 VBA 移除、主类型转换 | 真实 macro01.xlsm 删除 1 VBA part、重写 2 元数据、保留 7 payload；独立 ZIP/SDK 校验和 WPS 打开通过 |
-| simple-word-vba-dev-v1（0.2 实验配置） | 简单 DOCX/DOCM；项目和独占 supporting 元数据移除 | 真实 SimpleMacro.docm 删除 3 parts、重写 2 元数据、保留 9 payload；独立 ZIP/SDK 校验和 WPS 打开通过 |
-| 共享/孤儿 VBA、保留 XML 引用、未知 companion、外部能力和扩展 | Refuse | 不返回重建文档；未知孤儿不按可达性自动删除 |
-
-字节保留指解压后的 part payload。移除宏会失去宏功能。客户端保存的文件属于客户端重写；WPS Word 另存副本可重开、正文一致，但独立 SDK 发现 3 个 styles 元素顺序错误，不能记为 PartSieve 的保留成功。没有 Microsoft Office/LibreOffice 的验收证据。
-
-## 开发验证
-
-工具链固定 `moonc 0.10.14+7d59c7ec9`，依赖见 [dependency-lock.json](docs/dependency-lock.json)。Windows Native/MSVC 完整检查：
+固定工具链 `moonc 0.10.14+7d59c7ec9`，依赖见 [锁定记录](docs/dependency-lock.json)。Windows Native/MSVC：
 
 ```powershell
 python -m pip install jsonschema==4.23.0
 .\tools\check.ps1
-moon run examples/sdk --target native
+python tests/independent_business.py
 ```
 
-检查会生成本地 `docs/evidence/` 输出与报告。GitHub Actions 将实际生成的 SDK 输出传给独立 ZIP/Open XML SDK 3.3.0 校验 job，并将报告作为 CI artifacts 保存；不依赖预先提交的成功输出。核心回归覆盖读取限额、CRC、URI、namespace、引用/关系图、能力/拒绝、共享保护和保留篡改。WPS 检查是本地客户端证据，CI 不自动运行 WPS。
+CI将本次实际生成的输出交给独立ZIP/XML与Open XML SDK检查，报告保存为Actions artifacts。WPS本地验证三份表格与两份Word输出的读取、编辑、另存和重开；Word保存副本仍有三处WPS生成的styles顺序错误，不能视为格式通过。原始输出与客户端保存副本分开记录。
 
-[架构](docs/architecture.md)、[威胁模型](docs/threat-model.md)、[保留契约](docs/preservation-contract.md)、[兼容矩阵](docs/compatibility-matrix.md)、[原型 Receipt schema](docs/receipt.schema.json)、[开发 Word schema](docs/word-receipt.schema.json)、[typed v2 schema](docs/receipt-v2.schema.json)。Schema 只约束形状，完整验证需要实际原件/输出重算。完整路线图、HANDOFF、工作日志、截图和详细验证档案仅在本地维护。真实第三方 MoonBit 下游尚未确认，不把作者示例计作独立采用。
+[架构](docs/architecture.md)、[威胁模型](docs/threat-model.md)、[保留契约](docs/preservation-contract.md)、[报告格式](docs/receipt-v2.schema.json)。Schema只约束形状；完整核验需要真实原件和输出。申报书、交接、工作记录与截图仅在本地维护。
 
 ## 许可与来源
 
-项目 Apache-2.0。运行时依赖：flate 0.8.4、Milky2018/xml 0.5.0、moonbitlang/x 0.5.5（均 Apache-2.0）。XlsxWriter fixture 为 BSD-2-Clause；Apache POI fixture 为 Apache-2.0。保留上游完整 LICENSE/NOTICE、固定来源与 SHA-256。详见 [第三方说明](docs/third-party.md)、[XlsxWriter provenance](tests/fixtures/provenance.json)、[POI provenance](tests/fixtures/poi/provenance.json)。不收录用户文档，未执行 fixture 宏。
+Apache-2.0。运行时复用 flate0.8.4、Milky2018/xml0.5.0、moonbitlang/x0.5.5。上游测试数据来自XlsxWriter（BSD-2-Clause）与Apache POI（Apache-2.0）；新增布局和图片为自建，宏字节及其原始来源许可保留。见 [第三方说明](docs/third-party.md) 和 [样本来源](tests/fixtures/business/README.md)。未移植Python/Java Office核心，未分发WPS或用户文档。

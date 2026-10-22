@@ -47,5 +47,9 @@ python tests/planner_regression.py
 if ($LASTEXITCODE -ne 0) { throw 'Planner regression failed' }
 python tests/receipt_regression.py
 if ($LASTEXITCODE -ne 0) { throw 'Typed Receipt regression failed' }
+python tests/business_regression.py
+if ($LASTEXITCODE -ne 0) { throw 'Business profile regression failed' }
 moon run examples/sdk --target native
 if ($LASTEXITCODE -ne 0) { throw 'SDK example failed' }
+moon run examples/business --target native
+if ($LASTEXITCODE -ne 0) { throw 'Business SDK example failed' }

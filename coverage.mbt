@@ -146,7 +146,8 @@ fn add_capability_finding(
         } else {
           Declared
         },
-        rebuild_support: if permitted && capability == Vba {
+        rebuild_support: if permitted &&
+          (capability == Vba || capability == RemoteTemplate) {
           Supported
         } else {
           NotSupported
@@ -303,7 +304,11 @@ fn assess_package(pkg : Package) -> Assessment {
       capability,
       state,
       presence,
-      rebuild_support: if decision.rebuild_allowed && capability == Vba {
+      rebuild_support: if decision.rebuild_allowed &&
+        (
+          capability == Vba ||
+          (is_word_format(pkg.audit.format) && capability == RemoteTemplate)
+        ) {
         Supported
       } else {
         NotSupported
@@ -355,7 +360,7 @@ fn failed_assessment(
       reason: "Package inspection did not complete.",
     }
   })
-  let profile = "simple-spreadsheet-spike-v1"
+  let profile = "business-spreadsheet-v1"
   {
     schema: "partsieve.assessment.v1",
     input_hash: if input.length() <= limits.input_bytes &&

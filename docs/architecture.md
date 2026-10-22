@@ -1,12 +1,15 @@
 # 原型架构
 
-当前提供 `simple-spreadsheet-spike-v1` 与 main 的 `simple-word-vba-dev-v1` 受限配置。
+当前提供 `business-spreadsheet-v1` 与 `business-word-v1` 配置（0.3.0-spike）。
 
 - `model.mbt`：限制、Audit、Finding、Relationship、RewritePlan、Receipt。
 - `graph_model.mbt` / `graph.mbt`：共用 PackageGraph、source-local XML 引用、入出边/内容类型索引、迭代可达性与只报告的 orphan candidates。
 - `coverage_model.mbt` / `coverage.mbt`：统一 CapabilityFinding/Coverage/Decision 与 assess；核心 profile_decision 保证 Unsupported/Incomplete/Fail 不进入重建。
-- `planner_model.mbt` / `planner.mbt`：PreparedPlan 的全部前置 hash/限额、finding→decision→operation、冲突/依赖与受控闭包。saved plan 执行前重算完整计划；source XML 操作拒绝。
-- `receipt_model.mbt` / `receipt.mbt`：typed v2 去向/检查状态和实际 bytes 重算验证；独立客户端为 NotChecked，未实现语义 source XML handler。
+- `planner_model.mbt` / `planner.mbt`：PreparedPlan 的全部前置 hash/限额、finding→decision→operation、冲突/依赖与受控闭包。saved plan 执行前重算完整计划；source XML仅支持已验证的Word模板移除。
+- `receipt_model.mbt` / `receipt.mbt`：typed v2 去向/检查状态和实际 bytes 重算验证；独立客户端为 NotChecked；模板设置使用SemanticallyRewritten。
+- `spreadsheet_values.mbt`：共享文本与样式索引、单元格类型检查。
+- `word_content.mbt` / `word_profile.mbt`：表格、内嵌PNG/JPEG、页眉页脚的元素位置、属性及来源局部引用检查。
+- `template.mbt`：按命名空间选择attachedTemplate，用原始XML事件保留其他内容，再独立验证设置语义。
 - `opc.mbt`：不依赖操作系统路径的 ASCII OPC URI 子集。拒绝 percent encoding、片段、查询、非 ASCII、反斜杠、等价名称和越界。检测到不支持语法不会继续猜测。
 - `xml.mbt`：大小/深度/节点/属性 preflight、命名空间事件读取、元数据形状检查。DTD 在 parser 之前拒绝。单个元素最多 256 个属性、markup（含注释/CDATA/PI）与 text token 最多 65,536 code units。
 - `package.mbt`：受限 ZIP、CRC、内容类型、根与 source-local 关系。检查所有条目，包括不可达部件。

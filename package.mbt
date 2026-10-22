@@ -222,16 +222,16 @@ fn load_package(
     main_part: main,
     coverage: "CompleteWithinProfile",
     profile: if main_ct == docm_ct || main_ct == docx_ct {
-      "simple-word-vba-dev-v1"
+      "business-word-v1"
     } else {
-      "simple-spreadsheet-spike-v1"
+      "business-spreadsheet-v1"
     },
     checked_rules: [
       "bounded-zip-v1", "crc-v1", "opc-subset-v1", "namespace-xml-v1", "vba-v1",
       "profile-v1",
     ],
     limitations: [
-      "Restricted element/part allowlist; formulas, hyperlinks, drawings, controls, signatures and unknown extensions refused.",
+      "Business profiles: text, serial dates, multiple sheets and common styles; Word tables, inline PNG/JPEG, headers/footers. Formulas, hyperlinks, floating/unknown drawings, controls, signatures and unknown extensions refused.",
       "No VBA execution or malicious-code analysis. No visual fidelity claim. Client/SDK checks recorded separately.",
     ],
     parts,

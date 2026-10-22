@@ -108,18 +108,26 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
   let decisions : Array[PolicyDecision] = []
   let finding_decisions : Map[String, String] = Map([])
   for i, finding in assessment.findings {
-    guard finding.capability == Vba && finding.rebuild_support == Supported else {
+    guard (finding.capability == Vba || finding.capability == RemoteTemplate) &&
+      finding.rebuild_support == Supported else {
       raise Refused("finding has no accepted planner handler")
     }
     let id = "finding-" + i.to_string()
     finding_decisions[finding.part] = id
+    if finding.capability == RemoteTemplate {
+      finding_decisions["remote-template-v1"] = id
+    }
     decisions.push({
       decision_id: id,
       finding_index: Some(i),
       action: RemoveAction,
       rule_id: finding.rule_id,
       part: finding.part,
-      reason: "Remove VBA and its exclusively owned supporting parts under passive-office-v1.",
+      reason: if finding.capability == RemoteTemplate {
+        "Remove the external attached template and its settings-local XML reference; do not fetch the target."
+      } else {
+        "Remove VBA and its exclusively owned supporting parts under passive-office-v1."
+      },
     })
   }
   if is_macro_format(pkg.audit.format) {
@@ -147,15 +155,19 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
     let after = match kind {
       RemovePart => None
       RewriteRelationshipPart =>
-        Some(digest(write_relationships(pkg, pkg.audit.main_part)[:]))
+        Some(digest(write_relationships(pkg, relationship_source(part))[:]))
       RewriteContentTypes => Some(digest(write_content_types(pkg)[:]))
-      RewriteSourceXml =>
-        raise Refused("source XML handler has not passed acceptance")
+      RewriteSourceXml => Some(digest(write_template_settings(pkg, part)[:]))
       RemoveRelationship | ChangeMainContentType => Some(before.sha256)
     }
     let depends_on : Array[String] = []
     for previous in operations {
       if (
+          kind == RemoveRelationship &&
+          previous.kind == RewriteSourceXml &&
+          previous.part == operation.part
+        ) ||
+        (
           kind == RewriteRelationshipPart &&
           previous.kind == RemoveRelationship &&
           previous.part == part
@@ -170,7 +182,9 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
         depends_on.push(previous.operation_id)
       }
     }
-    let decision_id = if operation.rule == "format-v1" {
+    let decision_id = if operation.rule == "remote-template-v1" {
+      finding_decisions["remote-template-v1"]
+    } else if operation.rule == "format-v1" {
       "format"
     } else if finding_decisions.get(operation.part) is Some(id) {
       id
@@ -196,8 +210,8 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
   }
   let prepared : PreparedPlan = {
     schema: "partsieve.prepared-plan.v1",
-    tool: "partsieve/0.2.0-spike",
-    rules: "bounded-vba-plan-v1",
+    tool: "partsieve/0.3.0-spike",
+    rules: "bounded-business-plan-v1",
     input_hash: pkg.audit.input_hash,
     input_format: pkg.audit.format,
     output_format: if is_word_format(pkg.audit.format) {
@@ -217,7 +231,7 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
     coverage: assessment.coverage,
     gate: assessment.decision,
     unavailable_handlers: [
-      "RewriteSourceXml: no source XML rewrite handler has passed acceptance.",
+      "Source XML edits other than validated attachedTemplate removal are unavailable.",
     ],
   }
   validate_operation_conflicts(prepared.operations)
@@ -266,7 +280,7 @@ fn execute_prepared(
             operation.relationship_id,
           )
           is Some(r) &&
-          r.kind == vba_rel else {
+          (r.kind == vba_rel || is_template_relationship(r)) else {
           raise Invalid("relationship operation precondition mismatch")
         }
       }
@@ -276,13 +290,21 @@ fn execute_prepared(
           raise Invalid("format operation precondition mismatch")
         }
       }
-      RewriteSourceXml =>
-        raise Refused("source XML handler has not passed acceptance")
+      RewriteSourceXml => {
+        guard template_rewritten(pkg, operation.part) else {
+          raise Refused("no accepted source XML handler for this part")
+        }
+        let payload = write_template_settings(pkg, operation.part)
+        guard operation.expected_after_hash == Some(digest(payload[:])) &&
+          archive.replace(operation.part[:], payload[:]) else {
+          raise Invalid("source XML rewrite postcondition mismatch")
+        }
+      }
       RewriteRelationshipPart | RewriteContentTypes => {
         let payload = if operation.kind == RewriteContentTypes {
           write_content_types(pkg)
         } else {
-          write_relationships(pkg, pkg.audit.main_part)
+          write_relationships(pkg, relationship_source(operation.part))
         }
         guard operation.expected_after_hash == Some(digest(payload[:])) &&
           archive.replace(operation.part[:], payload[:]) else {
