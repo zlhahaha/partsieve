@@ -1,4 +1,4 @@
-# SDK work allowance and cancellation (0.6.0-spike)
+# SDK work allowance and cancellation (0.7.0-spike)
 
 All document SDK entry points accept optional `control : WorkControl`: `assess`,
 `audit`, `inspect_graph`, `plan`, `prepare`, both rebuild families and both
@@ -88,7 +88,7 @@ Two further cases exceed the 8 MiB XML ceiling or the 200,000-node ceiling and
 must return Incomplete with no successful rebuilt value. These are bounded
 sample observations, not a claim that all files up to the byte ceilings pass.
 
-`tests/generated/resources-v6.json` records input/output bytes, hashes, work
+`tests/generated/resources-v7.json` records input/output bytes, hashes, work
 usage, elapsed time and available process peak working set. A run includes
 fixture creation, a successful rebuild and negative checks. Memory is sampled
 while the child is running; a null/zero peak means unavailable. Timing and

@@ -104,7 +104,7 @@ pub fn verify_contract(
   })
   let receipt : VerifiedReceipt = {
     schema: "partsieve.receipt.v2-dev",
-    tool: "partsieve/0.6.0-spike",
+    tool: "partsieve/0.7.0-spike",
     rules: prepared.rules,
     policy: prepared.policy,
     profile: prepared.profile,
@@ -134,7 +134,7 @@ pub fn verify_contract(
     limitations: before.audit.limitations +
     [
       if extended_office(before) {
-        "Source rewriting is limited to attachedTemplate removal and one validated inline Word OLE object/preview removal; click hyperlinks are byte-preserved."
+        "Source rewriting is limited to attachedTemplate removal and up to 32 independent validated inline Word OLE objects and their private previews; click hyperlinks are byte-preserved."
       } else {
         "Source XML semantic rewriting is limited to settings-local attachedTemplate removal; other fields/links/objects refuse."
       },

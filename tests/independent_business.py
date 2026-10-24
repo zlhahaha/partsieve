@@ -1,6 +1,6 @@
 """Independent ZIP/XML preservation check: no MoonBit or PartSieve imports."""
 from pathlib import Path
-import hashlib, json, sys, zipfile, argparse
+import hashlib, json, sys, zipfile, argparse, posixpath
 import xml.etree.ElementTree as E
 from jsonschema import Draft202012Validator
 
@@ -52,7 +52,7 @@ if options.next_dir:
         if tail:
             if index:items[index-1].tail=(items[index-1].tail or '')+tail
             else:parent.text=(parent.text or '')+tail
-    for name,suffix in [('word-links','.docx'),('sheet-links','.xlsx'),('word-ole-png','.docx'),('word-ole-emf','.docx'),('word-ole-clean','.docx'),('word-ole-only','.docx')]:
+    for name,suffix in [('word-links','.docx'),('sheet-links','.xlsx'),('word-ole-png','.docx'),('word-ole-emf','.docx'),('word-ole-clean','.docx'),('word-ole-only','.docx'),('word-ole-multi2','.docx'),('word-ole-multi3','.docx'),('word-ole-multi32','.docx'),('word-ole-multi-clean','.docx')]:
         folder=options.next_dir
         sources=list(folder.glob(name+'.input.*'))
         assert len(sources)==1,(name,'ambiguous original file')
@@ -65,14 +65,35 @@ if options.next_dir:
         vba=('word' if is_word else 'xl')+'/vbaProject.bin'
         removed={vba} if vba in before else set()
         has_ole=name.startswith('word-ole')
+        preview_ids=set();ole_payloads=set();object_count=0
         if has_ole:
-            removed|={'word/embeddings/worksheet.xls','word/media/ole-preview.'+('png' if name=='word-ole-png' else 'emf')}
+            original_rels={r.attrib['Id']:r.attrib for r in E.fromstring(before['word/_rels/document.xml.rels'])}
+            used_ids=set()
+            for obj in E.fromstring(before[main]).iter('{'+W+'}object'):
+                ole=list(obj.iter('{urn:schemas-microsoft-com:office:office}OLEObject'))
+                preview=list(obj.iter('{urn:schemas-microsoft-com:vml}imagedata'))
+                assert len(ole)==len(preview)==1 and ole[0].attrib['Type']=='Embed'
+                for node,kind in [(ole[0],'oleObject'),(preview[0],'image')]:
+                    rel_id=node.attrib['{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id']
+                    assert rel_id not in used_ids
+                    used_ids.add(rel_id)
+                    rel=original_rels[rel_id]
+                    assert rel['Type'].endswith('/'+kind) and rel.get('TargetMode','Internal')=='Internal'
+                    target=rel['Target']
+                    path=posixpath.normpath(target.lstrip('/') if target.startswith('/') else posixpath.join('word',target))
+                    assert path in before and path not in removed
+                    removed.add(path)
+                    if kind=='image':preview_ids.add(rel_id)
+                    else:ole_payloads.add(path)
+                object_count+=1
+            expected_objects={'word-ole-multi2':2,'word-ole-multi3':3,'word-ole-multi32':32,'word-ole-multi-clean':3}.get(name,1)
+            assert object_count==expected_objects
         assert set(after)==set(before)-removed,(name,'part set')
         changed={'[Content_Types].xml'} if removed else set()
         for part,data in before.items():
             if not part.endswith('.rels') or part in removed:continue
             original=E.fromstring(data)
-            wanted=[dict(r.attrib) for r in original if not r.attrib['Type'].endswith(('/vbaProject','/attachedTemplate','/oleObject')) and not (has_ole and r.attrib['Id']=='rOlePreview')]
+            wanted=[dict(r.attrib) for r in original if not r.attrib['Type'].endswith(('/vbaProject','/attachedTemplate','/oleObject')) and not (part=='word/_rels/document.xml.rels' and r.attrib['Id'] in preview_ids)]
             actual=[dict(r.attrib) for r in E.fromstring(after[part])]
             assert actual==wanted,(name,part,'relation set')
             if len(wanted)!=len(original):changed.add(part)
@@ -110,6 +131,8 @@ if options.next_dir:
         assert legacy['receipt']['input_hash']==receipt['input_hash'] and legacy['receipt']['output_hash']==receipt['output_hash']
         assert receipt['output_hash']==hashlib.sha256(output.read_bytes()).hexdigest()
         assert sorted(f['part'] for f in receipt['allowed_capabilities'])==sorted(clicks)
+        assert {f['part'] for f in receipt['findings'] if f['capability']=='OLE'}==ole_payloads
+        assert {d['part'] for d in receipt['dispositions'] if d['classification']=='RemovedByPolicy'}==removed
         assert not receipt['output_findings'] and receipt['independent_validation']=='NotChecked'
-        reports.append({'name':name,'status':'Pass','sha256':receipt['output_hash'],'click_links':len(clicks),'removed_parts':sorted(removed)})
+        reports.append({'name':name,'status':'Pass','sha256':receipt['output_hash'],'click_links':len(clicks),'ole_objects':object_count,'removed_parts':sorted(removed)})
 print(json.dumps({'tool':'CPython zipfile + ElementTree + JSON Schema; independent of SDK','reports':reports},indent=2))

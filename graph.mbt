@@ -4,6 +4,7 @@ priv struct GraphFacts {
   part_index : Map[String, Int]
   node_index : Map[String, Int]
   local_relationships : Map[String, Map[String, Int]]
+  ole_objects : Map[String, Map[String, Array[Int]]]
 }
 
 ///|
@@ -39,6 +40,7 @@ fn build_graph(
       relationships.length() + 1,
     )
   }
+  let ole_objects = ole_catalog(parts, xml_nodes)
   let part_index : Map[String, Int] = Map([])
   let node_index : Map[String, Int] = Map([("/", 0)])
   let names : Array[String] = ["/"]
@@ -126,7 +128,7 @@ fn build_graph(
     }
     if implicit_semantics is Some(semantics) {
       implicit.push({ source: r.source, relationship_index: i, semantics, })
-    } else if !ole_declared(r, parts, xml_nodes) &&
+    } else if !ole_declared(r, ole_objects) &&
       !hyperlink_declared(r, parts, xml_nodes) &&
       ![
         office_rel + "worksheet",
@@ -152,7 +154,7 @@ fn build_graph(
       let mask = if parts.any(fn(p) {
           p.name == part.name && [docx_ct, docm_ct].contains(p.content_type)
         }) {
-        ole_mask(nodes)
+        ole_catalog_mask(ole_objects, part.name)
       } else {
         []
       }
@@ -297,6 +299,7 @@ fn build_graph(
     part_index,
     node_index,
     local_relationships,
+    ole_objects,
   }
 }
 

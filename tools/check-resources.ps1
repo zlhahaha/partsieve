@@ -46,7 +46,7 @@ foreach ($taskCase in @('word-1m', 'word-4m', 'word-7m', 'sheet-5000', 'sheet-20
 }
 $taskEvidence = [ordered]@{
   tool = 'PartSieve Native resource regression'
-  version = '0.6.0-spike'
+  version = '0.7.0-spike'
   os = [Runtime.InteropServices.RuntimeInformation]::OSDescription
   architecture = [Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString()
   build = 'Release'
@@ -54,4 +54,4 @@ $taskEvidence = [ordered]@{
   cases = $taskReports
 }
 if (-not (Test-Path -LiteralPath tests/generated)) { New-Item -ItemType Directory tests/generated | Out-Null }
-$taskEvidence | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath tests/generated/resources-v6.json -Encoding utf8
+$taskEvidence | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath tests/generated/resources-v7.json -Encoding utf8

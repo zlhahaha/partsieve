@@ -110,7 +110,10 @@ fn make_plan(pkg : Package) -> RewritePlan raise {
           "Remove the exclusively owned object preview; its displayed content is intentionally lost.",
         ),
       ] {
-      ops.push({ kind, part, relationship_id: id, rule: "ole-v1", reason, })
+      if kind != "RewriteSourceXml" ||
+        !ops.any(fn(op) { op.kind == kind && op.part == part }) {
+        ops.push({ kind, part, relationship_id: id, rule: "ole-v1", reason, })
+      }
     }
     let relpart = relationship_part(r.source)
     if !ops.any(fn(op) {
@@ -380,9 +383,9 @@ fn legacy_receipt(
       "partsieve.receipt.spike-v1"
     },
     tool: if is_word_format(before.audit.format) {
-      "partsieve/0.6.0-spike"
+      "partsieve/0.7.0-spike"
     } else {
-      "partsieve/0.6.0-spike"
+      "partsieve/0.7.0-spike"
     },
     rules: if is_word_format(before.audit.format) {
       "word-business-v1"

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.0-spike（2026-10-25）
+
+- Remove up to 32 independent inline Word OLE objects with private CFB payloads, PNG/JPEG/EMF previews and source-local relationships; retain ordinary text between objects and all unrelated content.
+- Parse the validated object catalog once per package. Reject shared targets/references/identities, nested objects, linked/unknown objects, wrong relationship kinds and a 33rd object. ActiveX and Excel OLE remain unsupported.
+- Bind each object's deletions to its own finding decision, with a single source/metadata writer and checked dependencies; multi-object plans use bounded-links-ole-plan-v2. Keep the single-object path and public SDK signatures.
+- Add four multi-object combinations, ten refusal cases, forged-plan/output tampering and independent source/output ZIP/XML/Schema/OpenXML checks, plus five core identity/catalog/range unit tests.
+
 ## 0.6.0-spike（2026-10-25）
 
 - Add optional shared WorkControl to every document SDK entry point, with sticky cancellation, cumulative work accounting, overflow-safe pair reservations and no successful return after stopping.

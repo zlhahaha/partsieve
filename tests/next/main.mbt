@@ -124,12 +124,27 @@ fn sheet_links() -> @zip.Archive raise {
 }
 
 ///|
-fn attach_ole(archive : @zip.Archive, emf : Bool) -> Unit raise {
+fn attach_ole(
+  archive : @zip.Archive,
+  emf : Bool,
+  number? : Int = 0,
+) -> Unit raise {
+  let index = if number == 0 { "" } else { number.to_string() }
+  let payload_name = "word/embeddings/worksheet" + index + ".xls"
+  let preview_name = "ole-preview" + index + (if emf { ".emf" } else { ".png" })
   let object = @utf8.decode(
       @host.read_bounded("tests/fixtures/poi/EmbeddedObject.xml", 65536)[:],
     )
-    .replace_all(old="rId4", new="rOlePreview")
-    .replace_all(old="rId5", new="rOle")
+    .replace_all(old="rId4", new="rOlePreview" + index)
+    .replace_all(old="rId5", new="rOle" + index)
+  let object = if number == 0 {
+    object
+  } else {
+    object
+    .replace_all(old="_x0000_t75", new="_partsieve_type_" + index)
+    .replace_all(old="_x0000_i1025", new="_partsieve_shape_" + index)
+    .replace_all(old="_1353480673", new="_" + (1000000000 + number).to_string())
+  }
   edit(
     archive,
     "word/document.xml",
@@ -138,19 +153,17 @@ fn attach_ole(archive : @zip.Archive, emf : Bool) -> Unit raise {
   )
   add(
     archive,
-    "word/embeddings/worksheet.xls",
+    payload_name,
     @host.read_bounded("tests/fixtures/poi/EmbeddedWorksheet.xls", 33554432),
   )
-  let name = if emf { "ole-preview.emf" } else { "ole-preview.png" }
+  let name = preview_name
   let payload = if emf {
     @host.read_bounded("tests/fixtures/poi/EmbeddedPreview.emf", 33554432)
   } else {
     bytes(archive, "word/media/logo.png")
   }
   add(archive, "word/media/" + name, payload)
-  content_type(
-    archive, "word/embeddings/worksheet.xls", "application/vnd.ms-excel",
-  )
+  content_type(archive, payload_name, "application/vnd.ms-excel")
   content_type(
     archive,
     "word/media/" + name,
@@ -161,12 +174,16 @@ fn attach_ole(archive : @zip.Archive, emf : Bool) -> Unit raise {
     },
   )
   relation(
-    archive, "word/document.xml", "rOle", "oleObject", "embeddings/worksheet.xls",
+    archive,
+    "word/document.xml",
+    "rOle" + index,
+    "oleObject",
+    "embeddings/worksheet" + index + ".xls",
   )
   relation(
     archive,
     "word/document.xml",
-    "rOlePreview",
+    "rOlePreview" + index,
     "image",
     "media/" + name,
   )
@@ -194,6 +211,68 @@ fn accepted(
     }),
     clicks,
   )
+  if ole {
+    let objects = plan.findings.filter(fn(f) { f.capability == @sieve.Ole })
+    assert_true(objects.length() > 0)
+    assert_eq(
+      plan.operations
+      .filter(fn(op) {
+        op.kind == @sieve.RewriteSourceXml && op.part == "word/document.xml"
+      })
+      .length(),
+      1,
+    )
+    if objects.length() > 1 {
+      let writer = plan.operations.filter(fn(op) {
+          op.kind == @sieve.RewriteSourceXml && op.part == "word/document.xml"
+        })[0]
+      assert_eq(writer.decision_id, "ole-source")
+      let metadata = plan.operations.filter(fn(op) {
+        op.kind == @sieve.RewriteRelationshipPart &&
+        op.part == "word/_rels/document.xml.rels"
+      })
+      assert_eq(metadata.length(), 1)
+      for op in plan.operations {
+        if op.kind == @sieve.RemoveRelationship &&
+          op.source == "word/document.xml" {
+          if op.rule_id == "ole-v1" {
+            assert_true(op.depends_on.contains(writer.operation_id))
+          }
+          assert_true(metadata[0].depends_on.contains(op.operation_id))
+        }
+      }
+      let forged = {
+        ..plan,
+        operations: plan.operations.map(fn(op) {
+          if op.kind == @sieve.RemovePart && op.part == objects[0].part {
+            { ..op, decision_id: "ole-source", }
+          } else {
+            op
+          }
+        }),
+      }
+      assert_true(
+        try {
+          ignore(@sieve.rebuild_verified_with_plan(input, forged.to_json()))
+          false
+        } catch {
+          @sieve.Invalid(_) => true
+          _ => false
+        },
+      )
+    }
+    for finding in objects {
+      let decision = plan.decisions.filter(fn(d) {
+        d.part == finding.part && d.finding_index is Some(_)
+      })
+      assert_eq(decision.length(), 1)
+      let removal = plan.operations.filter(fn(op) {
+        op.kind == @sieve.RemovePart && op.part == finding.part
+      })
+      assert_eq(removal.length(), 1)
+      assert_eq(removal[0].decision_id, decision[0].decision_id)
+    }
+  }
   let rebuilt = @sieve.rebuild_verified_with_plan(input, plan.to_json())
   assert_eq(@sieve.verify_contract(rebuilt.bytes, input), rebuilt.receipt)
   assert_eq(rebuilt.receipt.allowed_capabilities.length() > 0, clicks)
@@ -247,7 +326,7 @@ fn accepted(
   for entry in actual.entries() {
     assert_eq(entry.data().to_owned(), bytes(repeated, entry.name()))
   }
-  let dir = "tests/generated/next-v6/"
+  let dir = "tests/generated/next-v7/"
   let legacy = @sieve.verify(rebuilt.bytes, input)
   @fs.write_string_to_file(
     dir + name + ".legacy.receipt.json",
@@ -292,6 +371,29 @@ fn accepted(
   ])
   assert_eq(verified.code, 0)
   assert_eq(@cli.parse_json(verified.stdout), rebuilt.receipt.to_json())
+  if name == "word-ole-multi3" {
+    let tampered = @zip.read(rebuilt.bytes[:])
+    edit(
+      tampered, "word/document.xml", "<w:body>", "<w:body><w:p><w:r><w:t>UNEXPECTED</w:t></w:r></w:p>",
+    )
+    let changed = @zip.write(tampered)
+    assert_true(
+      try {
+        ignore(@sieve.verify_contract(changed, input))
+        false
+      } catch {
+        _ => true
+      },
+    )
+    let tampered_path = dir + name + ".tampered.docx"
+    @fs.write_bytes_to_file(tampered_path, changed)
+    assert_eq(
+      @host.run(cli_binary(), [
+        "verify", tampered_path, "--original", input_path, "--receipt-format", "v2",
+      ]).code,
+      2,
+    )
+  }
   println("Pass: " + name)
   rebuilt.bytes
 }
@@ -308,7 +410,7 @@ fn rejected(name : String, archive : @zip.Archive) -> Unit raise {
     _ => true
   }
   assert_true(refused, msg=name)
-  let source = "tests/generated/next-v6/" + name + ".bad.docm"
+  let source = "tests/generated/next-v7/" + name + ".bad.docm"
   let output = source + ".docx"
   let receipt = source + ".receipt.json"
   @fs.write_bytes_to_file(source, input)
@@ -322,8 +424,32 @@ fn rejected(name : String, archive : @zip.Archive) -> Unit raise {
 }
 
 ///|
+fn multiple_objects(count : Int, clean? : Bool = false) -> @zip.Archive raise {
+  let base = word_links()
+  let archive = if clean {
+    @zip.read(@sieve.rebuild_verified(@zip.write(base)).bytes[:])
+  } else {
+    base
+  }
+  for i in 1..<=count {
+    attach_ole(archive, i % 2 == 0, number=i)
+    if i < count {
+      edit(
+        archive,
+        "word/document.xml",
+        "</w:p>",
+        "<w:r><w:t>Between objects 中文 " +
+        i.to_string() +
+        "</w:t></w:r></w:p>",
+      )
+    }
+  }
+  archive
+}
+
+///|
 fn main raise {
-  for dir in ["tests/generated", "tests/generated/next-v6"] {
+  for dir in ["tests/generated", "tests/generated/next-v7"] {
     if !@host.exists(dir) {
       @fs.create_dir(dir)
     }
@@ -339,6 +465,68 @@ fn main raise {
   let no_macro = @zip.read(clean.bytes[:])
   attach_ole(no_macro, true)
   ignore(accepted("word-ole-clean", no_macro, ".docx", true))
+  ignore(accepted("word-ole-multi2", multiple_objects(2), ".docx", true))
+  ignore(accepted("word-ole-multi3", multiple_objects(3), ".docx", true))
+  ignore(accepted("word-ole-multi32", multiple_objects(32), ".docx", true))
+  ignore(
+    accepted(
+      "word-ole-multi-clean",
+      multiple_objects(3, clean=true),
+      ".docx",
+      true,
+    ),
+  )
+  rejected("ole-object-count-33", multiple_objects(33))
+  let shared_payload = multiple_objects(2)
+  edit(
+    shared_payload, "word/_rels/document.xml.rels", "embeddings/worksheet2.xls",
+    "embeddings/worksheet1.xls",
+  )
+  rejected("ole-multi-shared-payload", shared_payload)
+  let shared_preview = multiple_objects(2)
+  edit(
+    shared_preview, "word/_rels/document.xml.rels", "media/ole-preview2.emf", "media/ole-preview1.png",
+  )
+  rejected("ole-multi-shared-preview", shared_preview)
+  let duplicate_shape = multiple_objects(2)
+  edit(
+    duplicate_shape, "word/document.xml", "id=\"_partsieve_shape_2\"", "id=\"_partsieve_shape_1\"",
+  )
+  rejected("ole-multi-duplicate-shape", duplicate_shape)
+  let duplicate_object_id = multiple_objects(2)
+  edit(duplicate_object_id, "word/document.xml", "_1000000002", "_1000000001")
+  rejected("ole-multi-duplicate-object-id", duplicate_object_id)
+  let duplicate_type = multiple_objects(2)
+  let type_text = @utf8.decode(bytes(duplicate_type, "word/document.xml")[:]).replace_all(
+    old="_partsieve_type_2",
+    new="_partsieve_type_1",
+  )
+  assert_true(
+    duplicate_type.replace("word/document.xml", @utf8.encode(type_text[:])[:]),
+  )
+  rejected("ole-multi-duplicate-type-id", duplicate_type)
+  let duplicate_reference = multiple_objects(2)
+  edit(
+    duplicate_reference, "word/document.xml", "r:id=\"rOle2\"", "r:id=\"rOle1\"",
+  )
+  rejected("ole-multi-reused-relationship", duplicate_reference)
+  let wrong_kind = multiple_objects(2)
+  edit(
+    wrong_kind, "word/_rels/document.xml.rels", "Id='rOle2' Type='http://schemas.openxmlformats.org/officeDocument/2006/relationships/oleObject'",
+    "Id='rOle2' Type='http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles'",
+  )
+  rejected("ole-multi-wrong-relationship-kind", wrong_kind)
+  let invalid_second = multiple_objects(2)
+  edit(
+    invalid_second, "word/document.xml", "_partsieve_shape_2\" DrawAspect", "wrong-shape\" DrawAspect",
+  )
+  rejected("ole-multi-later-invalid-object", invalid_second)
+  let linked_second = multiple_objects(2)
+  edit(
+    linked_second, "word/document.xml", "Type=\"Embed\" ProgID=\"Excel.Sheet.8\" ShapeID=\"_partsieve_shape_2",
+    "Type=\"Link\" ProgID=\"Excel.Sheet.8\" ShapeID=\"_partsieve_shape_2",
+  )
+  rejected("ole-multi-later-linked-object", linked_second)
   for
     index, target in [
       "file:///C:/blocked", "mailto:test@example.invalid", "javascript:alert(1)",
@@ -450,12 +638,12 @@ fn main raise {
     .replace_all(old="rId4", new="rOlePreview")
     .replace_all(old="rId5", new="rOle")
   edit(two, "word/document.xml", "</w:p>", "<w:r>" + object + "</w:r></w:p>")
-  rejected("ole-multiple-objects", two)
+  rejected("ole-reused-object-identities", two)
   let original = @host.read_bounded(
-    "tests/generated/next-v6/word-links.input.docm", 33554432,
+    "tests/generated/next-v7/word-links.input.docm", 33554432,
   )
   let changed = @zip.read(
-    @host.read_bounded("tests/generated/next-v6/word-links.docx", 33554432)[:],
+    @host.read_bounded("tests/generated/next-v7/word-links.docx", 33554432)[:],
   )
   edit(
     changed, "word/_rels/document.xml.rels", "https://example.invalid/docs?q=1&amp;lang=zh#section",
@@ -471,25 +659,25 @@ fn main raise {
     },
   )
   @fs.write_bytes_to_file(
-    "tests/generated/next-v6/tampered-link.docx", tampered,
+    "tests/generated/next-v7/tampered-link.docx", tampered,
   )
   let check = @host.run(cli_binary(), [
-    "verify", "tests/generated/next-v6/tampered-link.docx", "--original", "tests/generated/next-v6/word-links.input.docm",
+    "verify", "tests/generated/next-v7/tampered-link.docx", "--original", "tests/generated/next-v7/word-links.input.docm",
     "--receipt-format", "v2",
   ])
   assert_eq(check.code, 2)
   let report = @utf8.decode(
     @host.read_bounded(
-      "tests/generated/next-v6/word-links.receipt.json", 16777216,
+      "tests/generated/next-v7/word-links.receipt.json", 16777216,
     )[:],
   )
   @fs.write_string_to_file(
-    "tests/generated/next-v6/forged.receipt.json",
+    "tests/generated/next-v7/forged.receipt.json",
     report.replace(old="HTTPHyperlink", new="VBA"),
   )
   let forged = @host.run(cli_binary(), [
-    "verify", "tests/generated/next-v6/word-links.docx", "--original", "tests/generated/next-v6/word-links.input.docm",
-    "--receipt", "tests/generated/next-v6/forged.receipt.json", "--receipt-format",
+    "verify", "tests/generated/next-v7/word-links.docx", "--original", "tests/generated/next-v7/word-links.input.docm",
+    "--receipt", "tests/generated/next-v7/forged.receipt.json", "--receipt-format",
     "v2",
   ])
   assert_eq(forged.code, 2)

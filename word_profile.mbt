@@ -77,6 +77,7 @@ fn validate_word_profile(pkg : Package) -> Unit raise {
       "Word graph coverage gap: " + pkg.graph.graph.coverage_gaps[0],
     )
   }
+  validate_ole_source(pkg)
   for r in report.relationships {
     let previews = ole_relationships(pkg).filter(fn(o) {
       ole_preview(pkg, o) == r
@@ -85,7 +86,7 @@ fn validate_word_profile(pkg : Package) -> Unit raise {
       validate_ole(pkg, previews[0])
       continue
     }
-    if ole_declared(r, report.parts, pkg.xml_nodes) {
+    if ole_declared(r, pkg.graph.ole_objects) {
       validate_ole(pkg, r)
       continue
     }
@@ -278,8 +279,8 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
   }
   let parents : Array[String] = []
   let mask = if part.name == pkg.audit.main_part &&
-    ole_relationships(pkg).length() == 1 {
-    ole_mask(nodes)
+    ole_relationships(pkg).length() > 0 {
+    ole_catalog_mask(pkg.graph.ole_objects, part.name)
   } else {
     []
   }

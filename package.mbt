@@ -238,7 +238,8 @@ fn load_package(
     main_part: main,
     coverage: "CompleteWithinProfile",
     profile: if relationships.any(fn(r) {
-        hyperlink_declared(r, parts, nodes) || ole_declared(r, parts, nodes)
+        hyperlink_declared(r, parts, nodes) ||
+        ole_declared(r, graph.ole_objects)
       }) {
       if main_ct == docm_ct || main_ct == docx_ct {
         "business-word-v2"
@@ -255,10 +256,11 @@ fn load_package(
       "profile-v1",
     ],
     limitations: if relationships.any(fn(r) {
-        hyperlink_declared(r, parts, nodes) || ole_declared(r, parts, nodes)
+        hyperlink_declared(r, parts, nodes) ||
+        ole_declared(r, graph.ole_objects)
       }) {
       [
-        "Extended business profile: source-bound HTTP(S) click hyperlinks retained without network access; one inline main-document embedded OLE object with a private PNG/JPEG preview can be removed entirely. Linked/shared/unknown objects, ActiveX, fields, formulas and unsupported schemes refuse.",
+        "Extended business profile: source-bound HTTP(S) click hyperlinks retained without network access; up to 32 independent inline main-document embedded OLE objects with private PNG/JPEG/EMF previews can be removed entirely. Linked/shared/unknown objects, ActiveX, fields, formulas and unsupported schemes refuse.",
         "No VBA or OLE execution, recursive payload sanitization, visual fidelity or general safety claim. OLE preview content is intentionally removed with the object.",
       ]
     } else {

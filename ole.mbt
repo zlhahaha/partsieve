@@ -18,23 +18,8 @@ fn relationship_attribute(node : Node) -> String raise {
 }
 
 ///|
-// First profile: one inline w:object, one VML preview and one embedded OLE declaration.
-// The entire object including its preview is removed; no VML is retained or rendered.
-fn ole_indices(nodes : Array[Node]) -> Array[Int] raise {
-  let objects : Array[Int] = []
-  for i, n in nodes {
-    if n.element.name.namespace_uri == Some(word_ns) &&
-      n.element.name.local_name == "object" {
-      objects.push(i)
-    }
-  }
-  if objects.length() == 0 {
-    return []
-  }
-  guard objects.length() == 1 else {
-    raise Refused("one inline Word OLE object supported per document")
-  }
-  let begin = objects[0]
+// Each group is one independently owned inline subtree; no VML is retained.
+fn ole_group(nodes : Array[Node], begin : Int) -> Array[Int] raise {
   let depth = nodes[begin].depth
   guard begin > 0 && depth > 0 else {
     raise Refused("OLE object has no parent run")
@@ -166,55 +151,156 @@ fn ole_indices(nodes : Array[Node]) -> Array[Int] raise {
       guard allowed else { raise Refused("unsupported Word OLE attribute") }
     }
   }
+  if attr_opt(shape, "type") is Some(_) {
+    guard type_count == 1 else {
+      raise Refused("OLE shape-type definition must belong to the same object")
+    }
+  }
   indices
 }
 
 ///|
-fn ole_mask(nodes : Array[Node]) -> Array[Int] {
-  ole_indices(nodes) catch {
-    _ => []
+fn ole_groups(nodes : Array[Node]) -> Array[Array[Int]] raise {
+  let starts : Array[Int] = []
+  for i, node in nodes {
+    if node.element.name.namespace_uri == Some(word_ns) &&
+      node.element.name.local_name == "object" {
+      starts.push(i)
+      guard starts.length() <= 32 else {
+        raise Refused(
+          "at most 32 independent inline Word OLE objects supported",
+        )
+      }
+    }
   }
+  let groups : Array[Array[Int]] = []
+  let relations : Map[String, Bool] = Map([])
+  let identities : Map[String, Bool] = Map([])
+  let object_ids : Map[String, Bool] = Map([])
+  let mut previous_end = -1
+  for begin in starts {
+    guard begin > previous_end else {
+      raise Refused("nested Word OLE objects unsupported")
+    }
+    let group = ole_group(nodes, begin)
+    previous_end = group[group.length() - 1]
+    for (ns, name) in [(word_office_ns, "OLEObject"), (vml_ns, "imagedata")] {
+      let id = relationship_attribute(nodes[ole_member(nodes, group, ns, name)])
+      guard id != "" && !relations.contains(id) else {
+        raise Refused("OLE objects must not share relationship identities")
+      }
+      relations[id] = true
+    }
+    for i in group {
+      let node = nodes[i]
+      if node.element.name.namespace_uri == Some(vml_ns) &&
+        ["shape", "shapetype"].contains(node.element.name.local_name) {
+        let id = attr(node, "id")
+        guard id != "" && !identities.contains(id) else {
+          raise Refused("duplicate OLE shape or shape-type identity")
+        }
+        identities[id] = true
+      }
+    }
+    let ole = nodes[ole_member(nodes, group, word_office_ns, "OLEObject")]
+    if attr_opt(ole, "ObjectID") is Some(id) {
+      guard valid_ole_object_id(id) && !object_ids.contains(id) else {
+        raise Refused("duplicate OLE ObjectID")
+      }
+      object_ids[id] = true
+    }
+    groups.push(group)
+  }
+  groups
+}
+
+///|
+fn valid_ole_object_id(id : String) -> Bool {
+  if !id.has_prefix("_") || id.length() < 2 || id.length() > 11 {
+    return false
+  }
+  if id.length() == 11 && id[1] == '0' {
+    return false
+  }
+  let mut value = 0
+  for i in 1..<id.length() {
+    let c = id[i]
+    if c < '0' || c > '9' {
+      return false
+    }
+    let digit = c.to_int() - 48
+    if value > (2147483647 - digit) / 10 {
+      return false
+    }
+    value = value * 10 + digit
+  }
+  true
+}
+
+///|
+fn ole_catalog(
+  parts : Array[PartRecord],
+  nodes : Map[String, Array[Node]],
+) -> Map[String, Map[String, Array[Int]]] {
+  let catalog : Map[String, Map[String, Array[Int]]] = Map([])
+  for part in parts {
+    if ![docx_ct, docm_ct].contains(part.content_type) {
+      continue
+    }
+    if nodes.get(part.name) is Some(items) {
+      let groups = ole_groups(items) catch { _ => [] }
+      let ids : Map[String, Array[Int]] = Map([])
+      for group in groups {
+        let id = relationship_attribute(
+          items[ole_member(items, group, word_office_ns, "OLEObject")],
+        ) catch {
+          _ => abort("validated OLE identity")
+        }
+        ids[id] = group
+      }
+      catalog[part.name] = ids
+    }
+  }
+  catalog
+}
+
+///|
+fn ole_catalog_mask(
+  catalog : Map[String, Map[String, Array[Int]]],
+  source : String,
+) -> Array[Int] {
+  let indices : Array[Int] = []
+  if catalog.get(source) is Some(groups) {
+    for group in groups.values() {
+      for i in group {
+        indices.push(i)
+      }
+    }
+  }
+  indices
 }
 
 ///|
 fn ole_declared(
   r : Relationship,
-  parts : Array[PartRecord],
-  nodes : Map[String, Array[Node]],
+  catalog : Map[String, Map[String, Array[Int]]],
 ) -> Bool {
   !r.external &&
   r.kind == office_rel + "oleObject" &&
-  parts.any(fn(p) {
-    p.name == r.source && [docx_ct, docm_ct].contains(p.content_type)
-  }) &&
-  nodes
-  .get(r.source)
-  .map(fn(items) {
-    let indices = ole_mask(items)
-    indices.length() > 0 &&
-    (try
-      relationship_attribute(
-        items[ole_member(items, indices, word_office_ns, "OLEObject")],
-      ) ==
-      r.id
-    catch {
-      _ => false
-    })
-  })
-  .unwrap_or(false)
+  catalog.get(r.source).map(fn(ids) { ids.contains(r.id) }).unwrap_or(false)
 }
 
 ///|
 fn ole_relationships(pkg : Package) -> Array[Relationship] {
   pkg.audit.relationships.filter(fn(r) {
-    ole_declared(r, pkg.audit.parts, pkg.xml_nodes)
+    ole_declared(r, pkg.graph.ole_objects)
   })
 }
 
 ///|
 fn ole_preview(pkg : Package, r : Relationship) -> Relationship {
   let nodes = pkg.xml_nodes[r.source]
-  let indices = ole_mask(nodes)
+  let indices = pkg.graph.ole_objects[r.source][r.id]
   let id = relationship_attribute(
     nodes[ole_member(nodes, indices, vml_ns, "imagedata")],
   ) catch {
@@ -226,9 +312,12 @@ fn ole_preview(pkg : Package, r : Relationship) -> Relationship {
 ///|
 fn validate_ole(pkg : Package, r : Relationship) -> Unit raise {
   let nodes = pkg.xml_nodes[r.source]
-  let indices = ole_indices(nodes)
+  guard pkg.graph.ole_objects.get(r.source) is Some(groups) &&
+    groups.get(r.id) is Some(indices) else {
+    raise Refused("OLE relationship has no validated group")
+  }
   guard r.source == pkg.audit.main_part &&
-    ole_declared(r, pkg.audit.parts, pkg.xml_nodes) &&
+    ole_declared(r, pkg.graph.ole_objects) &&
     ole_payload_type(
       pkg.audit.parts[pkg.graph.part_index[r.resolved]].content_type,
     ) else {
@@ -304,7 +393,9 @@ fn controlled_parts(pkg : Package) -> Array[String] {
 fn ole_reference_removed(pkg : Package, reference : XmlReference) -> Bool {
   ole_relationships(pkg).any(fn(r) {
     reference.source == r.source &&
-    ole_mask(pkg.xml_nodes[r.source]).contains(reference.element_index)
+    ole_catalog_mask(pkg.graph.ole_objects, r.source).contains(
+      reference.element_index,
+    )
   })
 }
 
@@ -375,8 +466,12 @@ fn write_source(pkg : Package, part : String) -> Bytes raise {
       writer.write_event(event)
     }
   }
-  guard removed == 1 && skipped == 0 else {
-    raise Invalid("OLE source rewrite did not remove one validated object")
+  guard removed ==
+    ole_relationships(pkg).filter(fn(r) { r.source == part }).length() &&
+    skipped == 0 else {
+    raise Invalid(
+      "OLE source rewrite did not remove exactly the validated object set",
+    )
   }
   @utf8.encode(writer.to_string()[:])
 }
@@ -391,7 +486,7 @@ fn verify_source_semantics(
     verify_template_semantics(before, after, part)
     return
   }
-  let indices = ole_indices(before.xml_nodes[part])
+  let indices = ole_catalog_mask(before.graph.ole_objects, part)
   let original : Array[Node] = []
   for i, n in before.xml_nodes[part] {
     if !indices.contains(i) {
@@ -453,4 +548,29 @@ fn ole_payload_type(ct : String) -> Bool {
   [ole_content_type, "application/vnd.ms-excel", "application/msword"].contains(
     ct,
   )
+}
+
+///|
+fn validate_ole_source(pkg : Package) -> Unit raise {
+  let groups = pkg.graph.ole_objects.get(pkg.audit.main_part).unwrap_or(Map([]))
+  if groups.length() == 0 {
+    return
+  }
+  guard pkg.xml_nodes.get(pkg.audit.main_part) is Some(nodes) else {
+    raise Refused("Word XML payload name unsupported")
+  }
+  for group in groups.values() {
+    pkg.control.checkpoint("ole-object", group.length())
+    let id = relationship_attribute(
+      nodes[ole_member(nodes, group, word_office_ns, "OLEObject")],
+    )
+    guard graph_relationship(pkg.graph, pkg.audit.main_part, id) is Some(r) &&
+      !r.external &&
+      r.kind == office_rel + "oleObject" else {
+      raise Refused(
+        "every inline OLE object must bind its own embedded OLE relationship",
+      )
+    }
+    validate_ole(pkg, r)
+  }
 }

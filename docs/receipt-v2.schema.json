@@ -379,12 +379,13 @@
           "const": "partsieve.prepared-plan.v1"
         },
         "tool": {
-          "const": "partsieve/0.6.0-spike"
+          "const": "partsieve/0.7.0-spike"
         },
         "rules": {
           "enum": [
             "bounded-business-plan-v1",
-            "bounded-links-ole-plan-v1"
+            "bounded-links-ole-plan-v1",
+            "bounded-links-ole-plan-v2"
           ]
         },
         "input_hash": {
@@ -684,12 +685,13 @@
           "const": "partsieve.receipt.v2-dev"
         },
         "tool": {
-          "const": "partsieve/0.6.0-spike"
+          "const": "partsieve/0.7.0-spike"
         },
         "rules": {
           "enum": [
             "bounded-business-plan-v1",
-            "bounded-links-ole-plan-v1"
+            "bounded-links-ole-plan-v1",
+            "bounded-links-ole-plan-v2"
           ]
         },
         "policy": {

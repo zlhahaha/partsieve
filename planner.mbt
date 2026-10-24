@@ -156,6 +156,16 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
       },
     })
   }
+  if ole_relationships(pkg).length() > 1 {
+    decisions.push({
+      decision_id: "ole-source",
+      finding_index: None,
+      action: RemoveAction,
+      rule_id: "ole-v1",
+      part: pkg.audit.main_part,
+      reason: "Remove the complete validated set of independent inline OLE subtrees and regenerate their shared metadata; each private payload has its own finding decision.",
+    })
+  }
   if is_macro_format(pkg.audit.format) {
     decisions.push({
       decision_id: "format",
@@ -217,7 +227,26 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
       }
     }
     let decision_id = if operation.rule == "ole-v1" {
-      finding_decisions["ole-v1"]
+      if ole_relationships(pkg).length() == 1 {
+        finding_decisions["ole-v1"]
+      } else if [RewriteSourceXml, RewriteRelationshipPart, RewriteContentTypes].contains(
+          kind,
+        ) {
+        "ole-source"
+      } else {
+        let owners = ole_relationships(pkg).filter(fn(r) {
+          let preview = ole_preview(pkg, r)
+          (kind == RemovePart && [r.resolved, preview.resolved].contains(part)) ||
+          (
+            kind == RemoveRelationship &&
+            [r.id, preview.id].contains(operation.relationship_id)
+          )
+        })
+        guard owners.length() == 1 else {
+          raise Invalid("OLE operation has no unique owning object")
+        }
+        finding_decisions[owners[0].resolved]
+      }
     } else if operation.rule == "remote-template-v1" {
       finding_decisions["remote-template-v1"]
     } else if operation.rule == "format-v1" {
@@ -246,8 +275,10 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
   }
   let prepared : PreparedPlan = {
     schema: "partsieve.prepared-plan.v1",
-    tool: "partsieve/0.6.0-spike",
-    rules: if extended_office(pkg) {
+    tool: "partsieve/0.7.0-spike",
+    rules: if ole_relationships(pkg).length() > 1 {
+      "bounded-links-ole-plan-v2"
+    } else if extended_office(pkg) {
       "bounded-links-ole-plan-v1"
     } else {
       "bounded-business-plan-v1"
