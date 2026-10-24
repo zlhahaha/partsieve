@@ -54,7 +54,9 @@ if options.next_dir:
             else:parent.text=(parent.text or '')+tail
     for name,suffix in [('word-links','.docx'),('sheet-links','.xlsx'),('word-ole-png','.docx'),('word-ole-emf','.docx'),('word-ole-clean','.docx'),('word-ole-only','.docx')]:
         folder=options.next_dir
-        source=next(folder.glob(name+'.input.*'))
+        sources=list(folder.glob(name+'.input.*'))
+        assert len(sources)==1,(name,'ambiguous original file')
+        source=sources[0]
         output=folder/(name+suffix)
         with zipfile.ZipFile(source) as a,zipfile.ZipFile(output) as b:
             assert a.testzip() is None and b.testzip() is None
@@ -104,6 +106,8 @@ if options.next_dir:
         legacy_schema='word-receipt.schema.json' if is_word else 'receipt.schema.json'
         Draft202012Validator(json.loads((ROOT/'docs'/legacy_schema).read_text(encoding='utf8'))).validate(legacy)
         receipt=saved['receipt']
+        assert receipt['input_hash']==hashlib.sha256(source.read_bytes()).hexdigest()
+        assert legacy['receipt']['input_hash']==receipt['input_hash'] and legacy['receipt']['output_hash']==receipt['output_hash']
         assert receipt['output_hash']==hashlib.sha256(output.read_bytes()).hexdigest()
         assert sorted(f['part'] for f in receipt['allowed_capabilities'])==sorted(clicks)
         assert not receipt['output_findings'] and receipt['independent_validation']=='NotChecked'
