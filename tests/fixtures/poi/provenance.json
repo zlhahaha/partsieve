@@ -38,6 +38,30 @@
       "sha256": "ea2c517bd7be4628887eb97f630334b93b894f4522d2c0adae263e602d76df92",
       "license": "Apache-2.0; preserve full upstream LICENSE and NOTICE",
       "source": "https://github.com/apache/poi/blob/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/SampleDoc.docx"
+    },
+    {
+      "path": "tests/fixtures/poi/EmbeddedWorksheet.xls",
+      "bytes": 18432,
+      "sha256": "723f430df655ae9066dfcf1910df08d4010c284b5d8033b1db872c0ba5bdc8b0",
+      "license": "Apache-2.0; preserve full upstream LICENSE and NOTICE",
+      "source": "https://github.com/apache/poi/blob/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/EmbeddedDocument.docx",
+      "derivation": "Extracted embedded worksheet, EMF preview or object XML; standalone namespace declarations added to XML only. Original DOCX SHA256 3cb521da0faab3b8a9e7c5d155961b4f5506fb2ceda8e69e0790d03ee01767f2. No embedded content executed."
+    },
+    {
+      "path": "tests/fixtures/poi/EmbeddedPreview.emf",
+      "bytes": 2972,
+      "sha256": "18e97787405ba97f9890668d282c87bc9bcdb31954826e51b551d71920ce062d",
+      "license": "Apache-2.0; preserve full upstream LICENSE and NOTICE",
+      "source": "https://github.com/apache/poi/blob/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/EmbeddedDocument.docx",
+      "derivation": "Extracted embedded worksheet, EMF preview or object XML; standalone namespace declarations added to XML only. Original DOCX SHA256 3cb521da0faab3b8a9e7c5d155961b4f5506fb2ceda8e69e0790d03ee01767f2. No embedded content executed."
+    },
+    {
+      "path": "tests/fixtures/poi/EmbeddedObject.xml",
+      "bytes": 1239,
+      "sha256": "769e97d0c682181d9ce857c75487ac1eb6644c2017a61e7a0c901cc65000266e",
+      "license": "Apache-2.0; preserve full upstream LICENSE and NOTICE",
+      "source": "https://github.com/apache/poi/blob/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/EmbeddedDocument.docx",
+      "derivation": "Extracted embedded worksheet, EMF preview or object XML; standalone namespace declarations added to XML only. Original DOCX SHA256 3cb521da0faab3b8a9e7c5d155961b4f5506fb2ceda8e69e0790d03ee01767f2. No embedded content executed."
     }
   ],
   "usage": "Real benign Word DOCM VBA handler fixture. Original is never opened in Office. Macro is only statically extracted, never executed."

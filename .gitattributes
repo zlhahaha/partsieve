@@ -8,3 +8,6 @@ tests/fixtures/poi/LICENSE -text
 tests/fixtures/poi/NOTICE -text
 *.jpg -text
 *.png -text
+
+*.xls -text
+*.emf -text

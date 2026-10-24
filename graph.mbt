@@ -115,7 +115,9 @@ fn build_graph(
     }
     if implicit_semantics is Some(semantics) {
       implicit.push({ source: r.source, relationship_index: i, semantics, })
-    } else if ![
+    } else if !ole_declared(r, parts, xml_nodes) &&
+      !hyperlink_declared(r, parts, xml_nodes) &&
+      ![
         office_rel + "worksheet",
         office_rel + "header",
         office_rel + "footer",
@@ -136,14 +138,24 @@ fn build_graph(
   for part in parts {
     if xml_nodes.get(part.name) is Some(nodes) {
       let mut has_opaque_content = false
+      let mask = if parts.any(fn(p) {
+          p.name == part.name && [docx_ct, docm_ct].contains(p.content_type)
+        }) {
+        ole_mask(nodes)
+      } else {
+        []
+      }
       for ordinal, node in nodes {
         let ns = node.element.name.namespace_uri.unwrap_or("")
         let local_name = node.element.name.local_name
-        if ns == "http://schemas.openxmlformats.org/markup-compatibility/2006" ||
-          ns == "urn:schemas-microsoft-com:vml" ||
-          !known_namespaces.contains(ns) ||
-          (local_name == "ext" && ns != drawing_ns) ||
-          local_name == "extLst" {
+        if !mask.contains(ordinal) &&
+          (
+            ns == "http://schemas.openxmlformats.org/markup-compatibility/2006" ||
+            ns == "urn:schemas-microsoft-com:vml" ||
+            !known_namespaces.contains(ns) ||
+            (local_name == "ext" && ns != drawing_ns) ||
+            local_name == "extLst"
+          ) {
           has_opaque_content = true
         }
         for a in node.element.attributes {
@@ -155,7 +167,8 @@ fn build_graph(
             attribute_ns == "urn:schemas-microsoft-com:vml" &&
             a.name.local_name == "ext" &&
             a.value == "edit"
-          if !inert_shape_attribute &&
+          if !mask.contains(ordinal) &&
+            !inert_shape_attribute &&
             attribute_ns != "" &&
             attribute_ns != relationship_ns &&
             attribute_ns != word_ns &&

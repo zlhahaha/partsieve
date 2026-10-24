@@ -72,6 +72,56 @@ fn make_plan(pkg : Package) -> RewritePlan {
       })
     }
   }
+  for r in ole_relationships(pkg) {
+    let preview = ole_preview(pkg, r)
+    for
+      (kind, part, id, reason) in [
+        (
+          "RewriteSourceXml",
+          r.source,
+          r.id,
+          "Remove the validated inline OLE object and its preview; preserve all other Word semantics.",
+        ),
+        (
+          "RemoveRelationship",
+          r.source,
+          r.id,
+          "Remove the embedded OLE relationship.",
+        ),
+        (
+          "RemoveRelationship",
+          preview.source,
+          preview.id,
+          "Remove the exclusively owned OLE preview relationship.",
+        ),
+        (
+          "RemovePart",
+          r.resolved,
+          "",
+          "Remove the embedded OLE container without opening or recursively sanitizing it.",
+        ),
+        (
+          "RemovePart",
+          preview.resolved,
+          "",
+          "Remove the exclusively owned object preview; its displayed content is intentionally lost.",
+        ),
+      ] {
+      ops.push({ kind, part, relationship_id: id, rule: "ole-v1", reason, })
+    }
+    let relpart = relationship_part(r.source)
+    if !ops.any(fn(op) {
+        op.kind == "RewriteRelationshipPart" && op.part == relpart
+      }) {
+      ops.push({
+        kind: "RewriteRelationshipPart",
+        part: relpart,
+        relationship_id: r.id,
+        rule: "ole-v1",
+        reason: "Regenerate main-document relationships without the OLE object or its private preview.",
+      })
+    }
+  }
   if is_macro_format(report.format) {
     ops.push({
       kind: "ChangeMainContentType",
@@ -91,6 +141,26 @@ fn make_plan(pkg : Package) -> RewritePlan {
       rule: "format-v1",
       reason: "Remove VBA mappings and change main type; retain other mappings.",
     })
+  }
+  if ole_relationships(pkg).length() > 0 &&
+    !ops.any(fn(op) { op.kind == "RewriteContentTypes" }) {
+    ops.push({
+      kind: "RewriteContentTypes",
+      part: "[Content_Types].xml",
+      relationship_id: "",
+      rule: "ole-v1",
+      reason: "Remove content type mappings for deleted OLE and preview parts.",
+    })
+  }
+  let ops = if ole_relationships(pkg).length() > 0 {
+    ops.filter(fn(op) {
+      !["RewriteRelationshipPart", "RewriteContentTypes"].contains(op.kind)
+    }) +
+    ops.filter(fn(op) {
+      ["RewriteRelationshipPart", "RewriteContentTypes"].contains(op.kind)
+    })
+  } else {
+    ops
   }
   {
     schema: if is_word_format(report.format) {
@@ -118,14 +188,14 @@ fn write_relationships(pkg : Package, source : String) -> Bytes raise {
   let writer = @xml.Writer::new()
   writer.start_element("Relationships", [("xmlns", rel_ns)])
   for r in pkg.audit.relationships {
-    if r.source != source || r.kind == vba_rel || is_template_relationship(r) {
+    if r.source != source || removed_relationship(pkg, r) {
       continue
     }
-    writer.empty_element("Relationship", [
-      ("Id", r.id),
-      ("Type", r.kind),
-      ("Target", r.target),
-    ])
+    let attributes = [("Id", r.id), ("Type", r.kind), ("Target", r.target)]
+    if r.external {
+      attributes.push(("TargetMode", "External"))
+    }
+    writer.empty_element("Relationship", attributes)
   }
   writer.end_element("Relationships")
   @utf8.encode(writer.to_string()[:])
@@ -139,7 +209,9 @@ fn write_content_types(pkg : Package) -> Bytes raise {
   extensions.sort()
   for ext in extensions {
     let ct = pkg.defaults[ext]
-    if ct != vba_ct && ct != word_vba_data_ct {
+    if ct != vba_ct &&
+      ct != word_vba_data_ct &&
+      (!ole_payload_type(ct) || ole_relationships(pkg).length() == 0) {
       writer.empty_element("Default", [("Extension", ext), ("ContentType", ct)])
     }
   }
@@ -147,7 +219,7 @@ fn write_content_types(pkg : Package) -> Bytes raise {
   names.sort()
   for name in names {
     let ct = pkg.overrides[name]
-    if ct == vba_ct || controlled_vba_parts(pkg).contains(name) {
+    if ct == vba_ct || controlled_parts(pkg).contains(name) {
       continue
     }
     writer.empty_element("Override", [
@@ -197,8 +269,8 @@ fn verify_parts(
   for p in before.audit.parts {
     let matches = after.audit.parts.filter(fn(q) { q.name == p.name })
     let out = if matches.length() == 0 { None } else { Some(matches[0]) }
-    let removed = controlled_vba_parts(before).contains(p.name)
-    let semantic = template_rewritten(before, p.name)
+    let removed = controlled_parts(before).contains(p.name)
+    let semantic = source_rewritten(before, p.name)
     let metadata = is_macro_format(before.audit.format) &&
       (
         p.name == "[Content_Types].xml" ||
@@ -208,6 +280,13 @@ fn verify_parts(
         )
       )
     let metadata = metadata ||
+      (
+        ole_relationships(before).length() > 0 &&
+        (
+          p.name == "[Content_Types].xml" ||
+          p.name == relationship_part(before.audit.main_part)
+        )
+      ) ||
       before.audit.relationships.any(fn(r) {
         is_template_relationship(r) && p.name == relationship_part(r.source)
       })
@@ -225,7 +304,7 @@ fn verify_parts(
         raise Invalid("preserved payload changed")
       }
       if semantic {
-        verify_template_semantics(before, after, p.name)
+        verify_source_semantics(before, after, p.name)
       }
       dispositions.push({
         part: p.name,
@@ -284,9 +363,9 @@ fn legacy_receipt(
       "partsieve.receipt.spike-v1"
     },
     tool: if is_word_format(before.audit.format) {
-      "partsieve/0.4.0-spike"
+      "partsieve/0.5.0-spike"
     } else {
-      "partsieve/0.4.0-spike"
+      "partsieve/0.5.0-spike"
     },
     rules: if is_word_format(before.audit.format) {
       "word-business-v1"

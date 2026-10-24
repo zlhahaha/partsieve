@@ -62,7 +62,9 @@ pub fn verify_contract(
   guard assessment.decision.result == Pass &&
     assessment.coverage.parse_complete &&
     assessment.coverage.unchecked_features.length() == 0 &&
-    assessment.findings.length() == 0 else {
+    assessment.findings.all(fn(f) {
+      f.capability == HttpHyperlink && f.rebuild_support == Supported
+    }) else {
     raise Invalid("output capability/profile coverage contract not satisfied")
   }
   let checks : Array[VerificationCheck] = []
@@ -97,7 +99,7 @@ pub fn verify_contract(
   })
   {
     schema: "partsieve.receipt.v2-dev",
-    tool: "partsieve/0.4.0-spike",
+    tool: "partsieve/0.5.0-spike",
     rules: prepared.rules,
     policy: prepared.policy,
     profile: prepared.profile,
@@ -111,9 +113,13 @@ pub fn verify_contract(
     input_coverage: prepared.coverage,
     output_coverage: assessment.coverage,
     findings: prepared.findings,
-    output_findings: assessment.findings,
+    output_findings: assessment.findings.filter(fn(f) {
+      f.capability != HttpHyperlink
+    }),
     decisions: prepared.decisions,
-    allowed_capabilities: [],
+    allowed_capabilities: assessment.findings.filter(fn(f) {
+      f.capability == HttpHyperlink
+    }),
     plan: prepared,
     dispositions: contract_dispositions(basis, prepared),
     checks,
@@ -122,7 +128,11 @@ pub fn verify_contract(
     independent_tools: [],
     limitations: before.audit.limitations +
     [
-      "Source XML semantic rewriting is limited to settings-local attachedTemplate removal; other fields/links/objects refuse.",
+      if extended_office(before) {
+        "Source rewriting is limited to attachedTemplate removal and one validated inline Word OLE object/preview removal; click hyperlinks are byte-preserved."
+      } else {
+        "Source XML semantic rewriting is limited to settings-local attachedTemplate removal; other fields/links/objects refuse."
+      },
       "Receipt hashes bind bytes; no authenticity signature or general Office safety proof.",
       "Independent schema/client evidence is separate; WPS Word saved-copy ordering failure must not be represented as Pass.",
     ],

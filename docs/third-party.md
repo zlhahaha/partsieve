@@ -21,3 +21,5 @@ Apache POI fixture 的完整原始 LICENSE/NOTICE 位于 `tests/fixtures/poi/`�
 新增 business fixtures 为作者自建组合文档，布局、文本和测试图片采用 Apache-2.0；由 XlsxWriter 3.2.9、CPython XML/Pillow 离线生成。宏字节不变，沿用既有 XlsxWriter/POI 的对应来源许可。来源、固定 hash 及声明见 [business provenance](../tests/fixtures/business/provenance.json)，不能将这些自建样本记为真实第三方采用。
 
 分发 archive 保留本项目 LICENSE、公开 API、核心实现、测试源码及 fixture 许可；开发缓存、临时产物、客户端截图与历史测试日志通过 .moonignore 排除，完整证据保留在本地，CI 报告作为 Actions artifacts 保存。不把用户文件加入测试语料。
+
+0.5的受控OLE测试另从同一固定Apache POI commit的EmbeddedDocument.docx静态提取CFB工作表、EMF预览和对象XML；完整来源及变换已加入POI provenance。提取物只用于组合测试，不激活OLE，不移植POI实现代码。

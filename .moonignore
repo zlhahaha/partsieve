@@ -32,3 +32,5 @@ tests/fixtures/upstream/test_simple01.py
 tests/corpus/
 tests/native/
 tests/probe/
+
+tests/next/

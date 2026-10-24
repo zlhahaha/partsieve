@@ -37,6 +37,10 @@ fn validate_profile(pkg : Package) -> Unit raise {
   }
 
   for r in report.relationships {
+    if hyperlink_declared(r, report.parts, pkg.xml_nodes) {
+      validate_hyperlink(pkg, r)
+      continue
+    }
     guard !r.external && supported_relationship_types.contains(r.kind) else {
       raise Refused("external or unsupported relationship capability")
     }
@@ -202,7 +206,8 @@ fn validate_static_xml_part(pkg : Package, p : PartRecord) -> Unit raise {
         | "pageMargins"
         | "pageSetup"
         | "printOptions"
-        | "mergeCells" => parent == "worksheet"
+        | "mergeCells"
+        | "hyperlinks" => parent == "worksheet"
         "pageSetUpPr" | "outlinePr" => parent == "sheetPr"
         "sheetView" => parent == "sheetViews"
         "selection" => parent == "sheetView"
@@ -214,10 +219,38 @@ fn validate_static_xml_part(pkg : Package, p : PartRecord) -> Unit raise {
         "r" => parent == "is"
         "rPr" => parent == "r"
         "mergeCell" => parent == "mergeCells"
+        "hyperlink" => parent == "hyperlinks"
         _ => false
       }
       guard shape_ok else {
         raise Refused("unsupported worksheet element placement")
+      }
+    }
+    if expected_root == "worksheet" && local_name == "hyperlink" {
+      guard node.element.attributes.all(fn(a) {
+          (
+            a.name.namespace_uri ==
+            Some(office_rel[0:office_rel.length() - 1].to_owned()) &&
+            a.name.local_name == "id"
+          ) ||
+          (
+            a.name.namespace_uri is None &&
+            ["ref", "display", "tooltip"].contains(a.name.local_name)
+          )
+        }) &&
+        node.text_fragments.all(fn(t) { t.trim() == "" }) else {
+        raise Refused("unsupported worksheet hyperlink attributes or content")
+      }
+      validate_click_range(attr(node, "ref"))
+      guard node.element.attributes
+        .filter(fn(a) {
+          a.name.namespace_uri ==
+          Some(office_rel[0:office_rel.length() - 1].to_owned()) &&
+          a.name.local_name == "id"
+        })
+        .length() ==
+        1 else {
+        raise Invalid("worksheet click hyperlink needs one relationship")
       }
     }
     parents.push(local_name)
@@ -233,7 +266,7 @@ fn validate_static_xml_part(pkg : Package, p : PartRecord) -> Unit raise {
         "worksheet", "sheetPr", "pageSetUpPr", "outlinePr", "dimension", "sheetViews",
         "sheetView", "selection", "sheetFormatPr", "cols", "col", "sheetData", "row",
         "c", "v", "is", "t", "r", "rPr", "pageMargins", "pageSetup", "printOptions",
-        "mergeCells", "mergeCell",
+        "mergeCells", "mergeCell", "hyperlinks", "hyperlink",
       ].contains(local_name)
     } else if expected_root == "sst" {
       ns == spreadsheet_ns &&
@@ -325,6 +358,15 @@ fn validate_static_xml_part(pkg : Package, p : PartRecord) -> Unit raise {
         raise Refused("unsupported namespaced XML attribute")
       }
       if ans == office_rel[0:office_rel.length() - 1].to_owned() {
+        if expected_root == "worksheet" &&
+          local_name == "hyperlink" &&
+          a.name.local_name == "id" {
+          guard graph_relationship(pkg.graph, p.name, a.value) is Some(link) else {
+            raise Invalid("missing hyperlink relation")
+          }
+          validate_hyperlink(pkg, link)
+          continue
+        }
         guard expected_root == "workbook" &&
           local_name == "sheet" &&
           a.name.local_name == "id" else {

@@ -14,7 +14,8 @@ fn word_passive_element(node : Node, parent : String, root : String) -> Bool {
       "body" => parent == "document"
       "p" | "tbl" => ["body", "tc", "hdr", "ftr"].contains(parent)
       "sectPr" => ["body", "pPr"].contains(parent) && root == "document"
-      "r" | "pPr" => parent == "p"
+      "r" => parent == "p" || parent == "hyperlink"
+      "hyperlink" | "pPr" => parent == "p"
       "t" | "rPr" | "br" | "cr" | "tab" | "drawing" => parent == "r"
       "b" | "i" | "u" | "sz" | "szCs" | "rFonts" | "lang" | "color" =>
         parent == "rPr"
@@ -138,12 +139,20 @@ fn validate_word_reference_attribute(
     attribute.name.local_name == "id" &&
     part.content_type.contains(".settings+") {
     office_rel + "attachedTemplate"
+  } else if ns == word_ns &&
+    name == "hyperlink" &&
+    attribute.name.local_name == "id" {
+    office_rel + "hyperlink"
   } else {
     raise Refused("unsupported Word relationship attribute context")
   }
   guard graph_relationship(pkg.graph, part.name, attribute.value) is Some(r) &&
     r.kind == kind &&
-    (!r.external || is_template_relationship(r)) else {
+    (
+      !r.external ||
+      is_template_relationship(r) ||
+      (kind == office_rel + "hyperlink" && valid_click_url(r.target))
+    ) else {
     raise Invalid("Word XML reference is bound to the wrong relationship kind")
   }
 }
@@ -155,7 +164,8 @@ fn validate_word_references(pkg : Package) -> Unit raise {
     referenced[reference.source + "#" + reference.relationship_id] = true
   }
   for r in pkg.audit.relationships {
-    if [office_rel + "header", office_rel + "footer", office_rel + "image"].contains(
+    if !removed_relationship(pkg, r) &&
+      [office_rel + "header", office_rel + "footer", office_rel + "image"].contains(
         r.kind,
       ) {
       guard referenced.contains(r.source + "#" + r.id) else {

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.0-spike（2026-10-24）
+
+- Preserve source-bound HTTP(S) click hyperlinks in Word body/header/footer and Excel worksheet ranges; report allowed clicks separately and never fetch their targets.
+- Remove one validated inline Word embedded OLE object, its exclusively owned CFB payload and PNG/JPEG/EMF preview. Reject shared/linked/unknown objects and ActiveX; unrelated Word semantics and all other payloads are verified.
+- Extend prepared-plan closure/dependencies, source rewrite verification and typed/legacy report schemas; retain the existing v1 business path and historical command corpus.
+- Add six combined scenarios, 36 refusal cases, public CLI saved-plan/actual-file checks, URL tampering and forged-Receipt checks, plus independent ZIP/XML/Schema/OpenXML validation.
+
 ## 0.4.0-spike（2026-10-23）
 
 - MoonBit Native CLI replaces the Python runtime host; a small original C adapter provides filesystem/process syscalls for Windows and Linux.

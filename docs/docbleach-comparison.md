@@ -11,16 +11,15 @@ Reviewed `module/module-office/src/main/java/xyz/docbleach/module/ooxml/`
 fixtures from that project are copied into PartSieve. The implementation uses
 the existing MoonBit ZIP/XML graph and verifier; it does not invoke Java/POI.
 
-| Concern | DocBleach source behavior | PartSieve 0.4.0-spike |
+| Concern | DocBleach source behavior | PartSieve 0.5.0-spike |
 | --- | --- | --- |
 | VBA | Filters VBA types/relationships; remaps macro main types | Removes supported Word/spreadsheet VBA ownership sets and converts main types; verifies actual output |
 | Normal content | General OPC processing through Apache POI; aims to retain ordinary content | Explicitly tested business spreadsheet content and Word tables, inline PNG/JPEG, headers/footers; other content refuses |
-| External references | Whitelists hyperlink relationship type, replaces other external relations with a dummy internal object | Removes one settings-local HTTP(S) attached template and its XML reference; other external links refuse; no target fetched |
-| OLE/ActiveX | Blacklists types/relations and substitutes a dummy target | Detects supported declarations and refuses rebuilding; removal is not implemented |
+| External references | Whitelists hyperlink relationship type, replaces other external relations with a dummy internal object | Preserves source-bound HTTP(S) click hyperlinks; removes one settings-local HTTP(S) attached template and its XML reference; other external resources refuse; no target fetched |
+| OLE/ActiveX | Blacklists types/relations and substitutes a dummy target | Removes one validated inline Word embedded OLE object, exclusively owned CFB payload and PNG/JPEG/EMF preview; Excel OLE, linked/shared OLE and ActiveX still refuse |
 | Formats | Includes other Office types and separate modules for other formats | DOCX/DOCM, XLSX/XLSM only; no PDF/RTF/legacy binary/PPTX |
 | Unsupported input | Some invalid-format handling copies through | Explicit unsupported/incomplete result with no successful rebuilt pair |
 
 This version focuses on the review's requested ordinary-content coverage.
-OLE/ActiveX removal remains future work: source XML, preview objects and shared
-dependencies must be handled together before such input can be accepted. We do
+Word OLE support is deliberately bounded: the object and its private preview are lost; unrelated content is checked against the original. General OLE and ActiveX remain future work. We do
 not claim feature parity or equivalent security with DocBleach.

@@ -34,6 +34,8 @@ if ($LASTEXITCODE -ne 0) { throw 'Release build failed' }
 # Native integration tests execute these already built CLI/probe binaries.
 moon test --target native --deny-warn
 if ($LASTEXITCODE -ne 0) { throw 'moon test failed' }
+moon run tests/next --target native --deny-warn
+if ($LASTEXITCODE -ne 0) { throw 'Click-link and Word OLE regression failed' }
 .\tools\generate-test-evidence.ps1
 moon run examples/sdk --target native
 if ($LASTEXITCODE -ne 0) { throw 'SDK example failed' }

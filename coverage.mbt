@@ -73,7 +73,11 @@ fn profile_decision(pkg : Package) -> Decision {
       result: Pass,
       rebuild_allowed: true,
       profile: pkg.audit.profile,
-      reason: "Checks complete within declared profile; supported VBA removal is permitted. This is not a claim that input is passive.",
+      reason: if extended_office(pkg) {
+        "Checks complete within the links/OLE profile; permitted click hyperlinks may remain, while supported VBA/template/OLE declarations are removed."
+      } else {
+        "Checks complete within declared profile; supported VBA removal is permitted. This is not a claim that input is passive."
+      },
     }
   } catch {
     Invalid(reason) =>
@@ -147,7 +151,12 @@ fn add_capability_finding(
           Declared
         },
         rebuild_support: if permitted &&
-          (capability == Vba || capability == RemoteTemplate) {
+          (
+            capability == Vba ||
+            capability == RemoteTemplate ||
+            capability == HttpHyperlink ||
+            capability == Ole
+          ) {
           Supported
         } else {
           NotSupported
@@ -170,7 +179,7 @@ fn assess_package(pkg : Package) -> Assessment {
       Some(Vba)
     } else if ct.contains("activex") {
       Some(ActiveX)
-    } else if ct.contains("oleobject") {
+    } else if ole_payload_type(part.content_type) {
       Some(Ole)
     } else if ct.contains(".externallink+") ||
       ct.contains(".connections+") ||
@@ -307,7 +316,14 @@ fn assess_package(pkg : Package) -> Assessment {
       rebuild_support: if decision.rebuild_allowed &&
         (
           capability == Vba ||
-          (is_word_format(pkg.audit.format) && capability == RemoteTemplate)
+          (is_word_format(pkg.audit.format) && capability == RemoteTemplate) ||
+          (
+            extended_office(pkg) &&
+            (
+              capability == HttpHyperlink ||
+              (is_word_format(pkg.audit.format) && capability == Ole)
+            )
+          )
         ) {
         Supported
       } else {

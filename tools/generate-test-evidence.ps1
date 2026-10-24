@@ -1,3 +1,4 @@
+param([string]$EvidenceRoot='docs/evidence',[string]$BusinessRoot='tests/generated/business-v3')
 $ErrorActionPreference = 'Stop'
 $taskRoot = Split-Path -Parent $PSScriptRoot
 $taskCli = Join-Path $taskRoot '_build/native/debug/build/cmd/main/main'
@@ -13,7 +14,8 @@ $taskCases = @(
 )
 foreach ($taskCase in $taskCases) {
   $taskSource = Join-Path $taskRoot $taskCase[0]
-  $taskOutput = Join-Path $taskRoot $taskCase[1]
+  $taskRelative = $taskCase[1].Replace('docs/evidence',$EvidenceRoot).Replace('tests/generated/business-v3',$BusinessRoot)
+  $taskOutput = Join-Path $taskRoot $taskRelative
   $taskReceipt = [IO.Path]::ChangeExtension($taskOutput, '.receipt.json')
   [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($taskOutput)) | Out-Null
   if (-not (Test-Path -LiteralPath $taskOutput) -and -not (Test-Path -LiteralPath $taskReceipt)) {
@@ -25,5 +27,5 @@ foreach ($taskCase in $taskCases) {
   if ($LASTEXITCODE -ne 0) { throw "Evidence verification failed: $taskReport" }
   $taskHash = (Get-FileHash -LiteralPath $taskOutput -Algorithm SHA256).Hash.ToLowerInvariant()
   if ($taskCase[3] -and $taskHash -ne $taskCase[3]) { throw 'Output byte drift' }
-  Write-Output "$($taskCase[1]): Pass ($taskHash)"
+  Write-Output "${taskRelative}: Pass ($taskHash)"
 }

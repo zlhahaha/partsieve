@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:partsieve:receipt:v2-dev",
-  "title": "PartSieve current accepted VBA profiles typed Receipt (development)",
-  "description": "Shape only, not verification. Recompute from actual original/output. Only settings-local attachedTemplate removal supports semantic rewriting; independent clients remain external evidence.",
+  "title": "PartSieve supported VBA, template, click-link and Word OLE typed Receipt (development)",
+  "description": "Shape only, not verification. Recompute from actual original/output. Semantic rewriting is limited to validated attachedTemplate and inline Word OLE removal; permitted HTTP(S) click links are recorded separately. Independent clients remain external evidence.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -21,7 +21,9 @@
     "profile": {
       "enum": [
         "business-spreadsheet-v1",
-        "business-word-v1"
+        "business-word-v1",
+        "business-word-v2",
+        "business-spreadsheet-v2"
       ]
     },
     "rule": {
@@ -79,7 +81,9 @@
         "declared_profile": {
           "enum": [
             "business-spreadsheet-v1",
-            "business-word-v1"
+            "business-word-v1",
+            "business-word-v2",
+            "business-spreadsheet-v2"
           ]
         },
         "rules": {
@@ -125,13 +129,17 @@
         "rule_id": {
           "enum": [
             "vba-v1",
-            "remote-template-v1"
+            "remote-template-v1",
+            "http-hyperlink-v1",
+            "ole-v1"
           ]
         },
         "capability": {
           "enum": [
             "VBA",
-            "RemoteTemplate"
+            "RemoteTemplate",
+            "HTTPHyperlink",
+            "OLE"
           ]
         },
         "source": {
@@ -167,6 +175,22 @@
           "if": {
             "properties": {
               "capability": {
+                "const": "VBA"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "rule_id": {
+                "const": "vba-v1"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "capability": {
                 "const": "RemoteTemplate"
               }
             }
@@ -177,11 +201,36 @@
                 "const": "remote-template-v1"
               }
             }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "capability": {
+                "const": "HTTPHyperlink"
+              }
+            }
           },
-          "else": {
+          "then": {
             "properties": {
               "rule_id": {
-                "const": "vba-v1"
+                "const": "http-hyperlink-v1"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "capability": {
+                "const": "OLE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "rule_id": {
+                "const": "ole-v1"
               }
             }
           }
@@ -209,7 +258,9 @@
           "enum": [
             "vba-v1",
             "format-v1",
-            "remote-template-v1"
+            "remote-template-v1",
+            "ole-v1",
+            "http-hyperlink-v1"
           ]
         },
         "part": {
@@ -257,7 +308,9 @@
           "enum": [
             "vba-v1",
             "format-v1",
-            "remote-template-v1"
+            "remote-template-v1",
+            "ole-v1",
+            "http-hyperlink-v1"
           ]
         },
         "decision_id": {
@@ -326,10 +379,13 @@
           "const": "partsieve.prepared-plan.v1"
         },
         "tool": {
-          "const": "partsieve/0.4.0-spike"
+          "const": "partsieve/0.5.0-spike"
         },
         "rules": {
-          "const": "bounded-business-plan-v1"
+          "enum": [
+            "bounded-business-plan-v1",
+            "bounded-links-ole-plan-v1"
+          ]
         },
         "input_hash": {
           "type": "string",
@@ -628,10 +684,13 @@
           "const": "partsieve.receipt.v2-dev"
         },
         "tool": {
-          "const": "partsieve/0.4.0-spike"
+          "const": "partsieve/0.5.0-spike"
         },
         "rules": {
-          "const": "bounded-business-plan-v1"
+          "enum": [
+            "bounded-business-plan-v1",
+            "bounded-links-ole-plan-v1"
+          ]
         },
         "policy": {
           "const": "passive-office-v1"
@@ -759,9 +818,22 @@
         "allowed_capabilities": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/finding"
-          },
-          "maxItems": 0
+            "allOf": [
+              {
+                "$ref": "#/$defs/finding"
+              },
+              {
+                "properties": {
+                  "capability": {
+                    "const": "HTTPHyperlink"
+                  },
+                  "rule_id": {
+                    "const": "http-hyperlink-v1"
+                  }
+                }
+              }
+            ]
+          }
         },
         "plan": {
           "$ref": "#/$defs/plan"

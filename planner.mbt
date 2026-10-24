@@ -90,7 +90,16 @@ fn validate_removal_closure(
   }
   for reference in pkg.graph.graph.xml_references {
     let r = pkg.audit.relationships[reference.relationship_index]
-    guard !removed.contains(r.resolved) || removed.contains(reference.source) else {
+    guard !removed.contains(r.resolved) ||
+      removed.contains(reference.source) ||
+      (
+        ole_reference_removed(pkg, reference) &&
+        prepared.operations.any(fn(op) {
+          op.kind == RewriteSourceXml &&
+          op.part == reference.source &&
+          op.rule_id == "ole-v1"
+        })
+      ) else {
       raise Refused(
         "retained XML reference cannot be repaired by the VBA handler",
       )
@@ -108,22 +117,38 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
   let decisions : Array[PolicyDecision] = []
   let finding_decisions : Map[String, String] = Map([])
   for i, finding in assessment.findings {
-    guard (finding.capability == Vba || finding.capability == RemoteTemplate) &&
+    guard (
+        finding.capability == Vba ||
+        finding.capability == RemoteTemplate ||
+        finding.capability == HttpHyperlink ||
+        finding.capability == Ole
+      ) &&
       finding.rebuild_support == Supported else {
       raise Refused("finding has no accepted planner handler")
     }
     let id = "finding-" + i.to_string()
     finding_decisions[finding.part] = id
+    if finding.capability == Ole {
+      finding_decisions["ole-v1"] = id
+    }
     if finding.capability == RemoteTemplate {
       finding_decisions["remote-template-v1"] = id
     }
     decisions.push({
       decision_id: id,
       finding_index: Some(i),
-      action: RemoveAction,
+      action: if finding.capability == HttpHyperlink {
+        AllowAction
+      } else {
+        RemoveAction
+      },
       rule_id: finding.rule_id,
       part: finding.part,
-      reason: if finding.capability == RemoteTemplate {
+      reason: if finding.capability == Ole {
+        "Remove one validated Word inline OLE object, its private preview and exclusively owned parts."
+      } else if finding.capability == HttpHyperlink {
+        "Retain the validated HTTP(S) click target and its source XML without network access."
+      } else if finding.capability == RemoteTemplate {
         "Remove the external attached template and its settings-local XML reference; do not fetch the target."
       } else {
         "Remove VBA and its exclusively owned supporting parts under passive-office-v1."
@@ -141,7 +166,7 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
     })
   }
   let operations : Array[CheckedOperation] = []
-  let removed = controlled_vba_parts(pkg)
+  let removed = controlled_parts(pkg)
   for i, operation in make_plan(pkg).operations {
     let kind = parse_operation_kind(operation.kind)
     let part = if kind == RemoveRelationship {
@@ -157,7 +182,7 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
       RewriteRelationshipPart =>
         Some(digest(write_relationships(pkg, relationship_source(part))[:]))
       RewriteContentTypes => Some(digest(write_content_types(pkg)[:]))
-      RewriteSourceXml => Some(digest(write_template_settings(pkg, part)[:]))
+      RewriteSourceXml => Some(digest(write_source(pkg, part)[:]))
       RemoveRelationship | ChangeMainContentType => Some(before.sha256)
     }
     let depends_on : Array[String] = []
@@ -182,7 +207,9 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
         depends_on.push(previous.operation_id)
       }
     }
-    let decision_id = if operation.rule == "remote-template-v1" {
+    let decision_id = if operation.rule == "ole-v1" {
+      finding_decisions["ole-v1"]
+    } else if operation.rule == "remote-template-v1" {
       finding_decisions["remote-template-v1"]
     } else if operation.rule == "format-v1" {
       "format"
@@ -210,8 +237,12 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
   }
   let prepared : PreparedPlan = {
     schema: "partsieve.prepared-plan.v1",
-    tool: "partsieve/0.4.0-spike",
-    rules: "bounded-business-plan-v1",
+    tool: "partsieve/0.5.0-spike",
+    rules: if extended_office(pkg) {
+      "bounded-links-ole-plan-v1"
+    } else {
+      "bounded-business-plan-v1"
+    },
     input_hash: pkg.audit.input_hash,
     input_format: pkg.audit.format,
     output_format: if is_word_format(pkg.audit.format) {
@@ -230,9 +261,15 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
     orphan_candidates: pkg.graph.graph.orphan_candidates,
     coverage: assessment.coverage,
     gate: assessment.decision,
-    unavailable_handlers: [
-      "Source XML edits other than validated attachedTemplate removal are unavailable.",
-    ],
+    unavailable_handlers: if extended_office(pkg) {
+      [
+        "Linked/shared OLE, Excel OLE, ActiveX, fields and general VML rewriting are unavailable.",
+      ]
+    } else {
+      [
+        "Source XML edits other than validated attachedTemplate removal are unavailable.",
+      ]
+    },
   }
   validate_operation_conflicts(prepared.operations)
   validate_removal_closure(pkg, prepared)
@@ -280,7 +317,7 @@ fn execute_prepared(
             operation.relationship_id,
           )
           is Some(r) &&
-          (r.kind == vba_rel || is_template_relationship(r)) else {
+          removed_relationship(pkg, r) else {
           raise Invalid("relationship operation precondition mismatch")
         }
       }
@@ -291,10 +328,10 @@ fn execute_prepared(
         }
       }
       RewriteSourceXml => {
-        guard template_rewritten(pkg, operation.part) else {
+        guard source_rewritten(pkg, operation.part) else {
           raise Refused("no accepted source XML handler for this part")
         }
-        let payload = write_template_settings(pkg, operation.part)
+        let payload = write_source(pkg, operation.part)
         guard operation.expected_after_hash == Some(digest(payload[:])) &&
           archive.replace(operation.part[:], payload[:]) else {
           raise Invalid("source XML rewrite postcondition mismatch")

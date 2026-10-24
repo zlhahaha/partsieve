@@ -202,7 +202,11 @@
           "const": "CompleteWithinProfile"
         },
         "profile": {
-          "const": "business-word-v1"
+          "enum": [
+            "business-word-v1",
+            "business-word-v2",
+            "business-spreadsheet-v2"
+          ]
         },
         "checked_rules": {
           "$ref": "#/$defs/strings"
@@ -286,7 +290,11 @@
           "const": "passive-office-v1"
         },
         "profile": {
-          "const": "business-word-v1"
+          "enum": [
+            "business-word-v1",
+            "business-word-v2",
+            "business-spreadsheet-v2"
+          ]
         },
         "operations": {
           "type": "array",
@@ -376,7 +384,7 @@
           "const": "partsieve.receipt.word-dev-v1"
         },
         "tool": {
-          "const": "partsieve/0.4.0-spike"
+          "const": "partsieve/0.5.0-spike"
         },
         "rules": {
           "const": "word-business-v1"
@@ -385,7 +393,11 @@
           "const": "passive-office-v1"
         },
         "profile": {
-          "const": "business-word-v1"
+          "enum": [
+            "business-word-v1",
+            "business-word-v2",
+            "business-spreadsheet-v2"
+          ]
         },
         "input_hash": {
           "$ref": "#/$defs/hash"

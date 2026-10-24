@@ -1,6 +1,6 @@
 # 原型架构
 
-当前提供 `business-spreadsheet-v1` 与 `business-word-v1` 配置（0.4.0-spike）。
+当前提供既有业务v1，以及按输入能力启用的 `business-spreadsheet-v2` / `business-word-v2` 链接与Word OLE配置（0.5.0-spike）。
 
 - `model.mbt`：限制、Audit、Finding、Relationship、RewritePlan、Receipt。
 - `graph_model.mbt` / `graph.mbt`：共用 PackageGraph、source-local XML 引用、入出边/内容类型索引、迭代可达性与只报告的 orphan candidates。
@@ -9,6 +9,8 @@
 - `receipt_model.mbt` / `receipt.mbt`：typed v2 去向/检查状态和实际 bytes 重算验证；独立客户端为 NotChecked；模板设置使用SemanticallyRewritten。
 - `spreadsheet_values.mbt`：共享文本与样式索引、单元格类型检查。
 - `word_content.mbt` / `word_profile.mbt`：表格、内嵌PNG/JPEG、页眉页脚的元素位置、属性及来源局部引用检查。
+- `hyperlink.mbt`：HTTP(S)点击目标、来源局部绑定与工作表网格检查，不访问网络；允许的链接进入报告的allowed_capabilities。
+- `ole.mbt`：一个正文内嵌OLE与已建模预览子树；删除独占载荷/预览/关系，流式删源XML对象并核对其余语义；共享/未知依赖拒绝。
 - `template.mbt`：按命名空间选择attachedTemplate，用原始XML事件保留其他内容，再独立验证设置语义。
 - `opc.mbt`：不依赖操作系统路径的 ASCII OPC URI 子集。拒绝 percent encoding、片段、查询、非 ASCII、反斜杠、等价名称和越界。检测到不支持语法不会继续猜测。
 - `xml.mbt`：大小/深度/节点/属性 preflight、命名空间事件读取、元数据形状检查。DTD 在 parser 之前拒绝。单个元素最多 256 个属性、markup（含注释/CDATA/PI）与 text token 最多 65,536 code units。

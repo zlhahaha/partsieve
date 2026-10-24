@@ -7,7 +7,8 @@ let word_content_types : Array[String] = [
   "application/vnd.openxmlformats-officedocument.theme+xml", "application/vnd.openxmlformats-package.core-properties+xml",
   "application/vnd.openxmlformats-officedocument.extended-properties+xml", "application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml", "image/png",
-  "image/jpeg",
+  "image/jpeg", ole_content_type, "application/vnd.ms-excel", "application/msword",
+  "image/x-emf",
 ]
 
 ///|
@@ -77,6 +78,21 @@ fn validate_word_profile(pkg : Package) -> Unit raise {
     )
   }
   for r in report.relationships {
+    let previews = ole_relationships(pkg).filter(fn(o) {
+      ole_preview(pkg, o) == r
+    })
+    if previews.length() > 0 {
+      validate_ole(pkg, previews[0])
+      continue
+    }
+    if ole_declared(r, report.parts, pkg.xml_nodes) {
+      validate_ole(pkg, r)
+      continue
+    }
+    if hyperlink_declared(r, report.parts, pkg.xml_nodes) {
+      validate_hyperlink(pkg, r)
+      continue
+    }
     if r.kind == office_rel + "attachedTemplate" {
       validate_template_relationship(pkg, r)
       continue
@@ -193,6 +209,12 @@ fn validate_word_profile(pkg : Package) -> Unit raise {
     guard word_content_types.contains(part.content_type) else {
       raise Refused("unknown Word part content type")
     }
+    if ole_payload_type(part.content_type) || part.content_type == "image/x-emf" {
+      guard controlled_parts(pkg).contains(part.name) else {
+        raise Refused("unowned Word OLE part")
+      }
+      continue
+    }
     if part.content_type == vba_ct {
       continue
     }
@@ -255,7 +277,16 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
     raise Refused("Word XML root/content type mismatch")
   }
   let parents : Array[String] = []
-  for node in nodes {
+  let mask = if part.name == pkg.audit.main_part &&
+    ole_relationships(pkg).length() == 1 {
+    ole_mask(nodes)
+  } else {
+    []
+  }
+  for ordinal, node in nodes {
+    if mask.contains(ordinal) {
+      continue
+    }
     let ns = node.element.name.namespace_uri.unwrap_or("")
     let name = node.element.name.local_name
     while parents.length() > node.depth {
@@ -339,7 +370,7 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
     }
     if (
         ns == word_ns &&
-        ["headerReference", "footerReference", "attachedTemplate"].contains(
+        ["headerReference", "footerReference", "attachedTemplate", "hyperlink"].contains(
           name,
         )
       ) ||
@@ -356,6 +387,31 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
         raise Refused(
           "Word content reference requires a source-local relationship",
         )
+      }
+    }
+    if ns == word_ns && name == "hyperlink" {
+      guard node.text_fragments.all(fn(t) { t.trim() == "" }) &&
+        node.element.attributes.all(fn(a) {
+          (
+            a.name.namespace_uri ==
+            Some(office_rel[0:office_rel.length() - 1].to_owned()) &&
+            a.name.local_name == "id"
+          ) ||
+          (
+            a.name.namespace_uri == Some(word_ns) &&
+            ["history", "tooltip", "tgtFrame"].contains(a.name.local_name)
+          )
+        }) else {
+        raise Refused("unsupported Word click hyperlink content or attributes")
+      }
+      for attribute in node.element.attributes {
+        if attribute.name.namespace_uri == Some(word_ns) &&
+          attribute.name.local_name == "history" {
+          let value = attribute.value
+          guard ["0", "1", "true", "false", "on", "off"].contains(value) else {
+            raise Invalid("invalid hyperlink history flag")
+          }
+        }
       }
     }
     parents.push(name)
@@ -405,6 +461,8 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
         }
         let permitted_attribute = if ns == word_macro_ns {
           ["macroName", "name", "bEncrypt", "cmg"].contains(a.name.local_name)
+        } else if ns == word_ns && name == "hyperlink" {
+          ["history", "tooltip", "tgtFrame"].contains(a.name.local_name)
         } else if ns == word_math_ns {
           a.name.local_name == "val"
         } else {
