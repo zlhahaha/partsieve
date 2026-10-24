@@ -1,6 +1,6 @@
 # 原型架构
 
-当前提供既有业务v1，以及按输入能力启用的 `business-spreadsheet-v2` / `business-word-v2` 链接与Word OLE配置（0.5.0-spike）。
+当前提供既有业务v1，以及按输入能力启用的 `business-spreadsheet-v2` / `business-word-v2` 链接与Word OLE配置（0.6.0-spike）。
 
 - `model.mbt`：限制、Audit、Finding、Relationship、RewritePlan、Receipt。
 - `graph_model.mbt` / `graph.mbt`：共用 PackageGraph、source-local XML 引用、入出边/内容类型索引、迭代可达性与只报告的 orphan candidates。
@@ -15,6 +15,7 @@
 - `opc.mbt`：不依赖操作系统路径的 ASCII OPC URI 子集。拒绝 percent encoding、片段、查询、非 ASCII、反斜杠、等价名称和越界。检测到不支持语法不会继续猜测。
 - `xml.mbt`：大小/深度/节点/属性 preflight、命名空间事件读取、元数据形状检查。DTD 在 parser 之前拒绝。单个元素最多 256 个属性、markup（含注释/CDATA/PI）与 text token 最多 65,536 code units。
 - `package.mbt`：受限 ZIP、CRC、内容类型、根与 source-local 关系。检查所有条目，包括不可达部件。
+- `work.mbt`：共享的运行预算、不可复位的取消状态、字节/事件/配对扫描计费；贯穿解析、执行和核验。
 - `profile.mbt`：允许的 part/relationship/XML vocabulary、源 `r:id` 绑定、工作簿/工作表元素位置、VBA 交叉证据和共享/孤儿拒绝。
 - `rewrite.mbt`：固定策略的计划、克隆 archive 后有限修改、重新读取输出、对预期 metadata 和每个输入 payload 核验。
 - `cmd/main`：原生命令行入口，分发公开命令与内部 `_worker` 子命令；工作进程同样有读取上限。
@@ -28,4 +29,4 @@ legacy/v2 报告共用同一次原件、预期输出和实际输出的验证事�
 
 生成 SDK interface 在 `pkg.generated.mbti`。结构 Pass 指本配置声明的包/引用/能力检查，不包含完整 OOXML schema 校验。Open XML SDK 仅用于独立测试，不进入运行时。
 
-无法完成的 ZIP/XML 解析、资源限额和有界写出为 `SieveError::Incomplete`，公开宿主保留该状态，退出码为 3。明确不支持的配置为 Refused/Unsupported；Invalid 表示完整性 Fail，解析未完成时能力为 Unknown。旧 Audit/Receipt 为兼容接口；typed v2 可选，不扩大支持范围。资源数值仍 provisional；完整 SDK 工作预算/取消接口尚缺，宿主使用 60 秒进程超时。
+无法完成的 ZIP/XML 解析、资源限额和有界写出为 `SieveError::Incomplete`，公开宿主保留该状态，退出码为 3。明确不支持的配置为 Refused/Unsupported；Invalid 表示完整性 Fail，解析未完成时能力为 Unknown。旧 Audit/Receipt 为兼容接口；typed v2 可选，不扩大支持范围。资源数值仍 provisional；WorkControl为整个SDK调用/共享工作流提供计费预算及协作取消，宿主另有60秒进程超时；二者不构成完整堆内存或硬实时保证，见[资源预算](resources.md)。

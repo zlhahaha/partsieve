@@ -11,9 +11,9 @@ Word OLE首批支持一个正文运行中的`w:object`：一个`o:OLEObject Type
 ```powershell
 moon build --target native --deny-warn
 moon run tests/next --target native --deny-warn
-# tests/generated/next-v5 下生成六组组合样本、处理结果、计划与报告。
-moon run cmd/main --target native -- verify tests/generated/next-v5/word-ole-emf.docx --original tests/generated/next-v5/word-ole-emf.input.docm --receipt tests/generated/next-v5/word-ole-emf.receipt.json --receipt-format v2
-python tests/independent_business.py --next tests/generated/next-v5
+# tests/generated/next-v6 下生成六组组合样本、处理结果、计划与报告。
+moon run cmd/main --target native -- verify tests/generated/next-v6/word-ole-emf.docx --original tests/generated/next-v6/word-ole-emf.input.docm --receipt tests/generated/next-v6/word-ole-emf.receipt.json --receipt-format v2
+python tests/independent_business.py --next tests/generated/next-v6
 ```
 
 新场景按`business-word-v2`或`business-spreadsheet-v2`进入链接/OLE规则，原业务v1回归保持原有行为。PreparedPlan逐项重算，XML修改必须有对应决策、前后摘要与依赖；输出重新读取后核对。独立Schema与客户端在SDK报告中继续为NotChecked。

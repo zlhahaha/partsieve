@@ -380,7 +380,7 @@
           "const": "partsieve.receipt.spike-v1"
         },
         "tool": {
-          "const": "partsieve/0.5.0-spike"
+          "const": "partsieve/0.6.0-spike"
         },
         "rules": {
           "const": "business-rules-v1"

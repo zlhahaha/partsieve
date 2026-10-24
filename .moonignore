@@ -34,3 +34,6 @@ tests/native/
 tests/probe/
 
 tests/next/
+
+# Resource stress scenarios are development-only.
+tests/resources/

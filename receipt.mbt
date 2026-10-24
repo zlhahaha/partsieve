@@ -2,9 +2,11 @@
 fn contract_dispositions(
   basis : Receipt,
   prepared : PreparedPlan,
+  control : WorkControl,
 ) -> Array[ContractDisposition] raise {
   let records : Array[ContractDisposition] = []
   for disposition in basis.dispositions {
+    control.checkpoint("receipt-disposition", 1)
     let classification = match disposition.classification {
       "BytePreserved" => BytePreservedKind
       "RemovedByPolicy" => RemovedByPolicyKind
@@ -49,11 +51,13 @@ pub fn verify_contract(
   output : Bytes,
   original : Bytes,
   limits? : Limits = Limits::default(),
+  control? : WorkControl = WorkControl::default(),
 ) -> VerifiedReceipt raise {
   // The compatibility verifier reparses actual serialized output, compares its
   // full graph with independently generated expected changes, and checks every
   // payload. Executor memory and a supplied Receipt cannot produce this result.
-  let checked = verify_packages(output, original, limits)
+  control.checkpoint("verify-contract", 0)
+  let checked = verify_packages(output, original, limits, control)
   let basis = legacy_receipt(checked, output, original, limits)
   let before = checked.before
   let after = checked.after
@@ -67,6 +71,7 @@ pub fn verify_contract(
     }) else {
     raise Invalid("output capability/profile coverage contract not satisfied")
   }
+  control.checkpoint("receipt", 1)
   let checks : Array[VerificationCheck] = []
   for
     (id, detail) in [
@@ -97,9 +102,9 @@ pub fn verify_contract(
     result: None,
     detail: "The SDK does not execute independent validators or Office clients; external evidence must bind the actual output hash.",
   })
-  {
+  let receipt : VerifiedReceipt = {
     schema: "partsieve.receipt.v2-dev",
-    tool: "partsieve/0.5.0-spike",
+    tool: "partsieve/0.6.0-spike",
     rules: prepared.rules,
     policy: prepared.policy,
     profile: prepared.profile,
@@ -121,7 +126,7 @@ pub fn verify_contract(
       f.capability == HttpHyperlink
     }),
     plan: prepared,
-    dispositions: contract_dispositions(basis, prepared),
+    dispositions: contract_dispositions(basis, prepared, control),
     checks,
     result: Pass,
     independent_validation: NotChecked,
@@ -137,15 +142,18 @@ pub fn verify_contract(
       "Independent schema/client evidence is separate; WPS Word saved-copy ordering failure must not be represented as Pass.",
     ],
   }
+  control.checkpoint("receipt-complete", 0)
+  receipt
 }
 
 ///|
 pub fn rebuild_verified(
   input : Bytes,
   limits? : Limits = Limits::default(),
+  control? : WorkControl = WorkControl::default(),
 ) -> VerifiedRebuilt raise {
-  let bytes = execute(load_package(input, limits), limits)
-  { bytes, receipt: verify_contract(bytes, input, limits~), }
+  let bytes = execute(load_package(input, limits, control~), limits)
+  { bytes, receipt: verify_contract(bytes, input, limits~, control~), }
 }
 
 ///|
@@ -153,7 +161,8 @@ pub fn rebuild_verified_with_plan(
   input : Bytes,
   supplied : Json,
   limits? : Limits = Limits::default(),
+  control? : WorkControl = WorkControl::default(),
 ) -> VerifiedRebuilt raise {
-  let bytes = execute_supplied_plan(input, supplied, limits)
-  { bytes, receipt: verify_contract(bytes, input, limits~), }
+  let bytes = execute_supplied_plan(input, supplied, limits, control)
+  { bytes, receipt: verify_contract(bytes, input, limits~, control~), }
 }

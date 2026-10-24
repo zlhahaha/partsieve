@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.0-spike（2026-10-25）
+
+- Add optional shared WorkControl to every document SDK entry point, with sticky cancellation, cumulative work accounting, overflow-safe pair reservations and no successful return after stopping.
+- Connect ZIP cancellation and XML scan/event checkpoints; bound graph/profile/plan/execution/actual-output verification across repeated internal passes. Keep serialized Limits unchanged; runtime work units are not a heap or wall-clock guarantee.
+- Add a runnable resource example, nine unit regressions and a Windows/Linux resource matrix: Word text near 1/4/7 MiB, 5,000/20,000-row sheets, work/input/output boundaries, ZIP/XML cancellation and two oversized XML refusals.
+- Preserve existing Office profiles and document outputs. Reports use the new tool version; regenerate them from actual files or use the corresponding old version.
+
 ## 0.5.0-spike（2026-10-24）
 
 - Preserve source-bound HTTP(S) click hyperlinks in Word body/header/footer and Excel worksheet ranges; report allowed clicks separately and never fetch their targets.

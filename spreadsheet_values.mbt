@@ -43,6 +43,7 @@ fn validate_spreadsheet_values(pkg : Package) -> Unit raise {
     } else if relation.kind == office_rel + "styles" {
       let mut inside = false
       for node in pkg.xml_nodes[relation.resolved] {
+        pkg.control.checkpoint("spreadsheet-value", 1)
         if node.depth == 1 {
           inside = node.element.name.local_name == "cellXfs"
         } else if inside &&
@@ -59,6 +60,7 @@ fn validate_spreadsheet_values(pkg : Package) -> Unit raise {
     }
     let mut cell_type = "n"
     for node in pkg.xml_nodes[relation.resolved] {
+      pkg.control.checkpoint("spreadsheet-value", 1)
       let name = node.element.name.local_name
       if name == "c" {
         cell_type = attr_opt(node, "t").unwrap_or("n")

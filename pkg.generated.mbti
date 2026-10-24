@@ -6,31 +6,31 @@ import {
 }
 
 // Values
-pub fn assess(Bytes, limits? : Limits) -> Assessment
+pub fn assess(Bytes, limits? : Limits, control? : WorkControl) -> Assessment
 
-pub fn audit(Bytes, limits? : Limits) -> Audit raise
+pub fn audit(Bytes, limits? : Limits, control? : WorkControl) -> Audit raise
 
 pub fn digest(BytesView) -> String
 
-pub fn inspect_graph(Bytes, limits? : Limits) -> PackageGraph raise
+pub fn inspect_graph(Bytes, limits? : Limits, control? : WorkControl) -> PackageGraph raise
 
-pub fn plan(Bytes, limits? : Limits) -> RewritePlan raise
+pub fn plan(Bytes, limits? : Limits, control? : WorkControl) -> RewritePlan raise
 
-pub fn prepare(Bytes, limits? : Limits) -> PreparedPlan raise
+pub fn prepare(Bytes, limits? : Limits, control? : WorkControl) -> PreparedPlan raise
 
-pub fn rebuild(Bytes, limits? : Limits) -> Rebuilt raise
+pub fn rebuild(Bytes, limits? : Limits, control? : WorkControl) -> Rebuilt raise
 
-pub fn rebuild_verified(Bytes, limits? : Limits) -> VerifiedRebuilt raise
+pub fn rebuild_verified(Bytes, limits? : Limits, control? : WorkControl) -> VerifiedRebuilt raise
 
-pub fn rebuild_verified_with_plan(Bytes, Json, limits? : Limits) -> VerifiedRebuilt raise
+pub fn rebuild_verified_with_plan(Bytes, Json, limits? : Limits, control? : WorkControl) -> VerifiedRebuilt raise
 
-pub fn rebuild_with_plan(Bytes, Json, limits? : Limits) -> Rebuilt raise
+pub fn rebuild_with_plan(Bytes, Json, limits? : Limits, control? : WorkControl) -> Rebuilt raise
 
 pub fn resolve_target(String, String) -> String raise
 
-pub fn verify(Bytes, Bytes, limits? : Limits) -> Receipt raise
+pub fn verify(Bytes, Bytes, limits? : Limits, control? : WorkControl) -> Receipt raise
 
-pub fn verify_contract(Bytes, Bytes, limits? : Limits) -> VerifiedReceipt raise
+pub fn verify_contract(Bytes, Bytes, limits? : Limits, control? : WorkControl) -> VerifiedReceipt raise
 
 // Errors
 pub(all) suberror SieveError {
@@ -506,6 +506,19 @@ pub fn VerifiedReceipt::equal(Self, Self) -> Bool
 pub fn VerifiedReceipt::not_equal(Self, Self) -> Bool
 pub fn VerifiedReceipt::to_json(Self) -> Json
 pub fn VerifiedReceipt::to_repr(Self) -> @debug.Repr
+
+pub struct WorkControl {
+  allowance : Int
+  should_cancel : (String) -> Bool
+  mut consumed : Int
+  mut stopped : String?
+}
+pub fn WorkControl::cancel(Self) -> Unit
+pub fn WorkControl::default() -> Self
+pub fn WorkControl::new(work_units? : Int, should_cancel? : (String) -> Bool) -> Self raise
+pub fn WorkControl::remaining(Self) -> Int
+pub fn WorkControl::stop_reason(Self) -> String?
+pub fn WorkControl::used(Self) -> Int
 
 pub(all) struct XmlReference {
   source : String

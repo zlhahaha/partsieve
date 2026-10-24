@@ -27,6 +27,24 @@ let supported_content_types : Array[String] = [
 
 ///|
 fn validate_profile(pkg : Package) -> Unit raise {
+  pkg.control.checkpoint("profile", 1)
+  pkg.control.pairs(
+    "profile-parts",
+    pkg.audit.parts.length(),
+    pkg.audit.parts.length(),
+  )
+  pkg.control.pairs(
+    "profile-relationships",
+    pkg.audit.parts.length(),
+    pkg.audit.relationships.length(),
+  )
+  for nodes in pkg.xml_nodes.values() {
+    pkg.control.pairs(
+      "profile-node-scans",
+      nodes.length(),
+      pkg.audit.relationships.length() + 1,
+    )
+  }
   if is_word_format(pkg.audit.format) {
     validate_word_profile(pkg)
     return
@@ -153,6 +171,10 @@ fn validate_static_xml_part(pkg : Package, p : PartRecord) -> Unit raise {
   let sheet_refs : Array[String] = []
   let sheet_names : Array[String] = []
   for node in nodes {
+    pkg.control.checkpoint(
+      "spreadsheet-profile-node",
+      1 + node.element.attributes.length(),
+    )
     let ns = node.element.name.namespace_uri.unwrap_or("")
     let local_name = node.element.name.local_name
     while parents.length() > node.depth {

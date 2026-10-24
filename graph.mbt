@@ -30,7 +30,15 @@ fn build_graph(
   parts : Array[PartRecord],
   relationships : Array[Relationship],
   xml_nodes : Map[String, Array[Node]],
+  control? : WorkControl = WorkControl::default(),
 ) -> GraphFacts raise {
+  for nodes in xml_nodes.values() {
+    control.pairs(
+      "graph-declaration-scans",
+      nodes.length(),
+      relationships.length() + 1,
+    )
+  }
   let part_index : Map[String, Int] = Map([])
   let node_index : Map[String, Int] = Map([("/", 0)])
   let names : Array[String] = ["/"]
@@ -39,6 +47,7 @@ fn build_graph(
   let source_refs : Array[Array[Int]] = [[]]
   let type_parts : Map[String, Array[String]] = Map([])
   for i, part in parts {
+    control.checkpoint("graph-part", 1)
     guard !part_index.contains(part.name) else {
       raise Invalid("duplicate graph part")
     }
@@ -53,10 +62,12 @@ fn build_graph(
       None => type_parts[part.content_type] = [part.name]
     }
   }
+  control.pairs("graph-source-scans", parts.length(), relationships.length())
   let local_relationships : Map[String, Map[String, Int]] = Map([])
   let implicit : Array[ImplicitReference] = []
   let gaps : Array[String] = []
   for i, r in relationships {
+    control.checkpoint("graph-relationship", 1)
     guard node_index.contains(r.source) else {
       raise Invalid("relationship source missing")
     }
@@ -145,7 +156,12 @@ fn build_graph(
       } else {
         []
       }
+      control.pairs("graph-ole-membership", nodes.length(), mask.length())
       for ordinal, node in nodes {
+        control.checkpoint(
+          "graph-xml-node",
+          1 + node.element.attributes.length(),
+        )
         let ns = node.element.name.namespace_uri.unwrap_or("")
         let local_name = node.element.name.local_name
         if !mask.contains(ordinal) &&
@@ -214,6 +230,7 @@ fn build_graph(
   let queue : Array[String] = ["/"]
   let mut cursor = 0
   while cursor < queue.length() {
+    control.checkpoint("graph-reachability", 1)
     let source = queue[cursor]
     cursor += 1
     for i in outbound[node_index[source]] {
@@ -288,6 +305,7 @@ fn build_graph(
 pub fn inspect_graph(
   input : Bytes,
   limits? : Limits = Limits::default(),
+  control? : WorkControl = WorkControl::default(),
 ) -> PackageGraph raise {
-  load_package(input, limits, enforce_profile=false).graph.graph
+  load_package(input, limits, enforce_profile=false, control~).graph.graph
 }

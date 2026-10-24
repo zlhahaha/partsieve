@@ -164,6 +164,7 @@ fn validate_word_references(pkg : Package) -> Unit raise {
     referenced[reference.source + "#" + reference.relationship_id] = true
   }
   for r in pkg.audit.relationships {
+    pkg.control.checkpoint("word-reference", 1)
     if !removed_relationship(pkg, r) &&
       [office_rel + "header", office_rel + "footer", office_rel + "image"].contains(
         r.kind,

@@ -2,7 +2,7 @@
 
 MoonBit Office 文档清理与保留验证库。面向文档接收和报表交付，在已验证范围内移除 VBA 宏、Word 外部模板及受支持的嵌入 OLE 对象，输出可继续编辑的 DOCX/XLSX，并从实际输出重新检查引用和所有内部文件的处理结果。不执行宏，不访问外部资源。
 
-当前版本 **0.5.0-spike**，范围明确的实验版本，不承诺任意 Office 文件安全或视觉完全一致。参考 [DocBleach 的功能划分](docs/docbleach-comparison.md)，核心和命令行流程由 MoonBit 实现；小型 C 适配层只封装系统文件与进程接口。正常使用不需要 Python。
+当前版本 **0.6.0-spike**，范围明确的实验版本，不承诺任意 Office 文件安全或视觉完全一致。参考 [DocBleach 的功能划分](docs/docbleach-comparison.md)，核心和命令行流程由 MoonBit 实现；小型 C 适配层只封装系统文件与进程接口。正常使用不需要 Python。
 
 ## 支持范围
 
@@ -20,7 +20,7 @@ OLE 首批支持一个正文内嵌对象及已建模的 VML 预览结构；专�
 ## 安装与使用
 
 ```powershell
-moon add zlhahaha/partsieve@0.5.0-spike
+moon add zlhahaha/partsieve@0.6.0-spike
 ```
 
 调用方导入 `"zlhahaha/partsieve" @sieve`。主要接口：`assess`、`prepare`、`rebuild_verified`、`rebuild_verified_with_plan`、`verify_contract`；传入 bytes 和可选 Limits。报告包含能力、覆盖、处理计划、逐项去向与检查状态。`audit/plan/rebuild/verify/inspect_graph` 继续提供。
@@ -39,11 +39,13 @@ moon run cmd/main --target native -- verify document.docx --original tests/fixtu
 
 [业务示例](examples/business/README.md) 覆盖五个支持输入和一个拒绝输入。样本为注明来源的作者自建组合文档，真实第三方采用尚未确认。CLI `prepare INPUT` 可保存计划，再以 `rebuild INPUT --plan PLAN.json` 执行；每个字段均独立重算。
 
-新增链接/OLE组合示例与边界见 [链接与OLE](docs/links-ole.md)，可用 `moon run tests/next --target native` 生成并验证。v2 配置仅为已识别的链接/OLE场景启用，已有业务 v1 路径保留。建议使用 `--receipt-format v2`。0.5 更新工具标识；旧报告需用对应版本验证，或基于真实文件重新生成。独立客户端/完整格式检查在 SDK 中为 NotChecked，不沿用历史 Pass。
+新增链接/OLE组合示例与边界见 [链接与OLE](docs/links-ole.md)，可用 `moon run tests/next --target native` 生成并验证。v2 配置仅为已识别的链接/OLE场景启用，已有业务 v1 路径保留。建议使用 `--receipt-format v2`。0.6 更新工具标识；旧报告需用对应版本验证，或基于真实文件重新生成。独立客户端/完整格式检查在 SDK 中为 NotChecked，不沿用历史 Pass。
 
 输出与报告不覆盖已有文件，临时输出从磁盘重新验证后配套发布；两个路径不保证事务原子性。退出码：0完成，2完整性/保留/报告不符，3不支持/不完整/资源拒绝，4文件读写或用法错误。缺少原件时保留检查NotChecked、整体Incomplete、退出3。
 
-输入上限32MiB、输出64MiB；其他限额见公开 Limits。数值仍为实验值，SDK完整工作预算/取消接口尚缺；原生CLI每次worker调用超时60秒（可用 --timeout-ms 降低）。较大输入可先 `moon build --release --target native --deny-warn`，CLI加 `--release`。CLI与内部worker均限制输入读取；子进程通过管道限制报告大小并受超时控制。
+输入上限32MiB、输出64MiB；其他限额见公开 Limits。数值仍为实验值，SDK默认工作预算为5亿计费单位，支持跨调用共享及协作取消（不是时间或内存保证），详见[资源预算](docs/resources.md)；原生CLI每次worker调用超时60秒（可用 --timeout-ms 降低）。较大输入可先 `moon build --release --target native --deny-warn`，CLI加 `--release`。CLI与内部worker均限制输入读取；子进程通过管道限制报告大小并受超时控制。
+
+可运行[共享预算与取消示例](examples/resources/main.mbt)：`moon run examples/resources --target native --deny-warn`。新增五组大文件正例及两组超限例，覆盖Word约1/4/7MiB文本、5000/20000行工作表、预算与输入/输出边界和中途取消；CI保存实际耗时/内存观察记录。
 
 ## 验证与兼容性
 
@@ -54,7 +56,7 @@ moon run cmd/main --target native -- verify document.docx --original tests/fixtu
 python tests/independent_business.py
 ```
 
-43 个 MoonBit 测试包含 293 次历史命令调用回归，以及宿主/URL/单元格边界检查；另有六个链接/OLE组合、36个拒绝案例及URL/回执篡改检查。公开仓库仅保留三个 Python 独立校验脚本，使用它们时另装 jsonschema 4.23.0。Windows/MSVC 与 Linux Native 在 CI 执行同一套回归。CI将本次实际生成的输出交给独立ZIP/XML与Open XML SDK检查，报告保存为Actions artifacts。WPS本地验证三份表格与两份Word输出的读取、编辑、另存和重开；Word保存副本仍有三处WPS生成的styles顺序错误，不能视为格式通过。原始输出与客户端保存副本分开记录。
+52 个 MoonBit 测试包含 293 次历史命令调用回归，以及宿主/URL/单元格边界检查；另有六个链接/OLE组合、36个拒绝案例及URL/回执篡改检查。公开仓库仅保留三个 Python 独立校验脚本，使用它们时另装 jsonschema 4.23.0。Windows/MSVC 与 Linux Native 在 CI 执行同一套回归。CI将本次实际生成的输出交给独立ZIP/XML与Open XML SDK检查，报告保存为Actions artifacts。WPS本地验证三份表格与两份Word输出的读取、编辑、另存和重开；Word保存副本仍有三处WPS生成的styles顺序错误，不能视为格式通过。原始输出与客户端保存副本分开记录。
 
 [架构](docs/architecture.md)、[威胁模型](docs/threat-model.md)、[保留契约](docs/preservation-contract.md)、[报告格式](docs/receipt-v2.schema.json)。Schema只约束形状；完整核验需要真实原件和输出。申报书、交接、工作记录与截图仅在本地维护。
 

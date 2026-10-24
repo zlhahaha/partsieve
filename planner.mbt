@@ -109,6 +109,7 @@ fn validate_removal_closure(
 
 ///|
 fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
+  pkg.control.checkpoint("prepare", 1)
   let assessment = assess_package(pkg)
   guard assessment.decision.result == Pass &&
     assessment.decision.rebuild_allowed else {
@@ -168,6 +169,7 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
   let operations : Array[CheckedOperation] = []
   let removed = controlled_parts(pkg)
   for i, operation in make_plan(pkg).operations {
+    pkg.control.checkpoint("prepare-operation", 1)
     let kind = parse_operation_kind(operation.kind)
     let part = if kind == RemoveRelationship {
       relationship_part(operation.part)
@@ -180,9 +182,16 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
     let after = match kind {
       RemovePart => None
       RewriteRelationshipPart =>
-        Some(digest(write_relationships(pkg, relationship_source(part))[:]))
-      RewriteContentTypes => Some(digest(write_content_types(pkg)[:]))
-      RewriteSourceXml => Some(digest(write_source(pkg, part)[:]))
+        Some(
+          work_digest(
+            write_relationships(pkg, relationship_source(part))[:],
+            pkg.control,
+          ),
+        )
+      RewriteContentTypes =>
+        Some(work_digest(write_content_types(pkg)[:], pkg.control))
+      RewriteSourceXml =>
+        Some(work_digest(write_source(pkg, part)[:], pkg.control))
       RemoveRelationship | ChangeMainContentType => Some(before.sha256)
     }
     let depends_on : Array[String] = []
@@ -237,7 +246,7 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
   }
   let prepared : PreparedPlan = {
     schema: "partsieve.prepared-plan.v1",
-    tool: "partsieve/0.5.0-spike",
+    tool: "partsieve/0.6.0-spike",
     rules: if extended_office(pkg) {
       "bounded-links-ole-plan-v1"
     } else {
@@ -271,6 +280,11 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
       ]
     },
   }
+  pkg.control.pairs(
+    "plan-operation-scans",
+    prepared.operations.length(),
+    prepared.operations.length(),
+  )
   validate_operation_conflicts(prepared.operations)
   validate_removal_closure(pkg, prepared)
   prepared
@@ -280,8 +294,9 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
 pub fn prepare(
   input : Bytes,
   limits? : Limits = Limits::default(),
+  control? : WorkControl = WorkControl::default(),
 ) -> PreparedPlan raise {
-  make_prepared_plan(load_package(input, limits), limits)
+  make_prepared_plan(load_package(input, limits, control~), limits)
 }
 
 ///|
@@ -295,10 +310,17 @@ fn execute_prepared(
     prepared.preconditions == pkg.audit.parts else {
     raise Invalid("plan input/hash/resource precondition mismatch")
   }
+  pkg.control.pairs(
+    "plan-operation-scans",
+    prepared.operations.length(),
+    prepared.operations.length(),
+  )
   validate_operation_conflicts(prepared.operations)
   validate_removal_closure(pkg, prepared)
+  pkg.control.checkpoint("execute", 1)
   let archive = pkg.archive.clone()
   for operation in prepared.operations {
+    pkg.control.checkpoint("execute-operation", 1)
     let before = pkg.audit.parts[pkg.graph.part_index[operation.part]]
     guard before.sha256 == operation.before_hash else {
       raise Invalid("operation payload precondition mismatch")
@@ -332,7 +354,8 @@ fn execute_prepared(
           raise Refused("no accepted source XML handler for this part")
         }
         let payload = write_source(pkg, operation.part)
-        guard operation.expected_after_hash == Some(digest(payload[:])) &&
+        guard operation.expected_after_hash ==
+          Some(work_digest(payload[:], pkg.control)) &&
           archive.replace(operation.part[:], payload[:]) else {
           raise Invalid("source XML rewrite postcondition mismatch")
         }
@@ -343,17 +366,26 @@ fn execute_prepared(
         } else {
           write_relationships(pkg, relationship_source(operation.part))
         }
-        guard operation.expected_after_hash == Some(digest(payload[:])) &&
+        guard operation.expected_after_hash ==
+          Some(work_digest(payload[:], pkg.control)) &&
           archive.replace(operation.part[:], payload[:]) else {
           raise Invalid("metadata operation postcondition mismatch")
         }
       }
     }
   }
-  @zip.write_preserving_limited(archive, max_output_bytes=limits.output_bytes) catch {
+  for entry in archive.entries() {
+    pkg.control.checkpoint("zip-write-bytes", entry.data().length())
+  }
+  let bytes = @zip.write_preserving_limited(
+    archive,
+    max_output_bytes=limits.output_bytes,
+  ) catch {
     @zip.ZipError(_, message) =>
       raise Incomplete("bounded output writing did not complete: " + message)
   }
+  pkg.control.checkpoint("zip-write-complete", bytes.length())
+  bytes
 }
 
 ///|
@@ -363,8 +395,9 @@ fn execute_supplied_plan(
   input : Bytes,
   supplied : Json,
   limits : Limits,
+  control : WorkControl,
 ) -> Bytes raise {
-  let pkg = load_package(input, limits)
+  let pkg = load_package(input, limits, control~)
   let expected = make_prepared_plan(pkg, limits)
   guard supplied == expected.to_json() else {
     raise Invalid("supplied plan differs from independently recomputed plan")
@@ -377,7 +410,8 @@ pub fn rebuild_with_plan(
   input : Bytes,
   supplied : Json,
   limits? : Limits = Limits::default(),
+  control? : WorkControl = WorkControl::default(),
 ) -> Rebuilt raise {
-  let bytes = execute_supplied_plan(input, supplied, limits)
-  { bytes, receipt: verify(bytes, input, limits~), }
+  let bytes = execute_supplied_plan(input, supplied, limits, control)
+  { bytes, receipt: verify(bytes, input, limits~, control~), }
 }

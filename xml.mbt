@@ -11,8 +11,9 @@ fn read_xml(
   data : BytesView,
   limits : Limits,
   metadata? : Bool = false,
+  control? : WorkControl = WorkControl::default(),
 ) -> Array[Node] raise {
-  read_xml_checked(data, limits, metadata~) catch {
+  read_xml_checked(data, limits, metadata~, control) catch {
     Refused(reason) => raise Refused(reason)
     Incomplete(reason) => raise Incomplete(reason)
     error =>
@@ -25,10 +26,12 @@ fn read_xml_checked(
   data : BytesView,
   limits : Limits,
   metadata~ : Bool,
+  control : WorkControl,
 ) -> Array[Node] raise {
   guard data.length() <= limits.xml_bytes else {
     raise Incomplete("XML byte limit")
   }
+  control.checkpoint("xml-bytes", data.length())
   let text = @utf8.decode(data)
   guard !text.contains("<!DOCTYPE") && !text.contains("<!ENTITY") else {
     raise Refused("DTD and entity declarations are forbidden")
@@ -39,6 +42,9 @@ fn read_xml_checked(
   let mut i = 0
   let mut text_start = 0
   while i < text.length() {
+    if i % 4096 == 0 {
+      control.checkpoint("xml-scan", 4096)
+    }
     if text[i] != '<' {
       i += 1
       guard i - text_start <= 65536 else {
@@ -59,6 +65,9 @@ fn read_xml_checked(
       let token_start = i
       i += 2
       while i < text.length() && !text[i:].has_prefix(end) {
+        if i % 4096 == 0 {
+          control.checkpoint("xml-scan", 4096)
+        }
         i += 1
         guard i - token_start + end.length() <= 65536 else {
           raise Incomplete("XML markup token limit")
@@ -76,6 +85,9 @@ fn read_xml_checked(
     let mut j = i + 1
     let mut tag_attributes = 0
     while j < text.length() {
+      if j % 4096 == 0 {
+        control.checkpoint("xml-scan", 4096)
+      }
       let c = text[j]
       if quote != 0 {
         if c == quote {
@@ -119,6 +131,7 @@ fn read_xml_checked(
   let mut current = 0
   let open_nodes : Array[Int] = []
   while true {
+    control.checkpoint("xml-event", 1)
     let event = reader.read_event()
     match event.kind {
       Start(element) => {
@@ -188,8 +201,9 @@ fn metadata_nodes(
   ns : String,
   root : String,
   children : Array[String],
+  control? : WorkControl = WorkControl::default(),
 ) -> Array[Node] raise {
-  let nodes = read_xml(data, limits, metadata=true)
+  let nodes = read_xml(data, limits, metadata=true, control~)
   guard nodes.length() > 0 &&
     nodes[0].depth == 0 &&
     nodes[0].element.name.namespace_uri == Some(ns) &&

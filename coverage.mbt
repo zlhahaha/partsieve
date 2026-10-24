@@ -168,11 +168,13 @@ fn add_capability_finding(
 }
 
 ///|
-fn assess_package(pkg : Package) -> Assessment {
+fn assess_package(pkg : Package) -> Assessment raise {
   let decision = profile_decision(pkg)
+  pkg.control.checkpoint("assessment", 1)
   let findings : Array[CapabilityFinding] = []
   let index : Map[String, Int] = Map([])
   for part in pkg.audit.parts {
+    pkg.control.checkpoint("assessment-part", 1)
     let ct = part.content_type.to_lower()
     let capability = if part.content_type == vba_ct ||
       part.content_type == word_vba_data_ct {
@@ -208,6 +210,7 @@ fn assess_package(pkg : Package) -> Assessment {
     }
   }
   for r in pkg.audit.relationships {
+    pkg.control.checkpoint("assessment-relationship", 1)
     if relationship_capability(r) is Some(c) {
       add_capability_finding(
         findings,
@@ -361,7 +364,23 @@ fn failed_assessment(
   limits : Limits,
   status : ResultStatus,
   reason : String,
+  control? : WorkControl = WorkControl::default(),
 ) -> Assessment {
+  let input_hash = if control.stop_reason() is None &&
+    input.length() <= limits.input_bytes &&
+    input.length() <= Limits::default().input_bytes {
+    Some(work_digest(input[:], control)) catch {
+      _ => None
+    }
+  } else {
+    None
+  }
+  let status = if control.stop_reason() is Some(_) {
+    IncompleteResult
+  } else {
+    status
+  }
+  let reason = control.stop_reason().unwrap_or(reason)
   let rules = capability_rules.map(fn(capability) {
     RuleCoverage::{
       rule_id: capability_rule(capability),
@@ -379,12 +398,7 @@ fn failed_assessment(
   let profile = "business-spreadsheet-v1"
   {
     schema: "partsieve.assessment.v1",
-    input_hash: if input.length() <= limits.input_bytes &&
-      input.length() <= Limits::default().input_bytes {
-      Some(digest(input[:]))
-    } else {
-      None
-    },
+    input_hash,
     findings: [],
     coverage: {
       declared_profile: profile,
@@ -404,13 +418,21 @@ fn failed_assessment(
 pub fn assess(
   input : Bytes,
   limits? : Limits = Limits::default(),
+  control? : WorkControl = WorkControl::default(),
 ) -> Assessment {
-  assess_package(load_package(input, limits, enforce_profile=false)) catch {
-    Invalid(reason) => failed_assessment(input, limits, Fail, reason)
+  assess_package(load_package(input, limits, enforce_profile=false, control~)) catch {
+    Invalid(reason) => failed_assessment(input, limits, Fail, reason, control~)
     Incomplete(reason) =>
-      failed_assessment(input, limits, IncompleteResult, reason)
-    Refused(reason) => failed_assessment(input, limits, Unsupported, reason)
+      failed_assessment(input, limits, IncompleteResult, reason, control~)
+    Refused(reason) =>
+      failed_assessment(input, limits, Unsupported, reason, control~)
     error =>
-      failed_assessment(input, limits, IncompleteResult, error.to_string())
+      failed_assessment(
+        input,
+        limits,
+        IncompleteResult,
+        error.to_string(),
+        control~,
+      )
   }
 }

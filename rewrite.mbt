@@ -1,8 +1,10 @@
 ///|
-fn make_plan(pkg : Package) -> RewritePlan {
+fn make_plan(pkg : Package) -> RewritePlan raise {
+  pkg.control.checkpoint("plan", 1)
   let report = pkg.audit
   let ops : Array[Operation] = []
   for f in report.findings {
+    pkg.control.checkpoint("plan-finding", 1)
     let rel = graph_incoming(pkg.graph, f.part)[0]
     ops.push({
       kind: "RemovePart",
@@ -42,6 +44,7 @@ fn make_plan(pkg : Package) -> RewritePlan {
     }
   }
   for r in report.relationships {
+    pkg.control.checkpoint("plan-relationship", 1)
     if !is_template_relationship(r) {
       continue
     }
@@ -179,15 +182,18 @@ fn make_plan(pkg : Package) -> RewritePlan {
 pub fn plan(
   input : Bytes,
   limits? : Limits = Limits::default(),
+  control? : WorkControl = WorkControl::default(),
 ) -> RewritePlan raise {
-  make_plan(load_package(input, limits))
+  make_plan(load_package(input, limits, control~))
 }
 
 ///|
 fn write_relationships(pkg : Package, source : String) -> Bytes raise {
+  pkg.control.checkpoint("metadata-write", 1)
   let writer = @xml.Writer::new()
   writer.start_element("Relationships", [("xmlns", rel_ns)])
   for r in pkg.audit.relationships {
+    pkg.control.checkpoint("metadata-relationship", 1)
     if r.source != source || removed_relationship(pkg, r) {
       continue
     }
@@ -203,6 +209,7 @@ fn write_relationships(pkg : Package, source : String) -> Bytes raise {
 
 ///|
 fn write_content_types(pkg : Package) -> Bytes raise {
+  pkg.control.checkpoint("metadata-write", 1)
   let writer = @xml.Writer::new()
   writer.start_element("Types", [("xmlns", ct_ns)])
   let extensions = pkg.defaults.keys().collect()
@@ -218,6 +225,7 @@ fn write_content_types(pkg : Package) -> Bytes raise {
   let names = pkg.overrides.keys().collect()
   names.sort()
   for name in names {
+    pkg.control.checkpoint("metadata-content-type", 1)
     let ct = pkg.overrides[name]
     if ct == vba_ct || controlled_parts(pkg).contains(name) {
       continue
@@ -266,7 +274,13 @@ fn verify_parts(
   guard after.graph.graph == expected.graph.graph else {
     raise Invalid("unexpected output part/relationship changes")
   }
+  before.control.pairs(
+    "verify-parts-scan",
+    before.audit.parts.length(),
+    after.audit.parts.length(),
+  )
   for p in before.audit.parts {
+    before.control.checkpoint("verify-part", 1)
     let matches = after.audit.parts.filter(fn(q) { q.name == p.name })
     let out = if matches.length() == 0 { None } else { Some(matches[0]) }
     let removed = controlled_parts(before).contains(p.name)
@@ -335,15 +349,18 @@ fn verify_packages(
   output : Bytes,
   original : Bytes,
   limits : Limits,
+  control : WorkControl,
 ) -> VerifiedPackages raise {
   guard output.length() <= limits.output_bytes else {
     raise Incomplete("output byte limit")
   }
-  let before = load_package(original, limits)
+  let before = load_package(original, limits, control~)
   let expected_bytes = execute(before, limits)
-  let expected = load_package(expected_bytes, limits, output=true)
-  let after = load_package(output, limits, output=true)
+  let expected = load_package(expected_bytes, limits, output=true, control~)
+  let after = load_package(output, limits, output=true, control~)
+  control.checkpoint("verify-parts", 0)
   let dispositions = verify_parts(before, after, expected)
+  control.checkpoint("verify-complete", 0)
   { before, after, dispositions, }
 }
 
@@ -353,7 +370,7 @@ fn legacy_receipt(
   output : Bytes,
   original : Bytes,
   limits : Limits,
-) -> Receipt {
+) -> Receipt raise {
   let before = checked.before
   let after = checked.after
   {
@@ -363,9 +380,9 @@ fn legacy_receipt(
       "partsieve.receipt.spike-v1"
     },
     tool: if is_word_format(before.audit.format) {
-      "partsieve/0.5.0-spike"
+      "partsieve/0.6.0-spike"
     } else {
-      "partsieve/0.5.0-spike"
+      "partsieve/0.6.0-spike"
     },
     rules: if is_word_format(before.audit.format) {
       "word-business-v1"
@@ -375,7 +392,7 @@ fn legacy_receipt(
     policy: "passive-office-v1",
     profile: before.audit.profile,
     input_hash: before.audit.input_hash,
-    output_hash: digest(output[:]),
+    output_hash: work_digest(output[:], before.control),
     input_size: original.length(),
     output_size: output.length(),
     input_format: before.audit.format,
@@ -396,9 +413,10 @@ pub fn verify(
   output : Bytes,
   original : Bytes,
   limits? : Limits = Limits::default(),
+  control? : WorkControl = WorkControl::default(),
 ) -> Receipt raise {
   legacy_receipt(
-    verify_packages(output, original, limits),
+    verify_packages(output, original, limits, control),
     output,
     original,
     limits,
@@ -409,10 +427,11 @@ pub fn verify(
 pub fn rebuild(
   input : Bytes,
   limits? : Limits = Limits::default(),
+  control? : WorkControl = WorkControl::default(),
 ) -> Rebuilt raise {
-  let before = load_package(input, limits)
+  let before = load_package(input, limits, control~)
   let bytes = execute(before, limits)
   // Reparse serialized bytes; do not trust executor's graph.
-  let receipt = verify(bytes, input, limits~)
+  let receipt = verify(bytes, input, limits~, control~)
   { bytes, receipt, }
 }

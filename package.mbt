@@ -6,6 +6,7 @@ priv struct Package {
   defaults : Map[String, String]
   overrides : Map[String, String]
   graph : GraphFacts
+  control : WorkControl
 }
 
 ///|
@@ -22,27 +23,40 @@ fn load_package(
   limits : Limits,
   enforce_profile? : Bool = true,
   output? : Bool = false,
+  control? : WorkControl = WorkControl::default(),
 ) -> Package raise {
+  control.checkpoint("package-start", 0)
   limits.validate()
   let package_limit = if output {
     limits.output_bytes
   } else {
     limits.input_bytes
   }
+  guard input.length() <= package_limit else {
+    raise Incomplete(
+      "ZIP parsing did not complete: zip: package exceeds the input size limit",
+    )
+  }
+  control.checkpoint("package-bytes", input.length())
   let zl = @zip.ReadLimits::default()
     .with_package_limit(package_limit)
     .with_entry_limit(limits.entry_bytes)
-    .with_total_limit(limits.total_bytes)
+    .with_total_limit(Int::min(limits.total_bytes, control.remaining()))
     .with_entries_limit(limits.entries)
     .with_preserved_source_limit(package_limit * 2)
-  let archive = @zip.read(input[:], limits=zl) catch {
-    @zip.ZipError(_, message) =>
+  let archive = @zip.read(input[:], limits=zl, cancelled=fn() {
+    control.poll("zip-read", 1024)
+  }) catch {
+    @zip.ZipError(_, message) => {
+      control.checkpoint("zip-read-complete", 0)
       raise Incomplete("ZIP parsing did not complete: " + message)
+    }
   }
   let names : Map[String, Bool] = Map([])
   let aliases : Map[String, Bool] = Map([])
   let ordered : Array[String] = []
   for entry in archive.entries() {
+    control.checkpoint("zip-entry-crc", entry.data().length())
     let name = entry.name()
     check_name(name)
     guard !names.contains(name) && !aliases.contains(name.to_lower()) else {
@@ -64,6 +78,7 @@ fn load_package(
     ct_ns,
     "Types",
     ["Default", "Override"],
+    control~,
   )
   for i in 1..<ct_nodes.length() {
     let node = ct_nodes[i]
@@ -114,9 +129,9 @@ fn load_package(
       }
     }
     let data = get_part(archive, name)
-    parts.push({ name, content_type: ct, sha256: digest(data), })
+    parts.push({ name, content_type: ct, sha256: work_digest(data, control), })
     if name.has_suffix(".xml") || name.has_suffix(".rels") {
-      let parsed = read_xml(data, limits)
+      let parsed = read_xml(data, limits, control~)
       guard parsed.length() > 0 else { raise Refused("XML root missing") }
       total_nodes += parsed.length()
       for node in parsed {
@@ -144,6 +159,7 @@ fn load_package(
       rel_ns,
       "Relationships",
       ["Relationship"],
+      control~,
     )
     for i in 1..<rels.length() {
       guard relationships.length() < 32768 else {
@@ -185,7 +201,7 @@ fn load_package(
     main_ct == docx_ct else {
     raise Refused("unsupported main document type")
   }
-  let graph = build_graph(parts, relationships, nodes)
+  let graph = build_graph(parts, relationships, nodes, control~)
   let findings : Array[Finding] = []
   for p in parts {
     if p.content_type == vba_ct {
@@ -207,7 +223,7 @@ fn load_package(
     } else {
       "partsieve.audit.spike-v1"
     },
-    input_hash: digest(input[:]),
+    input_hash: work_digest(input[:], control),
     format: if main_ct == xlsm_ct {
       "XLSM"
     } else if main_ct == xlsx_ct {
@@ -262,10 +278,12 @@ fn load_package(
     defaults,
     overrides,
     graph,
+    control,
   }
   if enforce_profile {
     require_supported_profile(pkg)
   }
+  control.checkpoint("package-complete", 0)
   pkg
 }
 
@@ -285,6 +303,7 @@ fn validate_metadata_attributes(
 pub fn audit(
   input : Bytes,
   limits? : Limits = Limits::default(),
+  control? : WorkControl = WorkControl::default(),
 ) -> Audit raise {
-  load_package(input, limits).audit
+  load_package(input, limits, control~).audit
 }

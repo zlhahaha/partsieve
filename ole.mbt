@@ -336,6 +336,7 @@ fn write_source(pkg : Package, part : String) -> Bytes raise {
   let mut skipped = 0
   let mut removed = 0
   while true {
+    pkg.control.checkpoint("source-xml-write", 1)
     let event = raw.read_event()
     let meaning = semantic.read_event()
     let omit = match meaning.kind {
@@ -402,8 +403,14 @@ fn verify_source_semantics(
     raise Invalid("OLE removal changed unrelated XML structure")
   }
   for i, node in original {
+    before.control.checkpoint("source-semantics", 1)
     let left = node.element
     let right = actual[i].element
+    before.control.pairs(
+      "source-attribute-comparison",
+      left.attributes.length(),
+      right.attributes.length(),
+    )
     guard node.depth == actual[i].depth &&
       left.name.namespace_uri == right.name.namespace_uri &&
       left.name.local_name == right.name.local_name &&

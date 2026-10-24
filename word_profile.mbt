@@ -284,6 +284,10 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
     []
   }
   for ordinal, node in nodes {
+    pkg.control.checkpoint(
+      "word-profile-node",
+      1 + node.element.attributes.length(),
+    )
     if mask.contains(ordinal) {
       continue
     }

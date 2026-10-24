@@ -36,8 +36,12 @@ moon test --target native --deny-warn
 if ($LASTEXITCODE -ne 0) { throw 'moon test failed' }
 moon run tests/next --target native --deny-warn
 if ($LASTEXITCODE -ne 0) { throw 'Click-link and Word OLE regression failed' }
+.\tools\check-resources.ps1
 .\tools\generate-test-evidence.ps1
 moon run examples/sdk --target native
 if ($LASTEXITCODE -ne 0) { throw 'SDK example failed' }
 moon run examples/business --target native
 if ($LASTEXITCODE -ne 0) { throw 'Business SDK example failed' }
+
+moon run examples/resources --target native --deny-warn
+if ($LASTEXITCODE -ne 0) { throw "Resource SDK example failed" }

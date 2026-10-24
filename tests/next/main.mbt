@@ -247,7 +247,7 @@ fn accepted(
   for entry in actual.entries() {
     assert_eq(entry.data().to_owned(), bytes(repeated, entry.name()))
   }
-  let dir = "tests/generated/next-v5/"
+  let dir = "tests/generated/next-v6/"
   let legacy = @sieve.verify(rebuilt.bytes, input)
   @fs.write_string_to_file(
     dir + name + ".legacy.receipt.json",
@@ -308,7 +308,7 @@ fn rejected(name : String, archive : @zip.Archive) -> Unit raise {
     _ => true
   }
   assert_true(refused, msg=name)
-  let source = "tests/generated/next-v5/" + name + ".bad.docm"
+  let source = "tests/generated/next-v6/" + name + ".bad.docm"
   let output = source + ".docx"
   let receipt = source + ".receipt.json"
   @fs.write_bytes_to_file(source, input)
@@ -323,7 +323,7 @@ fn rejected(name : String, archive : @zip.Archive) -> Unit raise {
 
 ///|
 fn main raise {
-  for dir in ["tests/generated", "tests/generated/next-v5"] {
+  for dir in ["tests/generated", "tests/generated/next-v6"] {
     if !@host.exists(dir) {
       @fs.create_dir(dir)
     }
@@ -452,10 +452,10 @@ fn main raise {
   edit(two, "word/document.xml", "</w:p>", "<w:r>" + object + "</w:r></w:p>")
   rejected("ole-multiple-objects", two)
   let original = @host.read_bounded(
-    "tests/generated/next-v5/word-links.input.docm", 33554432,
+    "tests/generated/next-v6/word-links.input.docm", 33554432,
   )
   let changed = @zip.read(
-    @host.read_bounded("tests/generated/next-v5/word-links.docx", 33554432)[:],
+    @host.read_bounded("tests/generated/next-v6/word-links.docx", 33554432)[:],
   )
   edit(
     changed, "word/_rels/document.xml.rels", "https://example.invalid/docs?q=1&amp;lang=zh#section",
@@ -471,25 +471,25 @@ fn main raise {
     },
   )
   @fs.write_bytes_to_file(
-    "tests/generated/next-v5/tampered-link.docx", tampered,
+    "tests/generated/next-v6/tampered-link.docx", tampered,
   )
   let check = @host.run(cli_binary(), [
-    "verify", "tests/generated/next-v5/tampered-link.docx", "--original", "tests/generated/next-v5/word-links.input.docm",
+    "verify", "tests/generated/next-v6/tampered-link.docx", "--original", "tests/generated/next-v6/word-links.input.docm",
     "--receipt-format", "v2",
   ])
   assert_eq(check.code, 2)
   let report = @utf8.decode(
     @host.read_bounded(
-      "tests/generated/next-v5/word-links.receipt.json", 16777216,
+      "tests/generated/next-v6/word-links.receipt.json", 16777216,
     )[:],
   )
   @fs.write_string_to_file(
-    "tests/generated/next-v5/forged.receipt.json",
+    "tests/generated/next-v6/forged.receipt.json",
     report.replace(old="HTTPHyperlink", new="VBA"),
   )
   let forged = @host.run(cli_binary(), [
-    "verify", "tests/generated/next-v5/word-links.docx", "--original", "tests/generated/next-v5/word-links.input.docm",
-    "--receipt", "tests/generated/next-v5/forged.receipt.json", "--receipt-format",
+    "verify", "tests/generated/next-v6/word-links.docx", "--original", "tests/generated/next-v6/word-links.input.docm",
+    "--receipt", "tests/generated/next-v6/forged.receipt.json", "--receipt-format",
     "v2",
   ])
   assert_eq(forged.code, 2)
