@@ -383,9 +383,9 @@ fn legacy_receipt(
       "partsieve.receipt.spike-v1"
     },
     tool: if is_word_format(before.audit.format) {
-      "partsieve/0.7.0-spike"
+      "partsieve/0.7.1-spike"
     } else {
-      "partsieve/0.7.0-spike"
+      "partsieve/0.7.1-spike"
     },
     rules: if is_word_format(before.audit.format) {
       "word-business-v1"

@@ -55,17 +55,17 @@ jobs:
             tests/generated/business-v3/report-inline.xlsx
             tests/generated/business-v3/document-layout.docx
             tests/generated/business-v3/document-template.docx
-            tests/generated/resources-v7.json
+            tests/generated/resources-v7_1.json
             tests/generated/acceptance-demo/**/demo-result.json
             tests/generated/acceptance-demo/**/*.stdout.json
             tests/generated/acceptance-demo/**/结果摘要.md
-            tests/generated/next-v7/word-links.*
-            tests/generated/next-v7/sheet-links.*
-            tests/generated/next-v7/word-ole-png.*
-            tests/generated/next-v7/word-ole-emf.*
-            tests/generated/next-v7/word-ole-clean.*
-            tests/generated/next-v7/word-ole-only.*
-            tests/generated/next-v7/word-ole-multi*
+            tests/generated/next-v7_1/word-links.*
+            tests/generated/next-v7_1/sheet-links.*
+            tests/generated/next-v7_1/word-ole-png.*
+            tests/generated/next-v7_1/word-ole-emf.*
+            tests/generated/next-v7_1/word-ole-clean.*
+            tests/generated/next-v7_1/word-ole-only.*
+            tests/generated/next-v7_1/word-ole-multi*
             docs/evidence/verified.xlsx
             docs/evidence/verified.receipt.json
             docs/evidence/word-verified.docx
@@ -118,11 +118,11 @@ jobs:
           dotnet run --no-restore --project tests/OpenXmlValidation -- tests/fixtures/upstream/macro01.xlsm docs/evidence/verified.xlsx tests/fixtures/upstream/simple01.xlsx > openxml-ci.json
           python tests/independent_word.py tests/fixtures/poi/SimpleMacro.docm docs/evidence/word-verified.docx > word-independent-zip-ci.json
           dotnet run --no-restore --project tests/OpenXmlValidation -- tests/fixtures/poi/SimpleMacro.docm docs/evidence/word-verified.docx > word-openxml-ci.json
-          python tests/independent_business.py --next tests/generated/next-v7 > business-independent-ci.json
+          python tests/independent_business.py --next tests/generated/next-v7_1 > business-independent-ci.json
           dotnet run --no-restore --project tests/OpenXmlValidation -- tests/fixtures/business/report-1900.xlsm tests/fixtures/business/report-1904.xlsm tests/fixtures/business/report-inline.xlsm tests/fixtures/business/document-layout.docm tests/fixtures/business/document-template.docm tests/generated/business-v3/report-1900.xlsx tests/generated/business-v3/report-1904.xlsx tests/generated/business-v3/report-inline.xlsx tests/generated/business-v3/document-layout.docx tests/generated/business-v3/document-template.docx > business-openxml-ci.json
       - name: Validate the link and OLE input/output corpus independently
         run: |
-          dotnet run --no-restore --project tests/OpenXmlValidation -- tests/generated/next-v7/word-links.input.docm tests/generated/next-v7/word-links.docx tests/generated/next-v7/sheet-links.input.xlsm tests/generated/next-v7/sheet-links.xlsx tests/generated/next-v7/word-ole-png.input.docm tests/generated/next-v7/word-ole-png.docx tests/generated/next-v7/word-ole-emf.input.docm tests/generated/next-v7/word-ole-emf.docx tests/generated/next-v7/word-ole-clean.input.docx tests/generated/next-v7/word-ole-clean.docx tests/generated/next-v7/word-ole-only.input.docm tests/generated/next-v7/word-ole-only.docx tests/generated/next-v7/word-ole-multi2.input.docm tests/generated/next-v7/word-ole-multi2.docx tests/generated/next-v7/word-ole-multi3.input.docm tests/generated/next-v7/word-ole-multi3.docx tests/generated/next-v7/word-ole-multi32.input.docm tests/generated/next-v7/word-ole-multi32.docx tests/generated/next-v7/word-ole-multi-clean.input.docx tests/generated/next-v7/word-ole-multi-clean.docx > next-openxml-ci.json
+          dotnet run --no-restore --project tests/OpenXmlValidation -- tests/generated/next-v7_1/word-links.input.docm tests/generated/next-v7_1/word-links.docx tests/generated/next-v7_1/sheet-links.input.xlsm tests/generated/next-v7_1/sheet-links.xlsx tests/generated/next-v7_1/word-ole-png.input.docm tests/generated/next-v7_1/word-ole-png.docx tests/generated/next-v7_1/word-ole-emf.input.docm tests/generated/next-v7_1/word-ole-emf.docx tests/generated/next-v7_1/word-ole-clean.input.docx tests/generated/next-v7_1/word-ole-clean.docx tests/generated/next-v7_1/word-ole-only.input.docm tests/generated/next-v7_1/word-ole-only.docx tests/generated/next-v7_1/word-ole-multi2.input.docm tests/generated/next-v7_1/word-ole-multi2.docx tests/generated/next-v7_1/word-ole-multi3.input.docm tests/generated/next-v7_1/word-ole-multi3.docx tests/generated/next-v7_1/word-ole-multi32.input.docm tests/generated/next-v7_1/word-ole-multi32.docx tests/generated/next-v7_1/word-ole-multi-clean.input.docx tests/generated/next-v7_1/word-ole-multi-clean.docx > next-openxml-ci.json
       - name: Keep independent validation evidence
         uses: actions/upload-artifact@v4
         with:

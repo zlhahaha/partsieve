@@ -1,4 +1,4 @@
-# PartSieve 0.7 固定验收演示
+# PartSieve 0.7.1 固定验收演示
 
 这是一套约五分钟的命令行演示，覆盖实际处理、保留核验和拒绝行为。
 演示样本由项目公开测试数据构成，不是用户文件或第三方采用证明。
@@ -13,10 +13,10 @@ moon update
 moon install
 ./tools/acceptance-demo.ps1
 # 或指定一个尚不存在的本地目录：
-./tools/acceptance-demo.ps1 -OutputDirectory 'E:/演示/PartSieve-0.7'
+./tools/acceptance-demo.ps1 -OutputDirectory 'E:/演示/PartSieve-0.7.1'
 ```
 
-脚本构建Release命令行。全新检出时自动生成多OLE组合样本；已有样本会在运行中按固定输出摘要核对。
+脚本构建Release命令行，使用随源码和Mooncakes包提供的固定多OLE组合样本，并在运行中按固定输出摘要核对。
 默认演示包位于被忽略的`tests/generated/acceptance-demo/`，不会提交到GitHub或Mooncakes。
 包内包含本机Native可执行文件、三个输入、运行器、来源许可，以及本次运行的计划/报告/输出。
 它不是跨系统安装包；在同一平台和兼容运行环境中重复演示，直接运行包内：

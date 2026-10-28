@@ -11,7 +11,7 @@
 
 name = "zlhahaha/partsieve"
 
-version = "0.7.0-spike"
+version = "0.7.1-spike"
 
 readme = "README.md"
 

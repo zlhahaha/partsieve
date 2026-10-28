@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.1-spike（2026-10-28）
+
+- Ship the fixed acceptance-demo runner, Chinese walkthrough and a small provenance-pinned three-OLE input in the published package, without requiring the excluded development fixture generator.
+- Run the demonstration in Windows/Linux CI; record saved-plan rebuilds, actual-file verification, ordinary-text tampering rejection and unsupported-input refusal without successful outputs.
+- Office support profiles, public SDK signatures and output document bytes remain unchanged. Receipts use the new tool version and must be regenerated from actual files.
+- WPS multi-object client validation remains deferred by the user; this release adds no new client compatibility claim.
+
 ## 0.7.0-spike（2026-10-25）
 
 - Remove up to 32 independent inline Word OLE objects with private CFB payloads, PNG/JPEG/EMF previews and source-local relationships; retain ordinary text between objects and all unrelated content.

@@ -41,16 +41,11 @@ if (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'demo-inputs.json')) {
   Push-Location -LiteralPath $demoRepo
   try {
     $module = [IO.File]::ReadAllText((Join-Path $demoRepo 'moon.mod'))
-    if ($module -notmatch 'version\s*=\s*"0\.7\.0-spike"') { throw 'This fixed demonstration targets PartSieve 0.7.0-spike' }
+    if ($module -notmatch 'version\s*=\s*"0\.7\.1-spike"') { throw 'This fixed demonstration targets PartSieve 0.7.1-spike' }
     moon build --release --target native --deny-warn
     if ($LASTEXITCODE -ne 0) { throw 'Native Release build failed' }
-    $multiSource = Join-Path $demoRepo 'tests/generated/next-v7/word-ole-multi3.input.docm'
-    if (-not (Test-Path -LiteralPath $multiSource)) {
-      moon build --target native --deny-warn
-      if ($LASTEXITCODE -ne 0) { throw 'Native test fixture build failed' }
-      moon run tests/next --target native --deny-warn
-      if ($LASTEXITCODE -ne 0) { throw 'Pinned multi-OLE fixture preparation failed' }
-    }
+    $multiSource = Join-Path $demoRepo 'tests/fixtures/business/demo-word-three-objects.docm'
+    if (-not (Test-Path -LiteralPath $multiSource)) { throw 'Fixed demonstration fixture is missing' }
     $stamp = (Get-Date -Format 'yyyyMMdd-HHmmss') + '-' + [guid]::NewGuid().ToString('N').Substring(0, 8)
     $demoBundle = if ($OutputDirectory) { [IO.Path]::GetFullPath($OutputDirectory) } else { Join-Path $demoRepo ('tests/generated/acceptance-demo/' + $stamp) }
     if (Test-Path -LiteralPath $demoBundle) { throw 'Choose a new output directory; existing bundles are never overwritten' }
@@ -85,7 +80,7 @@ if (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'demo-inputs.json')) {
     if ($LASTEXITCODE -ne 0) { throw 'Cannot record source revision' }
     $dirty = git -c safe.directory=$demoRepo -c core.excludesfile=NUL status --porcelain
     $manifest = [ordered]@{
-      schema = 'partsieve.acceptance-demo.v1'; tool = 'partsieve/0.7.0-spike'
+      schema = 'partsieve.acceptance-demo.v1'; tool = 'partsieve/0.7.1-spike'
       source_revision = $revision; source_worktree_dirty = [bool]$dirty
       platform = [Runtime.InteropServices.RuntimeInformation]::OSDescription
       architecture = [Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString()

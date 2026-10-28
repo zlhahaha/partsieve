@@ -1,4 +1,4 @@
-# SDK work allowance and cancellation (0.7.0-spike)
+# SDK work allowance and cancellation (0.7.1-spike)
 
 All document SDK entry points accept optional `control : WorkControl`: `assess`,
 `audit`, `inspect_graph`, `plan`, `prepare`, both rebuild families and both

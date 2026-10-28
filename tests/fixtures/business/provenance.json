@@ -13,6 +13,14 @@
     "document-template.docm": "fcf80d572771fc10ff84c8c125a882195b7f1c540bbce08644dcdafb0ccb65ce",
     "report-1900.xlsm": "bbcb28f1d9c1a6895187b15ee0e2ff98df330d473120fad7dd3ad4b2a62317d6",
     "report-1904.xlsm": "5b3f882edfa41d8683ad6bc084e78339b33b50e963ede419c740a86e9e303bbd",
-    "report-inline.xlsm": "762171d121c2085512799a7cdf6916149c3d849caf3c8656e0c6f0a61d0bb3d8"
+    "report-inline.xlsm": "762171d121c2085512799a7cdf6916149c3d849caf3c8656e0c6f0a61d0bb3d8",
+    "demo-word-three-objects.docm": "b0b637bdf228180a6f6c08cbb571021cecfeb059758a608fe6e8a631c45faad2"
+  },
+  "demonstration_derivative": {
+    "file": "demo-word-three-objects.docm",
+    "date": "2026-10-28",
+    "recipe": "tests/next/main.mbt: multiple_objects(3); author business document plus source-bound HTTP(S) links and three independently owned OLE payload/preview pairs; static composition only",
+    "ole_sources": "../poi/provenance.json: EmbeddedWorksheet.xls, EmbeddedPreview.emf, EmbeddedObject.xml at fixed Apache POI revision; Apache-2.0 LICENSE/NOTICE retained",
+    "note": "Existing VBA is unchanged and never executed; this is synthetic test/demo data, not third-party adoption"
   }
 }

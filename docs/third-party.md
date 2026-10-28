@@ -23,3 +23,5 @@ Apache POI fixture 的完整原始 LICENSE/NOTICE 位于 `tests/fixtures/poi/`�
 分发 archive 保留本项目 LICENSE、公开 API、核心实现、测试源码及 fixture 许可；开发缓存、临时产物、客户端截图与历史测试日志通过 .moonignore 排除，完整证据保留在本地，CI 报告作为 Actions artifacts 保存。不把用户文件加入测试语料。
 
 0.5的受控OLE测试另从同一固定Apache POI commit的EmbeddedDocument.docx静态提取CFB工作表、EMF预览和对象XML；完整来源及变换已加入POI provenance。提取物只用于组合测试，不激活OLE，不移植POI实现代码。
+
+0.7.1随包提供固定验收样本`tests/fixtures/business/demo-word-three-objects.docm`，由既有业务布局和固定POI提取物静态组合，未执行宏或OLE；来源、变换和摘要已补入business provenance，不新增Office运行时依赖。

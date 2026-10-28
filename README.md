@@ -2,7 +2,7 @@
 
 MoonBit Office 文档清理与保留验证库。面向文档接收和报表交付，在已验证范围内移除 VBA 宏、Word 外部模板及受支持的嵌入 OLE 对象，输出可继续编辑的 DOCX/XLSX，并从实际输出重新检查引用和所有内部文件的处理结果。不执行宏，不访问外部资源。
 
-当前版本 **0.7.0-spike**，范围明确的实验版本，不承诺任意 Office 文件安全或视觉完全一致。参考 [DocBleach 的功能划分](docs/docbleach-comparison.md)，核心和命令行流程由 MoonBit 实现；小型 C 适配层只封装系统文件与进程接口。正常使用不需要 Python。
+当前版本 **0.7.1-spike**，范围明确的实验版本，不承诺任意 Office 文件安全或视觉完全一致。参考 [DocBleach 的功能划分](docs/docbleach-comparison.md)，核心和命令行流程由 MoonBit 实现；小型 C 适配层只封装系统文件与进程接口。正常使用不需要 Python。
 
 ## 支持范围
 
@@ -20,7 +20,7 @@ OLE 支持最多32个正文内嵌对象，各自拥有独立载荷、关系和�
 ## 安装与使用
 
 ```powershell
-moon add zlhahaha/partsieve@0.7.0-spike
+moon add zlhahaha/partsieve@0.7.1-spike
 ```
 
 调用方导入 `"zlhahaha/partsieve" @sieve`。主要接口：`assess`、`prepare`、`rebuild_verified`、`rebuild_verified_with_plan`、`verify_contract`；传入 bytes 和可选 Limits。报告包含能力、覆盖、处理计划、逐项去向与检查状态。`audit/plan/rebuild/verify/inspect_graph` 继续提供。
