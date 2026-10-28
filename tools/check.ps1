@@ -45,3 +45,6 @@ if ($LASTEXITCODE -ne 0) { throw 'Business SDK example failed' }
 
 moon run examples/resources --target native --deny-warn
 if ($LASTEXITCODE -ne 0) { throw "Resource SDK example failed" }
+
+.\tools\acceptance-demo.ps1
+if ($LASTEXITCODE -ne 0) { throw "Fixed acceptance demonstration failed" }

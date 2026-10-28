@@ -47,6 +47,8 @@ moon run cmd/main --target native -- verify document.docx --original tests/fixtu
 
 可运行[共享预算与取消示例](examples/resources/main.mbt)：`moon run examples/resources --target native --deny-warn`。新增五组大文件正例及两组超限例，覆盖Word约1/4/7MiB文本、5000/20000行工作表、预算与输入/输出边界和中途取消；CI保存实际耗时/内存观察记录。
 
+[固定验收演示](docs/acceptance-demo.md)：运行 `./tools/acceptance-demo.ps1`，生成包含本机命令行、样本、中文讲解及结果的一键演示包；重复演示使用包内 `run-demo.ps1`，每次新建结果目录。
+
 ## 验证与兼容性
 
 固定工具链 `moonc 0.10.14+7d59c7ec9`，依赖见 [锁定记录](docs/dependency-lock.json)。Windows Native/MSVC（PowerShell 7）：
