@@ -76,12 +76,18 @@ if (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'demo-inputs.json')) {
     )) { Copy-Item -LiteralPath (Join-Path $demoRepo $item[0]) -Destination (Join-Path $demoBundle ('licenses/' + $item[1])) }
     Copy-Item -LiteralPath (Join-Path $demoRepo 'docs/acceptance-demo.md') -Destination (Join-Path $demoBundle '演示说明.md')
     Copy-Item -LiteralPath $PSCommandPath -Destination (Join-Path $demoBundle 'run-demo.ps1')
-    $revision = git -c safe.directory=$demoRepo -c core.excludesfile=NUL rev-parse HEAD
-    if ($LASTEXITCODE -ne 0) { throw 'Cannot record source revision' }
-    $dirty = git -c safe.directory=$demoRepo -c core.excludesfile=NUL status --porcelain
+    $revision = $null
+    $dirty = $null
+    $sourceKind = 'package-without-git'
+    if ((Test-Path -LiteralPath (Join-Path $demoRepo '.git')) -and (Get-Command git -ErrorAction SilentlyContinue)) {
+      $revision = git -c safe.directory=$demoRepo -c core.excludesfile=NUL rev-parse HEAD
+      if ($LASTEXITCODE -ne 0) { throw 'Cannot record source revision' }
+      $dirty = [bool](git -c safe.directory=$demoRepo -c core.excludesfile=NUL status --porcelain)
+      $sourceKind = 'git-checkout'
+    }
     $manifest = [ordered]@{
       schema = 'partsieve.acceptance-demo.v1'; tool = 'partsieve/0.7.1-spike'
-      source_revision = $revision; source_worktree_dirty = [bool]$dirty
+      source_revision = $revision; source_worktree_dirty = $dirty; source_kind = $sourceKind
       platform = [Runtime.InteropServices.RuntimeInformation]::OSDescription
       architecture = [Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString()
       binary = 'bin/' + $binaryName; binary_sha256 = Get-DemoHash (Join-Path $demoBundle ('bin/' + $binaryName))
@@ -144,7 +150,7 @@ Write-Output '04-unsupported : expected refusal with no successful files Pass (e
 
 [ordered]@{
   schema = 'partsieve.acceptance-demo-result.v1'; tool = $demoManifest.tool
-  source_revision = $demoManifest.source_revision; source_worktree_dirty = $demoManifest.source_worktree_dirty
+  source_revision = $demoManifest.source_revision; source_worktree_dirty = $demoManifest.source_worktree_dirty; source_kind = $demoManifest.source_kind
   result = 'Pass'; commands = $script:demoCommands
   checks = @('spreadsheet rebuild and verify', 'three-OLE saved-plan rebuild and verify', 'tampered ordinary text rejected', 'unsupported input refused without output pair')
   independent_validation = 'NotChecked by this runner'; wps_validation = 'NotChecked'
@@ -153,7 +159,7 @@ Write-Output '04-unsupported : expected refusal with no successful files Pass (e
 # 验收演示结果
 
 - 模块：$($demoManifest.tool)
-- 源码：$($demoManifest.source_revision)，准备时存在未提交修改：$($demoManifest.source_worktree_dirty)
+- 来源类型：$($demoManifest.source_kind)；Git源码：$($demoManifest.source_revision)，准备时存在未提交修改：$($demoManifest.source_worktree_dirty)。注册表/源码包无Git元数据时留空，以模块版本和文件摘要记录。
 - 报表去宏与实际文件核验：通过；输出 01-report.xlsx。
 - Word三个独立OLE移除、保存计划执行及实际文件核验：通过；输出 02-word.docx。
 - 普通正文被篡改：按预期拒绝，退出码2；03-tampered.docx仅作拒绝演示。
