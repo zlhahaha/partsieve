@@ -62,6 +62,8 @@ python tests/independent_business.py
 
 [架构](docs/architecture.md)、[威胁模型](docs/threat-model.md)、[保留契约](docs/preservation-contract.md)、[报告格式](docs/receipt-v2.schema.json)。Schema只约束形状；完整核验需要真实原件和输出。申报书、交接、工作记录与截图仅在本地维护。
 
+2026-10-29补齐WPS12.1.0.29161对2/3/32对象清理输出的打开、编辑、另存和重开验证，未观察到修复提示。保存副本仍各有三处客户端新增样式顺序错误，且关系型链接被改写为字段，不能保证再次通过当前输入配置；32对象长段落在本机100%下部分字形裁切，120%可正常查看。诊断与适用边界见[兼容矩阵](docs/compatibility-matrix.md#wps保存与显示的已知限制)。
+
 ## 许可与来源
 
 Apache-2.0。运行时复用 flate0.8.4、Milky2018/xml0.5.0、moonbitlang/x0.5.5。上游测试数据来自XlsxWriter（BSD-2-Clause）与Apache POI（Apache-2.0）；新增布局和图片为自建，宏字节及其原始来源许可保留。见 [第三方说明](docs/third-party.md) 和 [样本来源](tests/fixtures/business/README.md)。未移植Python/Java Office核心，未分发WPS或用户文档。
