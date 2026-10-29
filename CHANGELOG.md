@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Add the Native `batch INPUT_DIR -o NEW_OUTPUT_DIR` command: bounded top-level discovery, deterministic filename order, independent document/receipt verification, per-file success/refusal/failure/skip records and a persisted JSON summary. Continue after individual failures and refuse existing output directories.
+- Add real CLI batch regressions to Windows/Linux CI, including mixed valid/invalid inputs, output protection, names with spaces/Chinese characters, colliding stems, the 1024-entry boundary and platform-dependent link/special-file fixtures. No new Office content profile or Mooncakes publication in this batch.
+
 ## 0.7.1-spike（2026-10-28）
 
 - Ship the fixed acceptance-demo runner, Chinese walkthrough and a small provenance-pinned three-OLE input in the published package, without requiring the excluded development fixture generator.

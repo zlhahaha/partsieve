@@ -8,11 +8,15 @@ import {
 // Values
 pub fn absolute(String) -> String raise
 
+pub fn create_directory(String) -> Unit raise
+
 pub fn executable() -> String raise
 
 pub fn exists(String) -> Bool raise
 
 pub fn link_new(String, String) -> Unit raise
+
+pub fn list_directory(String, max_entries? : Int) -> Array[DirectoryEntry] raise
 
 pub fn parent(String) -> String raise
 
@@ -44,6 +48,12 @@ pub(all) suberror HostError {
 pub fn HostError::to_repr(Self) -> @debug.Repr
 
 // Types and methods
+pub(all) struct DirectoryEntry {
+  name : String
+  kind : String
+} derive(@debug.Debug)
+pub fn DirectoryEntry::to_repr(Self) -> @debug.Repr
+
 pub(all) struct ProcessResult {
   code : Int
   stdout : Bytes

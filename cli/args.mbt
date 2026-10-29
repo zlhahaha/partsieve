@@ -59,30 +59,44 @@ fn parse_args(args : Array[String]) -> Options raise {
     i += 2
   }
   guard positional.length() == 2 &&
-    ["audit", "assess", "graph", "plan", "prepare", "rebuild", "verify"].contains(
-      positional[0],
-    ) else {
+    [
+      "audit", "assess", "graph", "plan", "prepare", "rebuild", "verify", "batch",
+    ].contains(positional[0]) else {
     raise Usage(
-      "usage: partsieve audit|assess|graph|plan|prepare|rebuild|verify INPUT [options]",
+      "usage: partsieve audit|assess|graph|plan|prepare|rebuild|verify|batch INPUT [options]",
     )
   }
   guard values.get("--policy").unwrap_or("passive-office-v1") ==
     "passive-office-v1" else {
     raise Usage("unknown policy")
   }
-  let format = values.get("--receipt-format").unwrap_or("legacy")
+  let command = positional[0]
+  let format = values
+    .get("--receipt-format")
+    .unwrap_or(if command == "batch" { "v2" } else { "legacy" })
   guard ["legacy", "v2"].contains(format) else {
     raise Usage("unknown Receipt format")
   }
-  let command = positional[0]
   let dry_run = flags.contains("--dry-run")
+  if command == "batch" &&
+    (
+      dry_run ||
+      format != "v2" ||
+      !values.contains("--output") ||
+      ["--receipt", "--original", "--plan"].any(fn(key) { values.contains(key) })
+    ) {
+    raise Usage(
+      "batch requires -o NEW_DIRECTORY; uses v2 receipts and does not accept dry-run/receipt/original/plan",
+    )
+  }
   if dry_run && ["assess", "graph", "prepare"].contains(command) {
     raise Usage("dry-run does not apply to structural inspection")
   }
   if values.contains("--plan") && (command != "rebuild" || dry_run) {
     raise Usage("plan applies only to rebuild without dry-run")
   }
-  if format == "v2" && (!["rebuild", "verify"].contains(command) || dry_run) {
+  if format == "v2" &&
+    (!["rebuild", "verify", "batch"].contains(command) || dry_run) {
     raise Usage("Receipt format applies only to rebuild/verify")
   }
   let mut timeout = 60000

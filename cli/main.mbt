@@ -85,6 +85,9 @@ fn hash(bytes : Bytes) -> String {
 ///|
 pub fn execute(args : Array[String]) -> (Json, Int) raise {
   let options = parse_args(args)
+  if options.command == "batch" {
+    return execute_batch(options)
+  }
   let workspace : Workspace = { dirs: [], files: [], }
   defer workspace.cleanup()
   let private_dir = workspace.directory()

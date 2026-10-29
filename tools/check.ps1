@@ -13,9 +13,22 @@ if ($LASTEXITCODE -ne 0) { throw 'Dependency source drift' }
 .\tools\check-fixtures.ps1
 if ($LASTEXITCODE -ne 0) { throw 'Fixture drift' }
 $taskInterfaces = @{}
-Get-ChildItem -Filter pkg.generated.mbti -Recurse |
-  Where-Object { $_.FullName -notmatch '[\\/](\.mooncakes|_build)[\\/]' } |
-  ForEach-Object { $taskInterfaces[$_.FullName] = [IO.File]::ReadAllText($_.FullName) }
+# Prune generated/private trees before traversal: filtering after -Recurse still
+# visits old owner-only evidence directories and can fail before source checks.
+$taskSourceDirectories = [Collections.Generic.Stack[string]]::new()
+$taskSourceDirectories.Push($PWD.Path)
+while ($taskSourceDirectories.Count -gt 0) {
+  $taskDirectory = $taskSourceDirectories.Pop()
+  Get-ChildItem -LiteralPath $taskDirectory -File -Filter pkg.generated.mbti |
+    ForEach-Object { $taskInterfaces[$_.FullName] = [IO.File]::ReadAllText($_.FullName) }
+  Get-ChildItem -LiteralPath $taskDirectory -Directory |
+    Where-Object {
+      $_.Name -notin @('.git', '.mooncakes', '_build', 'target', '.moonagent', 'generated', 'bin', 'obj', 'test-deps') -and
+      $_.FullName -notmatch '[\\/]docs[\\/]evidence$' -and
+      -not ($_.Attributes -band [IO.FileAttributes]::ReparsePoint)
+    } |
+    ForEach-Object { $taskSourceDirectories.Push($_.FullName) }
+}
 moon info
 if ($LASTEXITCODE -ne 0) { throw 'moon info failed' }
 foreach ($taskPath in $taskInterfaces.Keys) {
@@ -38,6 +51,8 @@ moon run tests/next --target native --deny-warn
 if ($LASTEXITCODE -ne 0) { throw 'Click-link and Word OLE regression failed' }
 moon run tests/robustness --target native --deny-warn
 if ($LASTEXITCODE -ne 0) { throw 'Deterministic robustness regression failed' }
+moon run tests/batch --target native --deny-warn
+if ($LASTEXITCODE -ne 0) { throw 'Batch directory regression failed' }
 .\tools\check-resources.ps1
 .\tools\generate-test-evidence.ps1
 moon run examples/sdk --target native

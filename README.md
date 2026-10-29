@@ -39,6 +39,8 @@ moon run cmd/main --target native -- verify document.docx --original tests/fixtu
 
 [业务示例](examples/business/README.md) 覆盖五个支持输入和一个拒绝输入。样本为注明来源的作者自建组合文档，真实第三方采用尚未确认。CLI `prepare INPUT` 可保存计划，再以 `rebuild INPUT --plan PLAN.json` 执行；每个字段均独立重算。
 
+GitHub主分支新增[目录批处理](docs/batch.md)：`moon run cmd/main --target native -- batch INPUT_DIR -o NEW_OUTPUT_DIR --json`。按文件名逐份处理顶层DOCX/DOCM/XLSX/XLSM，单份拒绝或失败后继续，汇总写入`batch.json`；输出目录必须全新，默认v2回执。该功能随下一版同步Mooncakes，当前注册表0.7.1尚不包含。
+
 新增链接/OLE组合示例与边界见 [链接与OLE](docs/links-ole.md)，可用 `moon run tests/next --target native` 生成并验证。v2 配置仅为已识别的链接/OLE场景启用，已有业务 v1 路径保留。建议使用 `--receipt-format v2`。0.7 更新工具标识；旧报告需用对应版本验证，或基于真实文件重新生成。独立客户端/完整格式检查在 SDK 中为 NotChecked，不沿用历史 Pass。
 
 输出与报告不覆盖已有文件，临时输出从磁盘重新验证后配套发布；两个路径不保证事务原子性。退出码：0完成，2完整性/保留/报告不符，3不支持/不完整/资源拒绝，4文件读写或用法错误。缺少原件时保留检查NotChecked、整体Incomplete、退出3。

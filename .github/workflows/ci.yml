@@ -58,6 +58,7 @@ jobs:
             tests/generated/business-v3/document-template.docx
             tests/generated/resources-v7_1.json
             tests/generated/robustness-v1.json
+            tests/generated/batch-v1.json
             tests/generated/acceptance-demo/**/demo-result.json
             tests/generated/acceptance-demo/**/*.stdout.json
             tests/generated/acceptance-demo/**/结果摘要.md
@@ -94,7 +95,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: linux-robustness
-          path: tests/generated/robustness-v1.json
+          path: |
+            tests/generated/robustness-v1.json
+            tests/generated/batch-v1.json
 
   independent:
     name: Independent ZIP and Open XML SDK

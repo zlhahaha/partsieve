@@ -52,6 +52,12 @@ test "argument parser rejects ambiguous or inapplicable flags" {
       ["verify", "a", "--plan", "p"],
       ["prepare", "a", "--receipt-format", "v2"],
       ["rebuild", "a", "--dry-run", "--plan", "p"],
+      ["batch", "a"],
+      ["batch", "a", "-o", "b", "--dry-run"],
+      ["batch", "a", "-o", "b", "--receipt-format", "legacy"],
+      ["batch", "a", "-o", "b", "--receipt", "r"],
+      ["batch", "a", "-o", "b", "--original", "r"],
+      ["batch", "a", "-o", "b", "--plan", "r"],
     ] {
     assert_true(
       try {
@@ -66,4 +72,7 @@ test "argument parser rejects ambiguous or inapplicable flags" {
   let options = parse_args(["audit", "--timeout-ms", "200", "--", "-input"])
   assert_eq(options.input, "-input")
   assert_eq(options.timeout_ms, 200)
+  let batch = parse_args(["batch", "a", "-o", "b", "--json"])
+  assert_true(batch.v2)
+  assert_eq(batch.output, Some("b"))
 }

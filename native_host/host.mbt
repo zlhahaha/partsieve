@@ -5,6 +5,75 @@ pub(all) suberror HostError {
 } derive(Debug)
 
 ///|
+pub(all) struct DirectoryEntry {
+  name : String
+  kind : String
+} derive(Debug)
+
+///|
+pub extend DirectoryEntry with Debug::{to_repr}
+
+///|
+#borrow(path)
+extern "C" fn directory_ffi(path : Bytes, limit : Int) -> Bytes = "ps_list_directory"
+
+///|
+pub fn create_directory(path : String) -> Unit raise {
+  guard mkdir_ffi(cstring(path)) == 0 else { raise os_error() }
+}
+
+///|
+pub fn list_directory(
+  path : String,
+  max_entries? : Int = 1024,
+) -> Array[DirectoryEntry] raise {
+  guard max_entries > 0 && max_entries <= 1024 else {
+    raise Limit("directory entry limit must be 1..1024")
+  }
+  let bytes = directory_ffi(cstring(path), max_entries)
+  guard bytes.length() > 0 else { raise Io("invalid directory response") }
+  if bytes[0] == 2 {
+    raise Limit(
+      "directory exceeds entry/name limit (1024 entries, 1024 UTF-8 bytes per name)",
+    )
+  }
+  guard bytes[0] == 1 else { raise os_error() }
+  let entries : Array[DirectoryEntry] = []
+  let mut pos = 1
+  while pos < bytes.length() {
+    guard pos + 3 <= bytes.length() && entries.length() < max_entries else {
+      raise Io("invalid directory response")
+    }
+    let kind = match bytes[pos].to_int() {
+      1 => "file"
+      2 => "directory"
+      3 => "link"
+      _ => "other"
+    }
+    let size = bytes[pos + 1].to_int() + bytes[pos + 2].to_int() * 256
+    pos += 3
+    guard size > 0 && size <= 1024 && pos + size <= bytes.length() else {
+      raise Io("invalid directory name framing")
+    }
+    let name = @utf8.decode(bytes[pos:pos + size]) catch {
+      _ => raise Io("directory name is not valid UTF-8")
+    }
+    guard name != "." &&
+      name != ".." &&
+      !name.contains("/") &&
+      !name.code_units().any(fn(c) { c == 0 }) else {
+      raise Io("invalid directory name")
+    }
+    entries.push({ name, kind, })
+    pos += size
+  }
+  entries.sort_by(fn(a, b) {
+    a.name.exact_view().lexical_compare(b.name.exact_view())
+  })
+  entries
+}
+
+///|
 #external
 priv type Process
 

@@ -23,6 +23,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <time.h>
+#include <dirent.h>
 #endif
 
 static char ps_error_text[128];
@@ -66,6 +67,82 @@ MOONBIT_FFI_EXPORT int ps_windows(void) {
 #else
   return 0;
 #endif
+}
+/* Bounded, nonrecursive inventory. Status + (kind,u16 UTF-8 length,name)*.
+ * Count every entry, including ignored files. Never traverse a reparse point.
+ */
+MOONBIT_FFI_EXPORT moonbit_bytes_t ps_list_directory(moonbit_bytes_t path, int limit) {
+  if (limit < 1 || limit > 1024) return ps_bytes("\2", 1);
+  unsigned char *buf = (unsigned char *)malloc(1 + (size_t)limit * 1027);
+  if (!buf) { ps_error(); return ps_bytes("\0", 1); }
+  int used = 1, count = 0, status = 1;
+#ifdef _WIN32
+  wchar_t *root = ps_wide((const char *)path);
+  HANDLE dir = INVALID_HANDLE_VALUE, search = INVALID_HANDLE_VALUE;
+  wchar_t *pattern = NULL;
+  if (!root) { ps_error(); status = 0; goto directory_done; }
+  dir = CreateFileW(root, FILE_READ_ATTRIBUTES, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+      NULL, OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, NULL);
+  BY_HANDLE_FILE_INFORMATION info;
+  if (dir == INVALID_HANDLE_VALUE || !GetFileInformationByHandle(dir, &info) ||
+      !(info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) || (info.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT)) {
+    ps_error(); status = 0; goto directory_done;
+  }
+  size_t n = wcslen(root);
+  pattern = (wchar_t *)malloc((n + 3) * sizeof(wchar_t));
+  if (!pattern) { ps_error(); status = 0; goto directory_done; }
+  memcpy(pattern, root, n * sizeof(wchar_t));
+  pattern[n] = L'\\'; pattern[n + 1] = L'*'; pattern[n + 2] = 0;
+  WIN32_FIND_DATAW data;
+  search = FindFirstFileW(pattern, &data);
+  if (search == INVALID_HANDLE_VALUE) {
+    if (GetLastError() != ERROR_FILE_NOT_FOUND) { ps_error(); status = 0; }
+    goto directory_done;
+  }
+  do {
+    if (!wcscmp(data.cFileName, L".") || !wcscmp(data.cFileName, L"..")) continue;
+    if (++count > limit) { status = 2; break; }
+    char name[1025];
+    int size = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, data.cFileName, -1, name, sizeof(name), NULL, NULL);
+    if (!size) { ps_error(); status = 0; break; }
+    --size;
+    int kind = (data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) ? 3 :
+        (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? 2 :
+        (data.dwFileAttributes & FILE_ATTRIBUTE_DEVICE) ? 4 : 1;
+    buf[used++] = (unsigned char)kind;
+    buf[used++] = (unsigned char)(size & 255); buf[used++] = (unsigned char)(size >> 8);
+    memcpy(buf + used, name, size); used += size;
+  } while (FindNextFileW(search, &data));
+  if (status == 1 && GetLastError() != ERROR_NO_MORE_FILES) { ps_error(); status = 0; }
+directory_done:
+  if (search != INVALID_HANDLE_VALUE) FindClose(search);
+  if (dir != INVALID_HANDLE_VALUE) CloseHandle(dir);
+  free(pattern); free(root);
+#else
+  int fd = open((const char *)path, O_RDONLY | O_DIRECTORY | O_CLOEXEC | O_NOFOLLOW);
+  DIR *dir = fd < 0 ? NULL : fdopendir(fd);
+  if (!dir) { ps_error(); if (fd >= 0) close(fd); status = 0; }
+  else {
+    struct dirent *entry;
+    while (1) {
+      errno = 0; entry = readdir(dir);
+      if (!entry) { if (errno) { ps_error(); status = 0; } break; }
+      if (!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, "..")) continue;
+      size_t size = strlen(entry->d_name);
+      if (++count > limit || size > 1024) { status = 2; break; }
+      struct stat info;
+      if (fstatat(dirfd(dir), entry->d_name, &info, AT_SYMLINK_NOFOLLOW)) { ps_error(); status = 0; break; }
+      int kind = S_ISLNK(info.st_mode) ? 3 : S_ISDIR(info.st_mode) ? 2 : S_ISREG(info.st_mode) ? 1 : 4;
+      buf[used++] = (unsigned char)kind;
+      buf[used++] = (unsigned char)(size & 255); buf[used++] = (unsigned char)(size >> 8);
+      memcpy(buf + used, entry->d_name, size); used += (int)size;
+    }
+    closedir(dir);
+  }
+#endif
+  buf[0] = (unsigned char)status;
+  moonbit_bytes_t out = ps_bytes((const char *)buf, status == 1 ? used : 1);
+  free(buf); return out;
 }
 MOONBIT_FFI_EXPORT int ps_open_read(moonbit_bytes_t path) {
 #ifdef _WIN32
