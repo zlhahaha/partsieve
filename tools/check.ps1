@@ -36,6 +36,8 @@ moon test --target native --deny-warn
 if ($LASTEXITCODE -ne 0) { throw 'moon test failed' }
 moon run tests/next --target native --deny-warn
 if ($LASTEXITCODE -ne 0) { throw 'Click-link and Word OLE regression failed' }
+moon run tests/robustness --target native --deny-warn
+if ($LASTEXITCODE -ne 0) { throw 'Deterministic robustness regression failed' }
 .\tools\check-resources.ps1
 .\tools\generate-test-evidence.ps1
 moon run examples/sdk --target native

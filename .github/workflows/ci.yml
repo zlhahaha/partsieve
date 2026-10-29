@@ -45,6 +45,7 @@ jobs:
           Get-Command cl.exe
           .\tools\check.ps1
       - name: Keep actual regression evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: native-regression
@@ -56,6 +57,7 @@ jobs:
             tests/generated/business-v3/document-layout.docx
             tests/generated/business-v3/document-template.docx
             tests/generated/resources-v7_1.json
+            tests/generated/robustness-v1.json
             tests/generated/acceptance-demo/**/demo-result.json
             tests/generated/acceptance-demo/**/*.stdout.json
             tests/generated/acceptance-demo/**/结果摘要.md
@@ -87,6 +89,12 @@ jobs:
       - name: Check dependency hashes and run native regression
         shell: pwsh
         run: ./tools/check.ps1
+      - name: Keep deterministic robustness evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-robustness
+          path: tests/generated/robustness-v1.json
 
   independent:
     name: Independent ZIP and Open XML SDK

@@ -37,3 +37,6 @@ tests/next/
 
 # Resource stress scenarios are development-only.
 tests/resources/
+
+# Deterministic mutation harness runs in repository CI, not the runtime package.
+tests/robustness/

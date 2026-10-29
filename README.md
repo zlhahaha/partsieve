@@ -64,6 +64,8 @@ python tests/independent_business.py
 
 2026-10-29补齐WPS12.1.0.29161对2/3/32对象清理输出的打开、编辑、另存和重开验证，未观察到修复提示。保存副本仍各有三处客户端新增样式顺序错误，且关系型链接被改写为字段，不能保证再次通过当前输入配置；32对象长段落在本机100%下部分字形裁切，120%可正常查看。诊断与适用边界见[兼容矩阵](docs/compatibility-matrix.md#wps保存与显示的已知限制)。
 
+另有[120个固定种子健壮性案例](https://github.com/zlhahaha/partsieve/blob/main/tests/robustness/README.md)，包含ZIP截断/CRC/头部破坏、非法XML与内部路径、计划及输出篡改、精确预算与取消；33次CLI拒绝均不留下成功文件对，4次正常CLI检查和4个已有文件/路径冲突保护检查通过。由MoonBit实现，Windows/Linux CI保存本次JSON证据；不代表穷尽模糊测试或全格式安全保证。
+
 ## 许可与来源
 
 Apache-2.0。运行时复用 flate0.8.4、Milky2018/xml0.5.0、moonbitlang/x0.5.5。上游测试数据来自XlsxWriter（BSD-2-Clause）与Apache POI（Apache-2.0）；新增布局和图片为自建，宏字节及其原始来源许可保留。见 [第三方说明](docs/third-party.md) 和 [样本来源](tests/fixtures/business/README.md)。未移植Python/Java Office核心，未分发WPS或用户文档。

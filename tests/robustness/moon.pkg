@@ -1,0 +1,10 @@
+import {
+  "zlhahaha/partsieve" @sieve,
+  "zlhahaha/partsieve/cli",
+  "zlhahaha/partsieve/native_host" @host,
+  "moonbit-community/flate/zip",
+  "moonbitlang/x/fs",
+  "moonbitlang/core/encoding/utf8",
+}
+
+pkgtype(kind: "executable")
