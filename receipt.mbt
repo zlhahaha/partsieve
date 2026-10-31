@@ -104,7 +104,7 @@ pub fn verify_contract(
   })
   let receipt : VerifiedReceipt = {
     schema: "partsieve.receipt.v2-dev",
-    tool: "partsieve/0.7.1-spike",
+    tool: "partsieve/0.8.0-spike",
     rules: prepared.rules,
     policy: prepared.policy,
     profile: prepared.profile,

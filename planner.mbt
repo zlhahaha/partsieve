@@ -275,7 +275,7 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
   }
   let prepared : PreparedPlan = {
     schema: "partsieve.prepared-plan.v1",
-    tool: "partsieve/0.7.1-spike",
+    tool: "partsieve/0.8.0-spike",
     rules: if ole_relationships(pkg).length() > 1 {
       "bounded-links-ole-plan-v2"
     } else if extended_office(pkg) {

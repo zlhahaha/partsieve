@@ -1,6 +1,6 @@
 # 原型架构
 
-当前提供既有业务v1，以及按输入能力启用的 `business-spreadsheet-v2` / `business-word-v2` 链接与Word OLE配置（0.7.1-spike）。
+当前提供既有业务v1，以及按输入能力启用的 `business-spreadsheet-v2` / `business-word-v2` 链接与Word OLE配置（0.8.0-spike）。
 
 - `model.mbt`：限制、Audit、Finding、Relationship、RewritePlan、Receipt。
 - `graph_model.mbt` / `graph.mbt`：共用 PackageGraph、source-local XML 引用、入出边/内容类型索引、迭代可达性与只报告的 orphan candidates。

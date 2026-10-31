@@ -384,7 +384,7 @@
           "const": "partsieve.receipt.word-dev-v1"
         },
         "tool": {
-          "const": "partsieve/0.7.1-spike"
+          "const": "partsieve/0.8.0-spike"
         },
         "rules": {
           "const": "word-business-v1"

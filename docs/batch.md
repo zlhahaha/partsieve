@@ -1,6 +1,6 @@
 # 目录批处理
 
-此功能目前在GitHub主分支，待下一版同步Mooncakes；注册表0.7.1不含此命令。需要README所列的Native工具链，正常使用不需要Python或WPS。
+此功能自0.8.0-spike提供。需要README所列的Native工具链，正常使用不需要Python或WPS。
 
 ```powershell
 moon build --target native --deny-warn

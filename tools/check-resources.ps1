@@ -46,7 +46,7 @@ foreach ($taskCase in @('word-1m', 'word-4m', 'word-7m', 'sheet-5000', 'sheet-20
 }
 $taskEvidence = [ordered]@{
   tool = 'PartSieve Native resource regression'
-  version = '0.7.1-spike'
+  version = '0.8.0-spike'
   os = [Runtime.InteropServices.RuntimeInformation]::OSDescription
   architecture = [Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString()
   build = 'Release'

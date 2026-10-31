@@ -2,7 +2,7 @@
 
 MoonBit Office 文档清理与保留验证库。面向文档接收和报表交付，在已验证范围内移除 VBA 宏、Word 外部模板及受支持的嵌入 OLE 对象，输出可继续编辑的 DOCX/XLSX，并从实际输出重新检查引用和所有内部文件的处理结果。不执行宏，不访问外部资源。
 
-当前版本 **0.7.1-spike**，范围明确的实验版本，不承诺任意 Office 文件安全或视觉完全一致。参考 [DocBleach 的功能划分](docs/docbleach-comparison.md)，核心和命令行流程由 MoonBit 实现；小型 C 适配层只封装系统文件与进程接口。正常使用不需要 Python。
+当前版本 **0.8.0-spike**，范围明确的实验版本，不承诺任意 Office 文件安全或视觉完全一致。参考 [DocBleach 的功能划分](docs/docbleach-comparison.md)，核心和命令行流程由 MoonBit 实现；小型 C 适配层只封装系统文件与进程接口。正常使用不需要 Python。
 
 ## 支持范围
 
@@ -20,7 +20,7 @@ OLE 支持最多32个正文内嵌对象，各自拥有独立载荷、关系和�
 ## 安装与使用
 
 ```powershell
-moon add zlhahaha/partsieve@0.7.1-spike
+moon add zlhahaha/partsieve@0.8.0-spike
 ```
 
 调用方导入 `"zlhahaha/partsieve" @sieve`。主要接口：`assess`、`prepare`、`rebuild_verified`、`rebuild_verified_with_plan`、`verify_contract`；传入 bytes 和可选 Limits。报告包含能力、覆盖、处理计划、逐项去向与检查状态。`audit/plan/rebuild/verify/inspect_graph` 继续提供。
@@ -39,7 +39,7 @@ moon run cmd/main --target native -- verify document.docx --original tests/fixtu
 
 [业务示例](examples/business/README.md) 覆盖五个支持输入和一个拒绝输入。样本为注明来源的作者自建组合文档，真实第三方采用尚未确认。CLI `prepare INPUT` 可保存计划，再以 `rebuild INPUT --plan PLAN.json` 执行；每个字段均独立重算。
 
-GitHub主分支新增[目录批处理](docs/batch.md)：`moon run cmd/main --target native -- batch INPUT_DIR -o NEW_OUTPUT_DIR --json`。按文件名逐份处理顶层DOCX/DOCM/XLSX/XLSM，单份拒绝或失败后继续，汇总写入`batch.json`；输出目录必须全新，默认v2回执。该功能随下一版同步Mooncakes，当前注册表0.7.1尚不包含。
+0.8新增[目录批处理](docs/batch.md)：`moon run cmd/main --target native -- batch INPUT_DIR -o NEW_OUTPUT_DIR --json`。按文件名逐份处理顶层DOCX/DOCM/XLSX/XLSM，单份拒绝或失败后继续，汇总写入`batch.json`；输出目录必须全新，默认v2回执。该功能包含在0.8.0-spike中。
 
 新增链接/OLE组合示例与边界见 [链接与OLE](docs/links-ole.md)，可用 `moon run tests/next --target native` 生成并验证。v2 配置仅为已识别的链接/OLE场景启用，已有业务 v1 路径保留。建议使用 `--receipt-format v2`。0.7 更新工具标识；旧报告需用对应版本验证，或基于真实文件重新生成。独立客户端/完整格式检查在 SDK 中为 NotChecked，不沿用历史 Pass。
 

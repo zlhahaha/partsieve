@@ -41,7 +41,7 @@ if (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'demo-inputs.json')) {
   Push-Location -LiteralPath $demoRepo
   try {
     $module = [IO.File]::ReadAllText((Join-Path $demoRepo 'moon.mod'))
-    if ($module -notmatch 'version\s*=\s*"0\.7\.1-spike"') { throw 'This fixed demonstration targets PartSieve 0.7.1-spike' }
+    if ($module -notmatch 'version\s*=\s*"0\.8\.0-spike"') { throw 'This fixed demonstration targets PartSieve 0.8.0-spike' }
     moon build --release --target native --deny-warn
     if ($LASTEXITCODE -ne 0) { throw 'Native Release build failed' }
     $multiSource = Join-Path $demoRepo 'tests/fixtures/business/demo-word-three-objects.docm'
@@ -86,7 +86,7 @@ if (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'demo-inputs.json')) {
       $sourceKind = 'git-checkout'
     }
     $manifest = [ordered]@{
-      schema = 'partsieve.acceptance-demo.v1'; tool = 'partsieve/0.7.1-spike'
+      schema = 'partsieve.acceptance-demo.v1'; tool = 'partsieve/0.8.0-spike'
       source_revision = $revision; source_worktree_dirty = $dirty; source_kind = $sourceKind
       platform = [Runtime.InteropServices.RuntimeInformation]::OSDescription
       architecture = [Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString()
