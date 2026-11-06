@@ -148,11 +148,69 @@ $null = Invoke-DemoCli '04-unsupported-rejected' @('rebuild', (Join-Path $demoBu
 if ((Test-Path -LiteralPath $unsupportedOutput) -or (Test-Path -LiteralPath $unsupportedReceipt)) { throw 'Unsupported input produced a success pair' }
 Write-Output '04-unsupported : expected refusal with no successful files Pass (exit 3)'
 
+# The first two entries refuse; valid entries must still be rebuilt and verified.
+$batchInput = Join-Path $script:demoRun '05-batch-input'
+$batchOutput = Join-Path $script:demoRun '05-batch-output'
+[IO.Directory]::CreateDirectory($batchInput) | Out-Null
+[IO.File]::WriteAllText((Join-Path $batchInput '00-broken.docm'), 'deliberately incomplete ZIP')
+Copy-Item -LiteralPath (Join-Path $demoBundle 'inputs/unsupported.docx') -Destination (Join-Path $batchInput '01-unsupported.docx')
+Copy-Item -LiteralPath $wordInput -Destination (Join-Path $batchInput '02-word.docm')
+Copy-Item -LiteralPath $reportInput -Destination (Join-Path $batchInput '03-report.xlsm')
+[IO.File]::WriteAllText((Join-Path $batchInput '04-notes.txt'), 'This file is skipped.')
+$batchSourceHashes = @{}
+Get-ChildItem -LiteralPath $batchInput -File | ForEach-Object { $batchSourceHashes[$_.Name] = Get-DemoHash $_.FullName }
+$batch = Invoke-DemoCli '05-batch' @('batch', $batchInput, '-o', $batchOutput, '--json') 3
+if ($batch.schema -ne 'partsieve.batch.v1' -or $batch.success -ne 2 -or $batch.refused -ne 2 -or $batch.failed -ne 0 -or $batch.skipped -ne 1 -or @($batch.entries).Count -ne 5) { throw 'Unexpected mixed batch counts' }
+$batchSaved = Get-Content -Raw -LiteralPath (Join-Path $batchOutput 'batch.json') | ConvertFrom-Json
+if (($batchSaved | ConvertTo-Json -Depth 20 -Compress) -ne ($batch | ConvertTo-Json -Depth 20 -Compress)) { throw 'Saved batch summary differs from stdout' }
+$batchExpectedNames = @('00-broken.docm', '01-unsupported.docx', '02-word.docm', '03-report.xlsm', '04-notes.txt')
+$batchExpectedStates = @('Refused', 'Refused', 'Success', 'Success', 'Skipped')
+$batchProtected = @{ 'batch.json' = Get-DemoHash (Join-Path $batchOutput 'batch.json') }
+for ($index = 0; $index -lt 5; $index++) {
+  $row = $batch.entries[$index]
+  if ($row.input -ne $batchExpectedNames[$index] -or $row.status -ne $batchExpectedStates[$index]) { throw 'Batch order or outcome differs' }
+  if ($row.status -eq 'Success') {
+    $suffix = if ($row.input -eq '02-word.docm') { '.docx' } else { '.xlsx' }
+    if ($row.output -ne ($row.input + '.cleaned' + $suffix) -or $row.receipt -ne ($row.input + '.receipt.json')) { throw 'Unexpected batch pair names' }
+    $batchDocument = Join-Path $batchOutput $row.output
+    $batchReceipt = Join-Path $batchOutput $row.receipt
+    $actual = Invoke-DemoCli ('05-verify-' + $index) @('verify', $batchDocument, '--original', (Join-Path $batchInput $row.input), '--receipt', $batchReceipt, '--receipt-format', 'v2')
+    if ($actual.result -ne 'Pass' -or $actual.tool -ne $demoManifest.tool -or $actual.input_hash -ne $row.input_hash -or $actual.output_hash -ne $row.output_hash -or (Get-DemoHash $batchDocument) -ne $row.output_hash) { throw 'Batch output verification failed' }
+    $batchProtected[$row.output] = Get-DemoHash $batchDocument
+    $batchProtected[$row.receipt] = Get-DemoHash $batchReceipt
+  } elseif ($row.status -eq 'Refused') {
+    foreach ($suffix in @('.cleaned.docx', '.cleaned.xlsx', '.receipt.json')) {
+      if (Test-Path -LiteralPath (Join-Path $batchOutput ($row.input + $suffix))) { throw 'Refused batch entry left a success file' }
+    }
+  }
+}
+$null = Invoke-DemoCli '05-existing-directory-rejected' @('batch', $batchInput, '-o', $batchOutput) 4
+foreach ($name in $batchProtected.Keys) {
+  if ((Get-DemoHash (Join-Path $batchOutput $name)) -ne $batchProtected[$name]) { throw 'Batch overwrote existing results' }
+}
+foreach ($name in $batchSourceHashes.Keys) {
+  if ((Get-DemoHash (Join-Path $batchInput $name)) -ne $batchSourceHashes[$name]) { throw 'Batch changed an input' }
+}
+$batchChinese = @('# 批处理演示汇总', '', '成功：2；拒绝：2；失败：0；跳过：1。整体退出码3，符合预期。', '', '前两份输入被拒绝后，后两份正常文件仍成功；成功文件及回执另行核验通过。', '复用已有输出目录时退出4，已有汇总、文档、回执及全部输入的摘要保持不变。', '', '| 输入 | 结果 | 输出或原因 |', '| --- | --- | --- |')
+foreach ($row in $batch.entries) {
+  $state = switch ($row.status) { 'Success' { '成功' }; 'Refused' { '拒绝' }; 'Failed' { '失败' }; 'Skipped' { '跳过' } }
+  $detail = switch ($row.input) {
+    '00-broken.docm' { 'ZIP不完整，无成功文件对' }
+    '01-unsupported.docx' { '文档结构超出当前支持范围，无成功文件对' }
+    '04-notes.txt' { '不是Office输入' }
+    default { $row.output }
+  }
+  $batchChinese += "| $($row.input) | $state | $detail |"
+}
+$batchChinese | Set-Content -LiteralPath (Join-Path $script:demoRun '批处理汇总.md') -Encoding utf8
+Write-Output '05-batch : 2 verified successes, 2 expected refusals, 1 skip; existing results protected'
+
 [ordered]@{
   schema = 'partsieve.acceptance-demo-result.v1'; tool = $demoManifest.tool
   source_revision = $demoManifest.source_revision; source_worktree_dirty = $demoManifest.source_worktree_dirty; source_kind = $demoManifest.source_kind
   result = 'Pass'; commands = $script:demoCommands
-  checks = @('spreadsheet rebuild and verify', 'three-OLE saved-plan rebuild and verify', 'tampered ordinary text rejected', 'unsupported input refused without output pair')
+  checks = @('spreadsheet rebuild and verify', 'three-OLE saved-plan rebuild and verify', 'tampered ordinary text rejected', 'unsupported input refused without output pair', 'mixed directory continues after refusals; actual pairs verified; existing results protected')
+  batch = [ordered]@{ success = 2; refused = 2; failed = 0; skipped = 1; expected_exit = 3; summary = '05-batch-output/batch.json'; chinese_summary = '批处理汇总.md' }
   independent_validation = 'NotChecked by this runner'; wps_validation = 'NotChecked'
 } | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $script:demoRun 'demo-result.json') -Encoding utf8
 @"
@@ -164,8 +222,9 @@ Write-Output '04-unsupported : expected refusal with no successful files Pass (e
 - Word三个独立OLE移除、保存计划执行及实际文件核验：通过；输出 02-word.docx。
 - 普通正文被篡改：按预期拒绝，退出码2；03-tampered.docx仅作拒绝演示。
 - 不支持输入：按预期拒绝，退出码3；没有生成成功文件对。
+- 目录批处理：2份成功、2份按预期拒绝、1份跳过；成功文件及回执另行核验，已有目录拒绝覆盖；详见批处理汇总.md。
 - 完整命令、报告、摘要与错误输出保存在本目录。哈希绑定文件，不提供真实性签名。
-- 本运行器没有执行独立格式或WPS检查；多对象WPS验证仍待补齐。OLE内容及专属预览已删除。
+- 本运行器没有执行独立格式或WPS检查；历史客户端观察见演示说明，不能替代本次验证。OLE内容及专属预览已删除。
 - 再次运行演示包中的 run-demo.ps1 会新建 runs 子目录，不覆盖本次产物。
 "@ | Set-Content -LiteralPath (Join-Path $script:demoRun '结果摘要.md') -Encoding utf8
 Write-Output "Demo bundle: $demoBundle"

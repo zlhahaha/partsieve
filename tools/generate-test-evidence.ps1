@@ -1,6 +1,15 @@
-param([string]$EvidenceRoot='docs/evidence',[string]$BusinessRoot='tests/generated/business-v3')
+param([string]$EvidenceRoot='', [string]$BusinessRoot='')
 $ErrorActionPreference = 'Stop'
 $taskRoot = Split-Path -Parent $PSScriptRoot
+$taskFresh = 'tests/generated/evidence-' + [guid]::NewGuid().ToString('N')
+if (-not $EvidenceRoot) { $EvidenceRoot = $taskFresh + '/evidence' }
+if (-not $BusinessRoot) { $BusinessRoot = $taskFresh + '/business' }
+foreach ($taskDestination in @($EvidenceRoot, $BusinessRoot)) {
+  if (Test-Path -LiteralPath (Join-Path $taskRoot $taskDestination)) {
+    throw "Choose a new evidence directory; existing results are never reused: $taskDestination"
+  }
+}
+Write-Output "Evidence: $EvidenceRoot; business: $BusinessRoot"
 $taskCli = Join-Path $taskRoot '_build/native/debug/build/cmd/main/main'
 if (Test-Path -LiteralPath ($taskCli + '.exe')) { $taskCli += '.exe' }
 $taskCases = @(

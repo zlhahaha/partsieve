@@ -59,6 +59,10 @@ jobs:
             tests/generated/resources-v7_1.json
             tests/generated/robustness-v1.json
             tests/generated/batch-v1.json
+            tests/generated/check-runs/*/run.json
+            tests/generated/check-runs/*/batch-v1.json
+            tests/generated/check-runs/*/robustness-v1.json
+            tests/generated/check-runs/*/demo/runs/*/批处理汇总.md
             tests/generated/acceptance-demo/**/demo-result.json
             tests/generated/acceptance-demo/**/*.stdout.json
             tests/generated/acceptance-demo/**/结果摘要.md
@@ -98,6 +102,9 @@ jobs:
           path: |
             tests/generated/robustness-v1.json
             tests/generated/batch-v1.json
+            tests/generated/check-runs/*/run.json
+            tests/generated/check-runs/*/batch-v1.json
+            tests/generated/check-runs/*/robustness-v1.json
 
   independent:
     name: Independent ZIP and Open XML SDK

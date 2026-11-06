@@ -57,8 +57,13 @@ moon run cmd/main --target native -- verify document.docx --original tests/fixtu
 
 ```powershell
 .\tools\check.ps1
-python tests/independent_business.py
+# Replace RUN with the directory printed by the check script:
+python tests/independent_business.py tests/generated/check-runs/RUN/business --next tests/generated/check-runs/RUN/next
 ```
+
+GitHub主分支的检查脚本每次新建`tests/generated/check-runs/时间-随机ID/`，其中`run.json`记录Running/Pass/Fail，`business/`、`evidence/`、`next/`及`demo/`只保存本次结果；旧目录不会被清理、复用或修改权限。单独运行`generate-test-evidence.ps1`也默认新建目录，显式指定已有目录会拒绝。CI在干净检出中从成功的本次目录导出固定名称供独立校验使用。已发布0.8.0包内仍为原检查/四步演示脚本，以上改进待下一版同步。
+
+已安装全部固定依赖时可用`./tools/check.ps1 -Offline`跳过索引更新/依赖安装；依赖来源摘要、工具链、构建及完整测试仍检查，依赖缺失或不匹配时失败。默认联网流程与CI保持一致。
 
 57 个 MoonBit 测试包含 293 次历史命令调用回归，以及宿主/URL/单元格边界检查；另有十个链接/OLE组合、46个拒绝案例及URL/回执篡改检查。公开仓库仅保留三个 Python 独立校验脚本，使用它们时另装 jsonschema 4.23.0。Windows/MSVC 与 Linux Native 在 CI 执行同一套回归。CI将本次实际生成的输出交给独立ZIP/XML与Open XML SDK检查，报告保存为Actions artifacts。WPS本地验证三份表格与两份Word输出的读取、编辑、另存和重开；Word保存副本仍有三处WPS生成的styles顺序错误，不能视为格式通过。原始输出与客户端保存副本分开记录。
 

@@ -1,4 +1,9 @@
 ///|
+fn output_root() -> String {
+  @env.get_env_var("PARTSIEVE_TEST_OUTPUT").unwrap_or("tests/generated")
+}
+
+///|
 // Bounded deterministic mutations, not an exhaustive fuzzer or a safety proof.
 priv struct Run {
   directory : String
@@ -12,7 +17,7 @@ priv struct Run {
 ///|
 fn Run::save(self : Run, status : String) -> Unit raise {
   @fs.write_string_to_file(
-    "tests/generated/robustness-v1.json",
+    output_root() + "/robustness-v1.json",
     (
       {
         "schema": "partsieve.robustness.v1",
@@ -256,11 +261,18 @@ fn changed_byte(input : Bytes, position : Int, value : Byte) -> Bytes {
 ///|
 fn main raise {
   if !@host.exists("tests/generated") {
-    @fs.create_dir("tests/generated")
+    @host.create_directory("tests/generated")
   }
+  if @env.get_env_var("PARTSIEVE_TEST_OUTPUT") is None {
+    @env.set_env_var(
+      "PARTSIEVE_TEST_OUTPUT",
+      @host.temp_dir(parent="tests/generated"),
+    )
+  }
+  println("Regression output: " + output_root())
   let stem = "_build/native/debug/build/cmd/main/main"
   let run : Run = {
-    directory: @host.temp_dir(parent="tests/generated"),
+    directory: @host.temp_dir(parent=output_root()),
     executable: @host.absolute(
       if @host.exists(stem + ".exe") {
         stem + ".exe"

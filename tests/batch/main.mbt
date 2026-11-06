@@ -1,4 +1,9 @@
 ///|
+fn output_root() -> String {
+  @env.get_env_var("PARTSIEVE_TEST_OUTPUT").unwrap_or("tests/generated")
+}
+
+///|
 #borrow(source, target)
 extern "C" fn fixture_ffi(source : Bytes, target : Bytes, kind : Int) -> Int = "ps_batch_fixture"
 
@@ -20,7 +25,7 @@ fn field(json : Json, key : String) -> Json raise {
 ///|
 fn Run::save(self : Run, result : String) -> Unit raise {
   @fs.write_string_to_file(
-    "tests/generated/batch-v1.json",
+    output_root() + "/batch-v1.json",
     (
       {
         "schema": "partsieve.batch-regression.v1",
@@ -121,9 +126,16 @@ fn main raise {
   if !@host.exists("tests/generated") {
     @host.create_directory("tests/generated")
   }
+  if @env.get_env_var("PARTSIEVE_TEST_OUTPUT") is None {
+    @env.set_env_var(
+      "PARTSIEVE_TEST_OUTPUT",
+      @host.temp_dir(parent="tests/generated"),
+    )
+  }
+  println("Regression output: " + output_root())
   let stem = "_build/native/debug/build/cmd/main/main"
   let run : Run = {
-    root: @host.temp_dir(parent="tests/generated"),
+    root: @host.temp_dir(parent=output_root()),
     exe: @host.absolute(
       if @host.exists(stem + ".exe") {
         stem + ".exe"

@@ -1,3 +1,4 @@
+param([string]$OutputPath = '')
 $ErrorActionPreference = 'Stop'
 Set-Location -LiteralPath "$PSScriptRoot/.."
 moon build --release --target native --deny-warn
@@ -53,5 +54,7 @@ $taskEvidence = [ordered]@{
   observation = 'Whole child process: fixture construction plus successful rebuild and negative checks. Timings and peak working set are observations, not portable performance thresholds or measured cancellation latency. A null or zero peak means unavailable.'
   cases = $taskReports
 }
-if (-not (Test-Path -LiteralPath tests/generated)) { New-Item -ItemType Directory tests/generated | Out-Null }
-$taskEvidence | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath tests/generated/resources-v7_1.json -Encoding utf8
+if (-not $OutputPath) { $OutputPath = 'tests/generated/resources-' + [guid]::NewGuid().ToString('N') + '.json' }
+if (Test-Path -LiteralPath $OutputPath) { throw 'Resource evidence already exists' }
+[IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName([IO.Path]::GetFullPath($OutputPath))) | Out-Null
+$taskEvidence | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $OutputPath -Encoding utf8

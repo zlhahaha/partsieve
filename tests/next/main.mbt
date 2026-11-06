@@ -1,4 +1,9 @@
 ///|
+fn output_root() -> String {
+  @env.get_env_var("PARTSIEVE_TEST_OUTPUT").unwrap_or("tests/generated")
+}
+
+///|
 fn fixture(name : String) -> @zip.Archive raise {
   let data = @host.read_bounded("tests/fixtures/" + name, 33554432)
   @zip.read(data[:])
@@ -326,7 +331,7 @@ fn accepted(
   for entry in actual.entries() {
     assert_eq(entry.data().to_owned(), bytes(repeated, entry.name()))
   }
-  let dir = "tests/generated/next-v7_1/"
+  let dir = output_root() + "/next/"
   let legacy = @sieve.verify(rebuilt.bytes, input)
   @fs.write_string_to_file(
     dir + name + ".legacy.receipt.json",
@@ -410,7 +415,7 @@ fn rejected(name : String, archive : @zip.Archive) -> Unit raise {
     _ => true
   }
   assert_true(refused, msg=name)
-  let source = "tests/generated/next-v7_1/" + name + ".bad.docm"
+  let source = output_root() + "/next/" + name + ".bad.docm"
   let output = source + ".docx"
   let receipt = source + ".receipt.json"
   @fs.write_bytes_to_file(source, input)
@@ -449,7 +454,18 @@ fn multiple_objects(count : Int, clean? : Bool = false) -> @zip.Archive raise {
 
 ///|
 fn main raise {
-  for dir in ["tests/generated", "tests/generated/next-v7_1"] {
+  if !@host.exists("tests/generated") {
+    @host.create_directory("tests/generated")
+  }
+  if @env.get_env_var("PARTSIEVE_TEST_OUTPUT") is None {
+    @env.set_env_var(
+      "PARTSIEVE_TEST_OUTPUT",
+      @host.temp_dir(parent="tests/generated"),
+    )
+  }
+  println("Regression output: " + output_root())
+
+  for dir in [output_root() + "/next"] {
     if !@host.exists(dir) {
       @fs.create_dir(dir)
     }
@@ -640,10 +656,11 @@ fn main raise {
   edit(two, "word/document.xml", "</w:p>", "<w:r>" + object + "</w:r></w:p>")
   rejected("ole-reused-object-identities", two)
   let original = @host.read_bounded(
-    "tests/generated/next-v7_1/word-links.input.docm", 33554432,
+    output_root() + "/next/word-links.input.docm",
+    33554432,
   )
   let changed = @zip.read(
-    @host.read_bounded("tests/generated/next-v7_1/word-links.docx", 33554432)[:],
+    @host.read_bounded(output_root() + "/next/word-links.docx", 33554432)[:],
   )
   edit(
     changed, "word/_rels/document.xml.rels", "https://example.invalid/docs?q=1&amp;lang=zh#section",
@@ -658,26 +675,34 @@ fn main raise {
       _ => true
     },
   )
-  @fs.write_bytes_to_file(
-    "tests/generated/next-v7_1/tampered-link.docx", tampered,
-  )
+  @fs.write_bytes_to_file(output_root() + "/next/tampered-link.docx", tampered)
   let check = @host.run(cli_binary(), [
-    "verify", "tests/generated/next-v7_1/tampered-link.docx", "--original", "tests/generated/next-v7_1/word-links.input.docm",
-    "--receipt-format", "v2",
+    "verify",
+    output_root() + "/next/tampered-link.docx",
+    "--original",
+    output_root() + "/next/word-links.input.docm",
+    "--receipt-format",
+    "v2",
   ])
   assert_eq(check.code, 2)
   let report = @utf8.decode(
     @host.read_bounded(
-      "tests/generated/next-v7_1/word-links.receipt.json", 16777216,
+      output_root() + "/next/word-links.receipt.json",
+      16777216,
     )[:],
   )
   @fs.write_string_to_file(
-    "tests/generated/next-v7_1/forged.receipt.json",
+    output_root() + "/next/forged.receipt.json",
     report.replace(old="HTTPHyperlink", new="VBA"),
   )
   let forged = @host.run(cli_binary(), [
-    "verify", "tests/generated/next-v7_1/word-links.docx", "--original", "tests/generated/next-v7_1/word-links.input.docm",
-    "--receipt", "tests/generated/next-v7_1/forged.receipt.json", "--receipt-format",
+    "verify",
+    output_root() + "/next/word-links.docx",
+    "--original",
+    output_root() + "/next/word-links.input.docm",
+    "--receipt",
+    output_root() + "/next/forged.receipt.json",
+    "--receipt-format",
     "v2",
   ])
   assert_eq(forged.code, 2)

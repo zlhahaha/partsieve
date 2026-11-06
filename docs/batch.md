@@ -41,4 +41,4 @@ moon build --target native --deny-warn
 moon run tests/batch --target native --deny-warn
 ```
 
-程序从公开固定样本创建临时混合目录，通过真实CLI验证失败后继续、四种扩展名、中文/空格、同名不同扩展、各级退出码、目录/已有文件保护和1024项边界。成功输出分别重新执行SDK原件核验及CLI回执核验，汇总与实际磁盘JSON比较。Windows无法创建符号链接时明确记录UnavailableOnHost；Linux须实际覆盖符号链接、根链接与FIFO。CI保存`tests/generated/batch-v1.json`，只有全部断言通过才写Pass；测试目录不随Mooncakes发布。
+程序从公开固定样本创建临时混合目录，通过真实CLI验证失败后继续、四种扩展名、中文/空格、同名不同扩展、各级退出码、目录/已有文件保护和1024项边界。成功输出分别重新执行SDK原件核验及CLI回执核验，汇总与实际磁盘JSON比较。Windows无法创建符号链接时明确记录UnavailableOnHost；Linux须实际覆盖符号链接、根链接与FIFO。GitHub主分支独立运行会打印新的结果目录，其中包含`batch-v1.json`；完整检查使用本次check-runs目录，CI再导出固定artifact名称。只有全部断言通过才写Pass；测试目录不随Mooncakes发布。

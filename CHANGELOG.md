@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Give each local verification run its own evidence directory and Running/Pass/Fail manifest. Isolate link/OLE, robustness, batch, resource and example evidence; retain stable CI artifact paths by exporting only a completed run in a clean CI checkout. Refuse explicit reuse of evidence directories.
+- Extend the portable acceptance demonstration with a mixed directory: two verified successes after two expected refusals, a skipped text file, unchanged inputs and existing-output protection. Include a Chinese batch summary and real CLI receipt verification.
+
 ## 0.8.0-spike（2026-10-31）
 
 - Add the Native `batch INPUT_DIR -o NEW_OUTPUT_DIR` command: bounded top-level discovery, deterministic filename order, independent document/receipt verification, per-file success/refusal/failure/skip records and a persisted JSON summary. Continue after individual failures and refuse existing output directories.
