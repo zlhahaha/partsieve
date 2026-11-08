@@ -10,13 +10,19 @@ pub fn assess(Bytes, limits? : Limits, control? : WorkControl) -> Assessment
 
 pub fn audit(Bytes, limits? : Limits, control? : WorkControl) -> Audit raise
 
+pub fn clean_document(Bytes, limits? : Limits, control? : WorkControl) -> Result[VerifiedRebuilt, SdkFailure]
+
 pub fn digest(BytesView) -> String
+
+pub fn execute_document_plan(Bytes, Json, limits? : Limits, control? : WorkControl) -> Result[VerifiedRebuilt, SdkFailure]
 
 pub fn inspect_graph(Bytes, limits? : Limits, control? : WorkControl) -> PackageGraph raise
 
 pub fn plan(Bytes, limits? : Limits, control? : WorkControl) -> RewritePlan raise
 
 pub fn prepare(Bytes, limits? : Limits, control? : WorkControl) -> PreparedPlan raise
+
+pub fn prepare_document(Bytes, limits? : Limits, control? : WorkControl) -> Result[PreparedPlan, SdkFailure]
 
 pub fn rebuild(Bytes, limits? : Limits, control? : WorkControl) -> Rebuilt raise
 
@@ -31,6 +37,8 @@ pub fn resolve_target(String, String) -> String raise
 pub fn verify(Bytes, Bytes, limits? : Limits, control? : WorkControl) -> Receipt raise
 
 pub fn verify_contract(Bytes, Bytes, limits? : Limits, control? : WorkControl) -> VerifiedReceipt raise
+
+pub fn verify_document(Bytes, Bytes, limits? : Limits, control? : WorkControl) -> Result[VerifiedReceipt, SdkFailure]
 
 // Errors
 pub(all) suberror SieveError {
@@ -197,6 +205,24 @@ pub fn Disposition::equal(Self, Self) -> Bool
 pub fn Disposition::not_equal(Self, Self) -> Bool
 pub fn Disposition::to_json(Self) -> Json
 pub fn Disposition::to_repr(Self) -> @debug.Repr
+
+pub(all) enum FailureCode {
+  InvalidConfiguration
+  UnsupportedDocument
+  ProcessingIncomplete
+  IntegrityFailure
+  InputLimitExceeded
+  OutputLimitExceeded
+  Cancelled
+  WorkBudgetExceeded
+  InternalFailure
+} derive(Eq, @debug.Debug)
+pub fn FailureCode::equal(Self, Self) -> Bool
+pub fn FailureCode::label(Self) -> String
+pub fn FailureCode::not_equal(Self, Self) -> Bool
+pub fn FailureCode::to_json(Self) -> Json
+pub fn FailureCode::to_repr(Self) -> @debug.Repr
+pub impl ToJson for FailureCode
 
 pub(all) struct Finding {
   rule : String
@@ -459,6 +485,28 @@ pub fn RuleCoverage::not_equal(Self, Self) -> Bool
 pub fn RuleCoverage::to_json(Self) -> Json
 pub fn RuleCoverage::to_repr(Self) -> @debug.Repr
 
+pub(all) struct SdkFailure {
+  code : FailureCode
+  operation : SdkOperation
+  message : String
+} derive(Eq, ToJson, @debug.Debug)
+pub fn SdkFailure::equal(Self, Self) -> Bool
+pub fn SdkFailure::not_equal(Self, Self) -> Bool
+pub fn SdkFailure::to_json(Self) -> Json
+pub fn SdkFailure::to_repr(Self) -> @debug.Repr
+
+pub(all) enum SdkOperation {
+  CleanDocument
+  PrepareDocument
+  ExecuteDocumentPlan
+  VerifyDocument
+} derive(Eq, @debug.Debug)
+pub fn SdkOperation::equal(Self, Self) -> Bool
+pub fn SdkOperation::not_equal(Self, Self) -> Bool
+pub fn SdkOperation::to_json(Self) -> Json
+pub fn SdkOperation::to_repr(Self) -> @debug.Repr
+pub impl ToJson for SdkOperation
+
 pub(all) struct VerificationCheck {
   check_id : String
   state : CheckState
@@ -512,13 +560,23 @@ pub struct WorkControl {
   should_cancel : (String) -> Bool
   mut consumed : Int
   mut stopped : String?
+  mut stopped_kind : WorkStopKind?
 }
 pub fn WorkControl::cancel(Self) -> Unit
 pub fn WorkControl::default() -> Self
 pub fn WorkControl::new(work_units? : Int, should_cancel? : (String) -> Bool) -> Self raise
 pub fn WorkControl::remaining(Self) -> Int
+pub fn WorkControl::stop_kind(Self) -> WorkStopKind?
 pub fn WorkControl::stop_reason(Self) -> String?
 pub fn WorkControl::used(Self) -> Int
+
+pub(all) enum WorkStopKind {
+  CancelRequested
+  AllowanceExhausted
+} derive(Eq, @debug.Debug)
+pub fn WorkStopKind::equal(Self, Self) -> Bool
+pub fn WorkStopKind::not_equal(Self, Self) -> Bool
+pub fn WorkStopKind::to_repr(Self) -> @debug.Repr
 
 pub(all) struct XmlReference {
   source : String

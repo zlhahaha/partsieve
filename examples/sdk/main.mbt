@@ -2,17 +2,16 @@
 // Trusted test fixture only. Production hosts must limit file reads first.
 fn main raise {
   let input = @fs.read_file_to_bytes("tests/fixtures/upstream/macro01.xlsm")
-  let report = @sieve.audit(input)
-  let plan = @sieve.plan(input)
-  let rebuilt = @sieve.rebuild(input)
-  let rechecked = @sieve.verify(rebuilt.bytes, input)
-  let summary : Json = {
-    "input_format": report.format,
-    "findings": report.findings.length(),
-    "operations": plan.operations.length(),
-    "output_format": rechecked.output_format,
-    "preservation": rechecked.preservation,
-    "output_hash": rechecked.output_hash,
+  match @sieve.clean_document(input) {
+    Ok(rebuilt) =>
+      println(
+        (
+          {
+            "output_format": rebuilt.receipt.output_format,
+            "result": rebuilt.receipt.result.to_json(),
+            "output_hash": rebuilt.receipt.output_hash,
+          } : Json).stringify(),
+      )
+    Err(error) => println(error.to_json().stringify())
   }
-  println(summary.stringify())
 }

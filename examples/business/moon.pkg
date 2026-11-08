@@ -1,6 +1,6 @@
 import {
   "zlhahaha/partsieve" @sieve,
-  "moonbitlang/x/fs",
+  "zlhahaha/partsieve/native_host" @host,
 }
 
 pkgtype(kind: "executable")

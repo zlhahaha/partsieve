@@ -70,6 +70,8 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'SDK example failed' }
   moon run examples/business --target native
   if ($LASTEXITCODE -ne 0) { throw 'Business SDK example failed' }
+  moon run examples/workflows --target native --deny-warn
+  if ($LASTEXITCODE -ne 0) { throw 'Typed SDK workflow example failed' }
 
   moon run examples/resources --target native --deny-warn
   if ($LASTEXITCODE -ne 0) { throw "Resource SDK example failed" }

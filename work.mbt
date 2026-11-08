@@ -7,6 +7,25 @@ pub struct WorkControl {
   should_cancel : (String) -> Bool
   mut consumed : Int
   mut stopped : String?
+  mut stopped_kind : WorkStopKind?
+}
+
+///|
+/// Machine-readable, sticky cause; the human-readable stop_reason is unchanged.
+pub(all) enum WorkStopKind {
+  CancelRequested
+  AllowanceExhausted
+} derive(Eq, Debug)
+
+///|
+pub extend WorkStopKind with Eq::{equal, not_equal}
+
+///|
+pub extend WorkStopKind with Debug::{to_repr}
+
+///|
+pub fn WorkControl::stop_kind(self : WorkControl) -> WorkStopKind? {
+  self.stopped_kind
 }
 
 ///|
@@ -16,6 +35,7 @@ pub fn WorkControl::default() -> WorkControl {
     should_cancel: _ => false,
     consumed: 0,
     stopped: None,
+    stopped_kind: None,
   }
 }
 
@@ -29,13 +49,20 @@ pub fn WorkControl::new(
   guard work_units >= 0 && work_units <= 1000000000 else {
     raise Refused("work allowance must be between 0 and 1000000000")
   }
-  { allowance: work_units, should_cancel, consumed: 0, stopped: None, }
+  {
+    allowance: work_units,
+    should_cancel,
+    consumed: 0,
+    stopped: None,
+    stopped_kind: None,
+  }
 }
 
 ///|
 pub fn WorkControl::cancel(self : WorkControl) -> Unit {
   if self.stopped is None {
     self.stopped = Some("operation cancelled by caller")
+    self.stopped_kind = Some(CancelRequested)
   }
 }
 
@@ -67,6 +94,7 @@ fn WorkControl::poll(self : WorkControl, stage : String, units : Int) -> Bool {
   }
   if units < 0 || units > self.remaining() {
     self.stopped = Some("work allowance exhausted at " + stage)
+    self.stopped_kind = Some(AllowanceExhausted)
     return true
   }
   self.consumed += units
@@ -95,6 +123,7 @@ fn WorkControl::pairs(
   self.checkpoint(stage, 0)
   if left > 0 && right > self.remaining() / left {
     self.stopped = Some("work allowance exhausted at " + stage)
+    self.stopped_kind = Some(AllowanceExhausted)
     raise Incomplete(self.stopped.unwrap())
   }
   self.checkpoint(stage, left * right)

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add Result-based SDK intake, prepared-plan execution and actual-byte archive verification with typed failure codes and operation context. Classify explicit configuration/byte limits and typed cancellation/work-budget stops without parsing messages; preserve existing throwing APIs, document bytes and receipt schemas.
+- Simplify default SDK/business examples to one verified rebuild call; add a runnable three-workflow integration example. Expose sticky WorkControl stop kinds and cover success/work equivalence, configuration bounds, cancellation/budget exhaustion, forged plans and source/output tampering.
+
 - Give each local verification run its own evidence directory and Running/Pass/Fail manifest. Isolate link/OLE, robustness, batch, resource and example evidence; retain stable CI artifact paths by exporting only a completed run in a clean CI checkout. Refuse explicit reuse of evidence directories.
 - Extend the portable acceptance demonstration with a mixed directory: two verified successes after two expected refusals, a skipped text file, unchanged inputs and existing-output protection. Include a Chinese batch summary and real CLI receipt verification.
 
