@@ -43,3 +43,5 @@ tests/robustness/
 
 # CLI batch integration harness and OS fixture helpers are development-only.
 tests/batch/
+
+tests/authorization/

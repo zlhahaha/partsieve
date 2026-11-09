@@ -64,6 +64,8 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Deterministic robustness regression failed' }
   moon run tests/batch --target native --deny-warn
   if ($LASTEXITCODE -ne 0) { throw 'Batch directory regression failed' }
+  moon run tests/authorization --target native --deny-warn
+  if ($LASTEXITCODE -ne 0) { throw 'Content-loss authorization regression failed' }
   .\tools\check-resources.ps1 -OutputPath "$taskRun/resources.json"
   .\tools\generate-test-evidence.ps1 -EvidenceRoot "$taskRun/evidence" -BusinessRoot "$taskRun/business"
   moon run examples/sdk --target native
@@ -72,6 +74,8 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Business SDK example failed' }
   moon run examples/workflows --target native --deny-warn
   if ($LASTEXITCODE -ne 0) { throw 'Typed SDK workflow example failed' }
+  moon run examples/authorization --target native --deny-warn
+  if ($LASTEXITCODE -ne 0) { throw 'Content-loss authorization example failed' }
 
   moon run examples/resources --target native --deny-warn
   if ($LASTEXITCODE -ne 0) { throw "Resource SDK example failed" }

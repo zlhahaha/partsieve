@@ -11,6 +11,7 @@ pub(all) enum FailureCode {
   Cancelled
   WorkBudgetExceeded
   InternalFailure
+  AuthorizationDenied
 } derive(Eq, Debug)
 
 ///|
@@ -39,6 +40,7 @@ pub fn FailureCode::label(self : FailureCode) -> String {
     Cancelled => "cancelled"
     WorkBudgetExceeded => "work_budget_exceeded"
     InternalFailure => "internal_failure"
+    AuthorizationDenied => "authorization_denied"
   }
 }
 
@@ -48,6 +50,9 @@ pub(all) enum SdkOperation {
   PrepareDocument
   ExecuteDocumentPlan
   VerifyDocument
+  PreviewDocument
+  AuthorizeDocument
+  ExecuteAuthorizedDocument
 } derive(Eq, Debug)
 
 ///|
@@ -66,6 +71,9 @@ pub impl ToJson for SdkOperation with fn to_json(self) -> Json {
     PrepareDocument => "prepare_document"
     ExecuteDocumentPlan => "execute_document_plan"
     VerifyDocument => "verify_document"
+    PreviewDocument => "preview_document"
+    AuthorizeDocument => "authorize_document"
+    ExecuteAuthorizedDocument => "execute_authorized_document"
   }).to_json()
 }
 

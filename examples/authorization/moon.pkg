@@ -1,0 +1,6 @@
+import {
+  "zlhahaha/partsieve" @sieve,
+  "zlhahaha/partsieve/native_host" @host,
+}
+
+pkgtype(kind: "executable")

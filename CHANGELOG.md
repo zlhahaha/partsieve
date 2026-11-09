@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add opaque content-loss previews and source/plan-bound application authorizations. Require separate permissions for VBA, OLE with private previews, remote-template removal and macro-container conversion; reject the entire plan when any required change is disallowed.
+- Recompute the actual plan/losses and recheck permissions before execution, then verify output and final byte bindings. Return a separate unsigned authorization record without changing existing receipts or unrestricted APIs. Add real Word/Excel permission regressions and independent validation of the actual authorized output in CI.
+
 - Add Result-based SDK intake, prepared-plan execution and actual-byte archive verification with typed failure codes and operation context. Classify explicit configuration/byte limits and typed cancellation/work-budget stops without parsing messages; preserve existing throwing APIs, document bytes and receipt schemas.
 - Simplify default SDK/business examples to one verified rebuild call; add a runnable three-workflow integration example. Expose sticky WorkControl stop kinds and cover success/work equivalence, configuration bounds, cancellation/budget exhaustion, forged plans and source/output tampering.
 

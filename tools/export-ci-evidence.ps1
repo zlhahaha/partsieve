@@ -6,6 +6,7 @@ foreach ($taskMapping in @(
   @('evidence', 'docs/evidence'),
   @('business', 'tests/generated/business-v3'),
   @('next', 'tests/generated/next-v7_1'),
+  @('authorization', 'tests/generated/authorization'),
   @('demo', 'tests/generated/acceptance-demo/ci-current')
 )) {
   if (Test-Path -LiteralPath $taskMapping[1]) { throw "CI export destination exists: $($taskMapping[1])" }

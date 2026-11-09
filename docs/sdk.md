@@ -9,6 +9,7 @@
 | 上传接收后立即清理 | `clean_document(input)` | `VerifiedRebuilt`，含实际输出bytes与独立重新计算的receipt |
 | 先检查、由业务决定是否执行 | `prepare_document(input)` → `execute_document_plan(input, plan.to_json())` | 先返回原件绑定计划，执行时重新检查计划/源约束，并核验实际输出 |
 | 归档或交付前独立核验 | `verify_document(actual_output, original)` | 从真实文件bytes重新计算的`VerifiedReceipt` |
+| 需要限制可删除内容 | `preview_document` → `authorize_document` → `execute_authorized_document` | 结构化损失预览、原件/计划绑定的明确授权、已核验输出及单独授权记录 |
 
 所有新入口返回`Result[T, SdkFailure]`。通常直接使用一次清理入口，不必先调用assess/prepare，也不必为了取得已有回执再重复verify。清理内部沿用原有`rebuild_verified`的重建和实际输出核验，没有新增一次解析；需要在持久化或传输之后检查文件时，再调用归档核验入口。
 
@@ -52,6 +53,7 @@ moon run examples/workflows --target native --deny-warn
 | `Cancelled` / `cancelled` | WorkControl记录明确的调用方取消或取消回调停止 |
 | `WorkBudgetExceeded` / `work_budget_exceeded` | WorkControl记录工作量耗尽，包括成对扫描预留失败 |
 | `InternalFailure` / `internal_failure` | 非预期错误，单列为内部失败；不冒充不支持或安全通过 |
+| `AuthorizationDenied` / `authorization_denied` | 授权路径中，实际计划要求调用方没有允许的删除/格式转换；整个任务拒绝 |
 
 不会用英文关键词推断分类，也不会把所有解析失败判成“文档损坏”。UnsupportedDocument和ProcessingIncomplete目前保留宽分类；尚不提供每个XML元素/ZIP失败的细分代码或源码位置。错误operation是调用边界，不是深层解析阶段。
 
@@ -59,9 +61,11 @@ moon run examples/workflows --target native --deny-warn
 
 ## 计划、取消与兼容
 
-准备/执行之间可由应用等待自己的确认，再将**实际原件**和计划交给`execute_document_plan`。计划所有关键约束仍独立重算，修改input_hash或替换源bytes不能授权执行。此入口不会自动限制允许删除的内容类别；细粒度损失摘要与授权属于后续工作，当前必须阅读计划中的处理决定及限制。
+准备/执行之间可由应用等待自己的确认，再将**实际原件**和计划交给`execute_document_plan`。计划所有关键约束仍独立重算，修改input_hash或替换源bytes不能授权执行。此旧入口不会限制允许删除的类别；需要“只去宏但不能删除OLE”等约束时，使用[内容损失预览与授权](authorization.md)的完整授权路径，不能用不受限入口替代权限执行。
 
-所有新入口均接受可选`limits`与`control`；准备、执行、归档可共享同一个WorkControl，使工作量累计。`stop_kind()`返回`CancelRequested`或`AllowanceExhausted`，不依赖`stop_reason()`文本；首次停止原因保持不变。不要对同一个已停止控制器自动重试，也不要把Incomplete当成适合重试的临时错误。
+新SDK尚在GitHub主分支演进，本轮增加AuthorizationDenied及三个授权操作枚举值，业务对枚举作穷尽匹配时需覆盖新增项；已发布的旧抛错API/CLI/Receipt不变。
+
+清理、计划准备/执行、归档核验及损失预览接受可选`limits`与`control`；授权决定入口只接收预览与权限，授权执行锁定预览时的Limits并接受可选`control`。处理阶段可共享同一个WorkControl，使工作量累计。`stop_kind()`返回`CancelRequested`或`AllowanceExhausted`，不依赖`stop_reason()`文本；首次停止原因保持不变。不要对同一个已停止控制器自动重试，也不要把Incomplete当成适合重试的临时错误。
 
 现有`assess`继续用于能力检查；`prepare`、`rebuild_verified`、`rebuild_verified_with_plan`、`verify_contract`和SieveError三种构造保持可用。新SDK是加法接口，成功文件、回执与旧接口一致，CLI行为不变。SDK的格式/客户端独立验证仍为NotChecked，成功不代表任意Office文件安全或视觉保真。
 

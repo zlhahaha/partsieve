@@ -10,9 +10,13 @@ pub fn assess(Bytes, limits? : Limits, control? : WorkControl) -> Assessment
 
 pub fn audit(Bytes, limits? : Limits, control? : WorkControl) -> Audit raise
 
+pub fn authorize_document(DocumentPreview, RemovalPermissions) -> Result[DocumentAuthorization, SdkFailure]
+
 pub fn clean_document(Bytes, limits? : Limits, control? : WorkControl) -> Result[VerifiedRebuilt, SdkFailure]
 
 pub fn digest(BytesView) -> String
+
+pub fn execute_authorized_document(Bytes, DocumentAuthorization, control? : WorkControl) -> Result[AuthorizedRebuilt, SdkFailure]
 
 pub fn execute_document_plan(Bytes, Json, limits? : Limits, control? : WorkControl) -> Result[VerifiedRebuilt, SdkFailure]
 
@@ -23,6 +27,8 @@ pub fn plan(Bytes, limits? : Limits, control? : WorkControl) -> RewritePlan rais
 pub fn prepare(Bytes, limits? : Limits, control? : WorkControl) -> PreparedPlan raise
 
 pub fn prepare_document(Bytes, limits? : Limits, control? : WorkControl) -> Result[PreparedPlan, SdkFailure]
+
+pub fn preview_document(Bytes, limits? : Limits, control? : WorkControl) -> Result[DocumentPreview, SdkFailure]
 
 pub fn rebuild(Bytes, limits? : Limits, control? : WorkControl) -> Rebuilt raise
 
@@ -80,6 +86,25 @@ pub fn Audit::not_equal(Self, Self) -> Bool
 pub fn Audit::to_json(Self) -> Json
 pub fn Audit::to_repr(Self) -> @debug.Repr
 
+pub(all) struct AuthorizationRecord {
+  schema : String
+  input_hash : String
+  plan_hash : String
+  output_hash : String
+  permissions : RemovalPermissions
+  summary : ChangeSummary
+} derive(Eq, ToJson, @debug.Debug)
+pub fn AuthorizationRecord::equal(Self, Self) -> Bool
+pub fn AuthorizationRecord::not_equal(Self, Self) -> Bool
+pub fn AuthorizationRecord::to_json(Self) -> Json
+pub fn AuthorizationRecord::to_repr(Self) -> @debug.Repr
+
+pub(all) struct AuthorizedRebuilt {
+  bytes : Bytes
+  receipt : VerifiedReceipt
+  authorization : AuthorizationRecord
+}
+
 pub(all) enum Capability {
   Vba
   HttpHyperlink
@@ -119,6 +144,29 @@ pub fn Certainty::not_equal(Self, Self) -> Bool
 pub fn Certainty::to_json(Self) -> Json
 pub fn Certainty::to_repr(Self) -> @debug.Repr
 
+pub(all) enum ChangeKind {
+  VbaRemoval
+  OleRemoval
+  TemplateRemoval
+  MacroFormatConversion
+} derive(Eq, @debug.Debug)
+pub fn ChangeKind::equal(Self, Self) -> Bool
+pub fn ChangeKind::label(Self) -> String
+pub fn ChangeKind::not_equal(Self, Self) -> Bool
+pub fn ChangeKind::to_json(Self) -> Json
+pub fn ChangeKind::to_repr(Self) -> @debug.Repr
+pub impl ToJson for ChangeKind
+
+pub(all) struct ChangeSummary {
+  changes : Array[ContentChange]
+  removed_parts : Array[String]
+  rewritten_parts : Array[String]
+} derive(Eq, ToJson, @debug.Debug)
+pub fn ChangeSummary::equal(Self, Self) -> Bool
+pub fn ChangeSummary::not_equal(Self, Self) -> Bool
+pub fn ChangeSummary::to_json(Self) -> Json
+pub fn ChangeSummary::to_repr(Self) -> @debug.Repr
+
 pub(all) enum CheckState {
   Checked
   NotChecked
@@ -147,6 +195,17 @@ pub fn CheckedOperation::equal(Self, Self) -> Bool
 pub fn CheckedOperation::not_equal(Self, Self) -> Bool
 pub fn CheckedOperation::to_json(Self) -> Json
 pub fn CheckedOperation::to_repr(Self) -> @debug.Repr
+
+pub(all) struct ContentChange {
+  kind : ChangeKind
+  count : Int
+  removed_parts : Array[String]
+  effect : String
+} derive(Eq, ToJson, @debug.Debug)
+pub fn ContentChange::equal(Self, Self) -> Bool
+pub fn ContentChange::not_equal(Self, Self) -> Bool
+pub fn ContentChange::to_json(Self) -> Json
+pub fn ContentChange::to_repr(Self) -> @debug.Repr
 
 pub(all) struct ContentTypeIndex {
   content_type : String
@@ -206,6 +265,19 @@ pub fn Disposition::not_equal(Self, Self) -> Bool
 pub fn Disposition::to_json(Self) -> Json
 pub fn Disposition::to_repr(Self) -> @debug.Repr
 
+pub struct DocumentAuthorization {
+  // private fields
+}
+
+pub struct DocumentPreview {
+  // private fields
+}
+pub fn DocumentPreview::input_hash(Self) -> String
+pub fn DocumentPreview::plan_hash(Self) -> String
+pub fn DocumentPreview::plan_json(Self) -> Json
+pub fn DocumentPreview::summary(Self) -> ChangeSummary
+pub fn DocumentPreview::to_json(Self) -> Json
+
 pub(all) enum FailureCode {
   InvalidConfiguration
   UnsupportedDocument
@@ -216,6 +288,7 @@ pub(all) enum FailureCode {
   Cancelled
   WorkBudgetExceeded
   InternalFailure
+  AuthorizationDenied
 } derive(Eq, @debug.Debug)
 pub fn FailureCode::equal(Self, Self) -> Bool
 pub fn FailureCode::label(Self) -> String
@@ -449,6 +522,21 @@ pub fn Relationship::not_equal(Self, Self) -> Bool
 pub fn Relationship::to_json(Self) -> Json
 pub fn Relationship::to_repr(Self) -> @debug.Repr
 
+pub(all) struct RemovalPermissions {
+  remove_vba : Bool
+  remove_ole : Bool
+  remove_remote_template : Bool
+  convert_macro_format : Bool
+} derive(Eq, ToJson, @debug.Debug)
+pub fn RemovalPermissions::all_supported() -> Self
+pub fn RemovalPermissions::allows(Self, ChangeKind) -> Bool
+pub fn RemovalPermissions::deny_all() -> Self
+pub fn RemovalPermissions::equal(Self, Self) -> Bool
+pub fn RemovalPermissions::macros_only() -> Self
+pub fn RemovalPermissions::not_equal(Self, Self) -> Bool
+pub fn RemovalPermissions::to_json(Self) -> Json
+pub fn RemovalPermissions::to_repr(Self) -> @debug.Repr
+
 pub(all) enum ResultStatus {
   Pass
   Fail
@@ -500,6 +588,9 @@ pub(all) enum SdkOperation {
   PrepareDocument
   ExecuteDocumentPlan
   VerifyDocument
+  PreviewDocument
+  AuthorizeDocument
+  ExecuteAuthorizedDocument
 } derive(Eq, @debug.Debug)
 pub fn SdkOperation::equal(Self, Self) -> Bool
 pub fn SdkOperation::not_equal(Self, Self) -> Bool

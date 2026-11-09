@@ -27,6 +27,8 @@ moon add zlhahaha/partsieve@0.8.0-spike
 
 GitHub主分支新增[面向业务的SDK](docs/sdk.md)：默认`clean_document`一次返回已核验输出及回执；需要先审查再执行时使用`prepare_document`/`execute_document_plan`，归档核验用`verify_document`。新入口返回带稳定错误代码和操作类型的Result，业务无需解析英文提示；旧抛错接口保持兼容。该SDK待后续大版本统一发布，当前Mooncakes 0.8.0不包含。
 
+需要限制内容损失时，使用[预览与授权流程](docs/authorization.md)：`preview_document`列出VBA、OLE及其专属预览、外部模板和格式转换；调用方明确允许范围后，`execute_authorized_document`重新核对原件、计划及权限，超出范围整次拒绝。可运行`moon run examples/authorization --target native --deny-warn`查看仅去宏拒绝OLE删除、显式授权后交付及记录核验。
+
 ```powershell
 git clone https://github.com/zlhahaha/partsieve.git
 cd partsieve
@@ -67,7 +69,7 @@ GitHub主分支的检查脚本每次新建`tests/generated/check-runs/时间-随
 
 已安装全部固定依赖时可用`./tools/check.ps1 -Offline`跳过索引更新/依赖安装；依赖来源摘要、工具链、构建及完整测试仍检查，依赖缺失或不匹配时失败。默认联网流程与CI保持一致。
 
-GitHub主分支63个MoonBit测试包含293次历史命令调用回归、新增6组SDK结果/预算/错误及篡改边界检查，以及宿主/URL/单元格边界检查；另有十个链接/OLE组合、46个拒绝案例及URL/回执篡改检查。公开仓库仅保留三个Python独立校验脚本，使用它们时另装jsonschema 4.23.0。Windows/MSVC与Linux Native在CI执行同一套回归。CI将本次实际生成的输出交给独立ZIP/XML与Open XML SDK检查，报告保存为Actions artifacts。WPS本地验证三份表格与两份Word输出的读取、编辑、另存和重开；Word保存副本仍有三处WPS生成的styles顺序错误，不能视为格式通过。原始输出与客户端保存副本分开记录。
+GitHub主分支69个MoonBit测试包含293次历史命令调用回归、6组SDK结果/预算/错误及篡改边界检查、6组内容损失授权检查，以及宿主/URL/单元格边界检查；另有16项真实样本授权集成检查；另有十个链接/OLE组合、46个拒绝案例及URL/回执篡改检查。公开仓库仅保留三个Python独立校验脚本，使用它们时另装jsonschema 4.23.0。Windows/MSVC与Linux Native在CI执行同一套回归。CI将本次实际生成的输出交给独立ZIP/XML与Open XML SDK检查，报告保存为Actions artifacts。WPS本地验证三份表格与两份Word输出的读取、编辑、另存和重开；Word保存副本仍有三处WPS生成的styles顺序错误，不能视为格式通过。原始输出与客户端保存副本分开记录。
 
 [架构](docs/architecture.md)、[威胁模型](docs/threat-model.md)、[保留契约](docs/preservation-contract.md)、[报告格式](docs/receipt-v2.schema.json)。Schema只约束形状；完整核验需要真实原件和输出。申报书、交接、工作记录与截图仅在本地维护。
 

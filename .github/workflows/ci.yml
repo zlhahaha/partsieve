@@ -59,7 +59,9 @@ jobs:
             tests/generated/resources-v7_1.json
             tests/generated/robustness-v1.json
             tests/generated/batch-v1.json
+            tests/generated/authorization/*
             tests/generated/check-runs/*/run.json
+            tests/generated/check-runs/*/authorization/result.json
             tests/generated/check-runs/*/batch-v1.json
             tests/generated/check-runs/*/robustness-v1.json
             tests/generated/check-runs/*/demo/runs/*/批处理汇总.md
@@ -100,6 +102,8 @@ jobs:
         with:
           name: linux-robustness
           path: |
+            tests/generated/check-runs/*/authorization/result.json
+            tests/generated/authorization/result.json
             tests/generated/robustness-v1.json
             tests/generated/batch-v1.json
             tests/generated/check-runs/*/run.json
@@ -141,6 +145,8 @@ jobs:
       - name: Validate the link and OLE input/output corpus independently
         run: |
           dotnet run --no-restore --project tests/OpenXmlValidation -- tests/generated/next-v7_1/word-links.input.docm tests/generated/next-v7_1/word-links.docx tests/generated/next-v7_1/sheet-links.input.xlsm tests/generated/next-v7_1/sheet-links.xlsx tests/generated/next-v7_1/word-ole-png.input.docm tests/generated/next-v7_1/word-ole-png.docx tests/generated/next-v7_1/word-ole-emf.input.docm tests/generated/next-v7_1/word-ole-emf.docx tests/generated/next-v7_1/word-ole-clean.input.docx tests/generated/next-v7_1/word-ole-clean.docx tests/generated/next-v7_1/word-ole-only.input.docm tests/generated/next-v7_1/word-ole-only.docx tests/generated/next-v7_1/word-ole-multi2.input.docm tests/generated/next-v7_1/word-ole-multi2.docx tests/generated/next-v7_1/word-ole-multi3.input.docm tests/generated/next-v7_1/word-ole-multi3.docx tests/generated/next-v7_1/word-ole-multi32.input.docm tests/generated/next-v7_1/word-ole-multi32.docx tests/generated/next-v7_1/word-ole-multi-clean.input.docx tests/generated/next-v7_1/word-ole-multi-clean.docx > next-openxml-ci.json
+      - name: Validate actual authorization-gated output
+        run: dotnet run --no-restore --project tests/OpenXmlValidation -- tests/fixtures/business/demo-word-three-objects.docm tests/generated/authorization/delivered.docx > authorization-openxml-ci.json
       - name: Keep independent validation evidence
         uses: actions/upload-artifact@v4
         with:
@@ -153,3 +159,4 @@ jobs:
             business-independent-ci.json
             business-openxml-ci.json
             next-openxml-ci.json
+            authorization-openxml-ci.json
