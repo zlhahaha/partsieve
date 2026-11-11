@@ -14,7 +14,9 @@
     "report-1900.xlsm": "bbcb28f1d9c1a6895187b15ee0e2ff98df330d473120fad7dd3ad4b2a62317d6",
     "report-1904.xlsm": "5b3f882edfa41d8683ad6bc084e78339b33b50e963ede419c740a86e9e303bbd",
     "report-inline.xlsm": "762171d121c2085512799a7cdf6916149c3d849caf3c8656e0c6f0a61d0bb3d8",
-    "demo-word-three-objects.docm": "b0b637bdf228180a6f6c08cbb571021cecfeb059758a608fe6e8a631c45faad2"
+    "demo-word-three-objects.docm": "b0b637bdf228180a6f6c08cbb571021cecfeb059758a608fe6e8a631c45faad2",
+    "document-notes-lists.docm": "18315aca948d53183a094cf865649c24cbc10fa97f0d50b1b9d2c7f80d4e2a1e",
+    "document-fields.docx": "f1b59b6fdd68c57b0b9f104f569835189c9c8f3f420cc56cfcf4becad0736ff9"
   },
   "demonstration_derivative": {
     "file": "demo-word-three-objects.docm",
@@ -22,5 +24,21 @@
     "recipe": "tests/next/main.mbt: multiple_objects(3); author business document plus source-bound HTTP(S) links and three independently owned OLE payload/preview pairs; static composition only",
     "ole_sources": "../poi/provenance.json: EmbeddedWorksheet.xls, EmbeddedPreview.emf, EmbeddedObject.xml at fixed Apache POI revision; Apache-2.0 LICENSE/NOTICE retained",
     "note": "Existing VBA is unchanged and never executed; this is synthetic test/demo data, not third-party adoption"
+  },
+  "notes_numbering_derivative": {
+    "date": "2026-11-10",
+    "file": "document-notes-lists.docm",
+    "author_content_license": "Apache-2.0",
+    "generator": "CPython zipfile with literal OOXML, fixed ZIP timestamps; not an Office converter",
+    "contents": "Chinese/English paragraphs, two explicit numbering levels and start override, normal footnote/endnote and separator definitions, Heading1 style and inert document property vectors",
+    "macro_source": "../poi/SimpleMacro.docm; VBA copied verbatim; Apache-2.0 LICENSE/NOTICE retained; never executed",
+    "not_adoption": true
+  },
+  "unsupported_field_fixture": {
+    "file": "document-fields.docx",
+    "date": "2026-11-10",
+    "license": "Apache-2.0, PartSieve authors",
+    "generator": "Literal OOXML and fixed-timestamp CPython zipfile; no upstream document converter",
+    "purpose": "Valid DOCX containing an unsupported DATE field, replacing SampleDoc.docx as a refusal example after bibliography support makes that sample supported; no macro or external link"
   }
 }

@@ -15,6 +15,11 @@ __pycache__/
 # Workspace notes and validation archives are local; CI uploads run artifacts.
 HANDOFF.md
 plan.md
+local-records/
+docs/review-preservation.md
+docs/downstream-pilot.md
+docs/integrations/moonreader-pilot.patch
+tests/external/*-observed-*.json
 docs/evidence/
 docs/release.md
 docs/demand-evidence.md

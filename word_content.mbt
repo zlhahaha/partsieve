@@ -11,12 +11,29 @@ fn word_passive_element(node : Node, parent : String, root : String) -> Bool {
   if ns == word_ns {
     match name {
       "document" | "hdr" | "ftr" => node.depth == 0 && name == root
+      "footnotes" | "endnotes" => node.depth == 0 && name == root
+      "footnote" => root == "footnotes" && parent == "footnotes"
+      "endnote" => root == "endnotes" && parent == "endnotes"
       "body" => parent == "document"
-      "p" | "tbl" => ["body", "tc", "hdr", "ftr"].contains(parent)
+      "bookmarkStart" | "bookmarkEnd" | "proofErr" =>
+        root == "document" && parent == "p"
+      "p" | "tbl" =>
+        ["body", "tc", "hdr", "ftr", "footnote", "endnote"].contains(parent)
       "sectPr" => ["body", "pPr"].contains(parent) && root == "document"
       "r" => parent == "p" || parent == "hyperlink"
       "hyperlink" | "pPr" => parent == "p"
-      "t" | "rPr" | "br" | "cr" | "tab" | "drawing" => parent == "r"
+      "t" | "br" | "cr" | "drawing" | "lastRenderedPageBreak" | "ptab" =>
+        parent == "r"
+      "rPr" => parent == "r" || parent == "pPr"
+      "tab" => parent == "r" || parent == "tabs"
+      "footnoteReference" | "endnoteReference" =>
+        root == "document" && parent == "r"
+      "footnoteRef" => root == "footnotes" && parent == "r"
+      "endnoteRef" => root == "endnotes" && parent == "r"
+      "separator" | "continuationSeparator" =>
+        ["footnotes", "endnotes"].contains(root) && parent == "r"
+      "numPr" => parent == "pPr"
+      "ilvl" | "numId" => parent == "numPr"
       "b" | "i" | "u" | "sz" | "szCs" | "rFonts" | "lang" | "color" =>
         parent == "rPr"
       "spacing"
@@ -50,8 +67,10 @@ fn word_passive_element(node : Node, parent : String, root : String) -> Bool {
         parent == "tcPr"
       "shd" => ["tcPr", "tblPr", "pPr", "rPr"].contains(parent)
       "top" | "left" | "bottom" | "right" | "insideH" | "insideV" =>
-        ["tblBorders", "tcBorders", "tblCellMar", "tcMar"].contains(parent)
-      _ => false
+        ["tblBorders", "tcBorders", "tblCellMar", "tcMar", "pBdr"].contains(
+          parent,
+        )
+      _ => word_extra_layout_element(name, parent)
     }
   } else if ns == word_drawing_ns {
     match name {

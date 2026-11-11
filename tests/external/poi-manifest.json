@@ -1,0 +1,149 @@
+{
+  "schema": "partsieve.external-corpus.v1",
+  "upstream": "apache/poi",
+  "revision": "12c3688d130035f3dc2ca2a0f50d929456435a93",
+  "license": "Apache-2.0",
+  "description": "Third-party regression fixtures, not independent customer documents or downstream adoption. Selected by feature-oriented filenames before processing, not by successful outcomes.",
+  "cases": [
+    {
+      "name": "Bug66263-table.docx",
+      "category": "document",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/Bug66263-table.docx",
+      "bytes": 1970,
+      "sha256": "2d3aedaf149375071e54c10a898c1900b343fb22a7b2db9261a32b1452ed7737"
+    },
+    {
+      "name": "EmptyDocumentWithHeaderFooter.docx",
+      "category": "document",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/EmptyDocumentWithHeaderFooter.docx",
+      "bytes": 14549,
+      "sha256": "a6ac4223c9b7217426a54303ca52307f3c69cd8cd05b7e788e43fab449b7b45c"
+    },
+    {
+      "name": "HeaderFooterUnicode.docx",
+      "category": "document",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/HeaderFooterUnicode.docx",
+      "bytes": 15079,
+      "sha256": "ec439ac0643294e1e2961b381983304e044444f3a8f0dc465a98adf9ebee0e67"
+    },
+    {
+      "name": "Headers.docx",
+      "category": "document",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/Headers.docx",
+      "bytes": 13076,
+      "sha256": "bdf91038f9a5454355e6393b7b74fd819a4adc480b4a7011a86e878403952b5b"
+    },
+    {
+      "name": "SimpleHeadThreeColFoot.docx",
+      "category": "document",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/SimpleHeadThreeColFoot.docx",
+      "bytes": 13112,
+      "sha256": "c682ea30e50785784969ee00b4d6ed8da31e725a64e0251a4f21077f02f19d8e"
+    },
+    {
+      "name": "Styles.docx",
+      "category": "document",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/Styles.docx",
+      "bytes": 10905,
+      "sha256": "63f3fe4c3b4fbdc211eca8fa7fd31a799ff4438afbf4ca6e771b3aef107c732e"
+    },
+    {
+      "name": "TestTableCellAlign.docx",
+      "category": "document",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/TestTableCellAlign.docx",
+      "bytes": 11712,
+      "sha256": "2968d4a5d5de21dce1cbeae3235e545cdf4bfd7ae508fe0eed3a9b032773ce17"
+    },
+    {
+      "name": "TestTableColumns.docx",
+      "category": "document",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/TestTableColumns.docx",
+      "bytes": 12672,
+      "sha256": "3b1965a295c4a5c24573a6d5f2ded93f7de3e7a46ffe26b881456f1c4ddd6335"
+    },
+    {
+      "name": "VariousPictures.docx",
+      "category": "document",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/VariousPictures.docx",
+      "bytes": 103677,
+      "sha256": "c1eecbca7de9f99e21c677e1d5b045eaa1d5a442eff4c82f0cbe9af93726a070"
+    },
+    {
+      "name": "headerPic.docx",
+      "category": "document",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/headerPic.docx",
+      "bytes": 16206,
+      "sha256": "50d9b17f7575c8a91129fd8a3e6a70feec886480ab9f089e29a7f8ac7e5ed51a"
+    },
+    {
+      "name": "ComplexNumberedLists.docx",
+      "category": "document",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/ComplexNumberedLists.docx",
+      "bytes": 14458,
+      "sha256": "297a085a7d433af2eeee7661e8db21539452cb585096484774a1e9f5f258b0b6"
+    },
+    {
+      "name": "sample.docx",
+      "category": "document",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/sample.docx",
+      "bytes": 14860,
+      "sha256": "be4fc1bf778ad8183f714e09b9df40669de34e9ecbc3adecfc8953f00749036f"
+    },
+    {
+      "name": "Booleans.xlsx",
+      "category": "spreadsheet",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/spreadsheet/Booleans.xlsx",
+      "bytes": 8612,
+      "sha256": "5803ffe3c16185b195d81bb475ed8b63623a4a19060f69165d97150708ec59da"
+    },
+    {
+      "name": "DateFormatTests.xlsx",
+      "category": "spreadsheet",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/spreadsheet/DateFormatTests.xlsx",
+      "bytes": 12394,
+      "sha256": "16445dc0deba00671ee4315015a970d415ce9886da59c974532d946e99276c66"
+    },
+    {
+      "name": "InlineString.xlsx",
+      "category": "spreadsheet",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/spreadsheet/InlineString.xlsx",
+      "bytes": 8401,
+      "sha256": "c92383b48d5141248c7fb37e077b1aa02f716a995d57b779c357758b8afb5478"
+    },
+    {
+      "name": "InlineStrings.xlsx",
+      "category": "spreadsheet",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/spreadsheet/InlineStrings.xlsx",
+      "bytes": 7843,
+      "sha256": "bdfd54e82e7eec3a16bc12708dd2fbb8ebee12921215f6ed78fd32a84bfbfd74"
+    },
+    {
+      "name": "SimpleMultiCell.xlsx",
+      "category": "spreadsheet",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/spreadsheet/SimpleMultiCell.xlsx",
+      "bytes": 8123,
+      "sha256": "119b6e70c5bbca6ca3e46f981e0719c154d87203adb4b5b61210d726deab9f7a"
+    },
+    {
+      "name": "SimpleNormal.xlsx",
+      "category": "spreadsheet",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/spreadsheet/SimpleNormal.xlsx",
+      "bytes": 8871,
+      "sha256": "6b300c76d7b6ba32e45c40086f5c8cea4b269946f7786a73e0d6f08c3acfe1e4"
+    },
+    {
+      "name": "styles.xlsx",
+      "category": "spreadsheet",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/spreadsheet/styles.xlsx",
+      "bytes": 9309,
+      "sha256": "4b544c197c391a8eb1711e9c6a962fd6371a96815dded21aa2461d71e27a046c"
+    },
+    {
+      "name": "SimpleMacro.xlsm",
+      "category": "spreadsheet",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/spreadsheet/SimpleMacro.xlsm",
+      "bytes": 13796,
+      "sha256": "f76c986f4ebc25c2cc57c088b2511a1269f4bd61d6223a2ab58db351da348ba6"
+    }
+  ]
+}

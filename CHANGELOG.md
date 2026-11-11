@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Support all five pinned POI footnote, endnote and numbering documents. Preserve empty built-in APA metadata, scoped markup compatibility branches, Office 2013 document and theme metadata, numbering overrides, bookmarks and proofing ranges. Add independent validation and rejection tests for malicious variants.
+- Preserve bounded Word footnote/endnote definitions, separator settings, explicit multi-level numbering and level/start overrides. Bind note/numbering IDs to uniquely owned internal parts; reject dangling/duplicate IDs, mismatched markers/levels, ambiguous overrides and unsupported inheritance or active content.
+- Extend common Word paragraph/run styles, positional tabs, settings and typed document-property vectors. Add a provenance-pinned macro-bearing notes/list fixture, independent content assertions and Open XML validation in CI. The original 20-document POI baseline now supports 7 files and refuses 13.
+
+- Measure a pinned 20-document Apache POI corpus without selecting successful outcomes. Add an opt-in hash-checked compatibility runner and record support/refusal boundaries. Preserve worksheet phonetic display metadata and empty header/footer settings with exact attributes and font-index checks; unknown children and relationships still refuse.
+- Strengthen independent business preservation checks with explicit text, date-system, sheet/style, table/section and owner-local image assertions and actual receipt byte bindings.
+
 - Add opaque content-loss previews and source/plan-bound application authorizations. Require separate permissions for VBA, OLE with private previews, remote-template removal and macro-container conversion; reject the entire plan when any required change is disallowed.
 - Recompute the actual plan/losses and recheck permissions before execution, then verify output and final byte bindings. Return a separate unsigned authorization record without changing existing receipts or unrestricted APIs. Add real Word/Excel permission regressions and independent validation of the actual authorized output in CI.
 

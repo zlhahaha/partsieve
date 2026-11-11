@@ -8,7 +8,10 @@ let word_content_types : Array[String] = [
   "application/vnd.openxmlformats-officedocument.extended-properties+xml", "application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml", "image/png",
   "image/jpeg", ole_content_type, "application/vnd.ms-excel", "application/msword",
-  "image/x-emf",
+  "image/x-emf", "application/vnd.openxmlformats-officedocument.wordprocessingml.footnotes+xml",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.endnotes+xml",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml",
+  "application/xml", custom_properties_ct,
 ]
 
 ///|
@@ -24,6 +27,11 @@ let word_relationship_types : Array[String] = [
   office_rel + "footer",
   office_rel + "image",
   office_rel + "attachedTemplate",
+  office_rel + "footnotes",
+  office_rel + "endnotes",
+  office_rel + "numbering",
+  office_rel + "customXml",
+  office_rel + "customXmlProps",
   vba_rel,
   word_vba_data_rel,
   "http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties",
@@ -78,7 +86,16 @@ fn validate_word_profile(pkg : Package) -> Unit raise {
     )
   }
   validate_ole_source(pkg)
+  let bibliography = validate_word_bibliography(pkg)
   for r in report.relationships {
+    if [office_rel + "customXml", office_rel + "customXmlProps"].contains(
+        r.kind,
+      ) {
+      guard bibliography.contains(r.resolved) else {
+        raise Invalid("unowned bibliography relationship")
+      }
+      continue
+    }
     let previews = ole_relationships(pkg).filter(fn(o) {
       ole_preview(pkg, o) == r
     })
@@ -203,8 +220,12 @@ fn validate_word_profile(pkg : Package) -> Unit raise {
   }
   let removed = controlled_vba_parts(pkg)
   validate_word_references(pkg)
+  validate_word_structures(pkg)
   for part in report.parts {
     if part.name == "[Content_Types].xml" {
+      continue
+    }
+    if bibliography.contains(part.name) {
       continue
     }
     guard word_content_types.contains(part.content_type) else {
@@ -271,6 +292,12 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
     "settings"
   } else if part.content_type.contains(".fontTable+") {
     "fonts"
+  } else if part.content_type.contains(".footnotes+") {
+    "footnotes"
+  } else if part.content_type.contains(".endnotes+") {
+    "endnotes"
+  } else if part.content_type.contains(".numbering+") {
+    "numbering"
   } else {
     "webSettings"
   }
@@ -278,6 +305,7 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
     raise Refused("Word XML root/content type mismatch")
   }
   let parents : Array[String] = []
+  let modern = word_modern_catalog(part, nodes, pkg.control)
   let mask = if part.name == pkg.audit.main_part &&
     ole_relationships(pkg).length() > 0 {
     ole_catalog_mask(pkg.graph.ole_objects, part.name)
@@ -289,7 +317,7 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
       "word-profile-node",
       1 + node.element.attributes.length(),
     )
-    if mask.contains(ordinal) {
+    if mask.contains(ordinal) || modern.contains(ordinal) {
       continue
     }
     let ns = node.element.name.namespace_uri.unwrap_or("")
@@ -302,8 +330,12 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
     } else {
       ""
     }
-    let permitted = if ["document", "hdr", "ftr"].contains(root) {
+    let permitted = if ["document", "hdr", "ftr", "footnotes", "endnotes"].contains(
+        root,
+      ) {
       word_passive_element(node, parent, root)
+    } else if root == "numbering" {
+      word_numbering_element(node, parent)
     } else if root == "vbaSuppData" {
       ns == word_macro_ns &&
       (match name {
@@ -324,7 +356,7 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
         )
       } else if ns == word_office_ns {
         (
-          parent == "shapeDefaults" &&
+          ["shapeDefaults", "hdrShapeDefaults"].contains(parent) &&
           ["shapedefaults", "shapelayout"].contains(name)
         ) ||
         (name == "idmap" && parent == "shapelayout")
@@ -335,9 +367,14 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
           [
             "zoom", "proofState", "defaultTabStop", "characterSpacingControl", "compat",
             "rsids", "themeFontLang", "clrSchemeMapping", "shapeDefaults", "decimalSymbol",
-            "listSeparator", "attachedTemplate",
+            "listSeparator", "attachedTemplate", "hyphenationZone", "footnotePr",
+            "endnotePr", "removePersonalInformation", "removeDateAndTime", "doNotAutoCompressPictures",
+            "doNotDisplayPageBoundaries", "doNotIncludeSubdocsInStats", "hdrShapeDefaults",
           ].contains(name)
         ) ||
+        (parent == "footnotePr" && name == "footnote") ||
+        (parent == "endnotePr" && name == "endnote") ||
+        (parent == "compat" && name == "compatSetting") ||
         (parent == "rsids" && ["rsidRoot", "rsid"].contains(name))
       } else {
         false
@@ -358,21 +395,40 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
       ns == word_ns &&
       (
         (name == "webSettings" && node.depth == 0) ||
-        (name == "optimizeForBrowser" && parent == "webSettings")
+        (
+          ["optimizeForBrowser", "divs"].contains(name) &&
+          parent == "webSettings"
+        ) ||
+        (name == "div" && parent == "divs") ||
+        (
+          ["bodyDiv", "marLeft", "marRight", "marTop", "marBottom", "divBdr"].contains(
+            name,
+          ) &&
+          parent == "div"
+        ) ||
+        (
+          ["top", "left", "bottom", "right"].contains(name) &&
+          parent == "divBdr"
+        )
       )
     } else {
-      ns == word_ns &&
-      [
-        "styles", "docDefaults", "rPrDefault", "pPrDefault", "rPr", "pPr", "latentStyles",
-        "lsdException", "style", "name", "basedOn", "next", "link", "uiPriority",
-        "semiHidden", "unhideWhenUsed", "qFormat", "rsid", "rFonts", "lang", "sz",
-        "szCs", "spacing", "tblPr", "tblInd", "tblCellMar", "top", "left", "bottom",
-        "right", "b", "i", "u", "color", "jc", "ind", "keepNext", "keepLines", "widowControl",
-      ].contains(name)
+      (
+        ns == word_ns &&
+        [
+          "styles", "docDefaults", "rPrDefault", "pPrDefault", "rPr", "pPr", "latentStyles",
+          "lsdException", "style", "name", "basedOn", "next", "link", "uiPriority",
+          "semiHidden", "unhideWhenUsed", "qFormat", "rsid", "rFonts", "lang", "sz",
+          "szCs", "spacing", "tblPr", "tblInd", "tblCellMar", "top", "left", "bottom",
+          "right", "b", "i", "u", "color", "jc", "ind", "keepNext", "keepLines",
+          "widowControl",
+        ].contains(name)
+      ) ||
+      (ns == word_ns && word_extra_layout_element(name, parent))
     }
     guard permitted else {
       raise Refused("unsupported Word XML feature or placement: " + name)
     }
+    validate_word_structure_attributes(node, parent, root)
     if (
         ns == word_ns &&
         ["headerReference", "footerReference", "attachedTemplate", "hyperlink"].contains(
@@ -421,6 +477,9 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
     }
     parents.push(name)
     for a in node.element.attributes {
+      if word_modern_attribute(part, node, a) {
+        continue
+      }
       let ans = a.name.namespace_uri.unwrap_or("")
       if ans == office_rel[0:office_rel.length() - 1].to_owned() {
         validate_word_reference_attribute(pkg, part, node, a)
@@ -461,7 +520,16 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
           raise Refused("unsupported Word XML attribute namespace")
         }
         guard !["id", "embed", "link"].contains(a.name.local_name) ||
-          (ns == word_ns && root == "styles" && name == "link") else {
+          (
+            ns == word_ns &&
+            (
+              (root == "styles" && name == "link") ||
+              [
+                "footnote", "endnote", "footnoteReference", "endnoteReference", "bookmarkStart",
+                "bookmarkEnd", "div",
+              ].contains(name)
+            )
+          ) else {
           raise Refused("unsupported Word relationship attribute")
         }
         let permitted_attribute = if ns == word_macro_ns {
@@ -470,6 +538,9 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
           ["history", "tooltip", "tgtFrame"].contains(a.name.local_name)
         } else if ns == word_math_ns {
           a.name.local_name == "val"
+        } else if ns == word_ns &&
+          word_structure_attribute(name, a.name.local_name) {
+          true
         } else {
           word_attribute_names.contains(a.name.local_name)
         }

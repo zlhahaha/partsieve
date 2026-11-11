@@ -1,0 +1,44 @@
+{
+  "schema": "partsieve.external-corpus.v1",
+  "upstream": "apache/poi",
+  "revision": "12c3688d130035f3dc2ca2a0f50d929456435a93",
+  "license": "Apache-2.0",
+  "description": "Separate five-file feature-targeted notes/numbering supplement selected before processing; does not replace initial twenty-file baseline or represent customer documents.",
+  "cases": [
+    {
+      "name": "footnotes.docx",
+      "category": "document",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/footnotes.docx",
+      "bytes": 12823,
+      "sha256": "9070094b27ff5201477f4de4b2c027730c66cb889106a1609c5adeed207a59c1"
+    },
+    {
+      "name": "endnotes.docx",
+      "category": "document",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/endnotes.docx",
+      "bytes": 13553,
+      "sha256": "6e2e1b2dabb0ae6b9b26ddd613dca446ba0710ecc8b4008722abc4ed592934e3"
+    },
+    {
+      "name": "Numbering.docx",
+      "category": "document",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/Numbering.docx",
+      "bytes": 13808,
+      "sha256": "776a59dcf0e290f1988602e6305e2d9cb2e31f631dc4aa751593c23cddbaad4d"
+    },
+    {
+      "name": "NumberingWOverrides.docx",
+      "category": "document",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/NumberingWOverrides.docx",
+      "bytes": 15190,
+      "sha256": "3754dee43880ce4c9e962eca41ac78c353999888282c9ada528efbb826e2bee6"
+    },
+    {
+      "name": "NumberingWithOutOfOrderId.docx",
+      "category": "document",
+      "url": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/NumberingWithOutOfOrderId.docx",
+      "bytes": 12978,
+      "sha256": "fa2843a6297bb3e874f9c6dc8aac944704fba4d0d631b94627be7dbeaf12ed0f"
+    }
+  ]
+}

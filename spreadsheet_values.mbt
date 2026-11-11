@@ -29,6 +29,7 @@ fn validate_spreadsheet_values(pkg : Package) -> Unit raise {
   }
   let mut strings = 0
   let mut styles = 0
+  let mut fonts = 0
   let worksheets : Map[String, Bool] = Map([])
   for relation in pkg.audit.relationships {
     if relation.kind == office_rel + "worksheet" {
@@ -41,11 +42,17 @@ fn validate_spreadsheet_values(pkg : Package) -> Unit raise {
         .filter(fn(n) { n.depth == 1 && n.element.name.local_name == "si" })
         .length()
     } else if relation.kind == office_rel + "styles" {
+      let mut inside_fonts = false
       let mut inside = false
       for node in pkg.xml_nodes[relation.resolved] {
         pkg.control.checkpoint("spreadsheet-value", 1)
         if node.depth == 1 {
           inside = node.element.name.local_name == "cellXfs"
+          inside_fonts = node.element.name.local_name == "fonts"
+        } else if inside_fonts &&
+          node.depth == 2 &&
+          node.element.name.local_name == "font" {
+          fonts += 1
         } else if inside &&
           node.depth == 2 &&
           node.element.name.local_name == "xf" {
@@ -62,7 +69,9 @@ fn validate_spreadsheet_values(pkg : Package) -> Unit raise {
     for node in pkg.xml_nodes[relation.resolved] {
       pkg.control.checkpoint("spreadsheet-value", 1)
       let name = node.element.name.local_name
-      if name == "c" {
+      if name == "phoneticPr" {
+        ignore(checked_index(attr(node, "fontId"), fonts))
+      } else if name == "c" {
         cell_type = attr_opt(node, "t").unwrap_or("n")
         guard ["n", "s", "inlineStr", "b"].contains(cell_type) else {
           raise Refused("unsupported cell value type")
@@ -85,5 +94,51 @@ fn validate_spreadsheet_values(pkg : Package) -> Unit raise {
         raise Invalid("inline string/cell type mismatch")
       }
     }
+  }
+}
+
+///|
+// Passive worksheet metadata observed in the pinned POI SimpleMultiCell.xlsx.
+// Header/footer text, pictures and drawing relationships remain unsupported.
+fn validate_sheet_metadata(node : Node, parent : String) -> Unit raise {
+  let name = node.element.name.local_name
+  guard node.element.name.namespace_uri == Some(spreadsheet_ns) &&
+    ["phoneticPr", "headerFooter"].contains(name) &&
+    parent == "worksheet" &&
+    node.text_fragments.all(fn(t) { t.trim() == "" }) else {
+    raise Refused("unsupported worksheet metadata context")
+  }
+  for a in node.element.attributes {
+    guard a.name.namespace_uri is None else {
+      raise Refused("unsupported worksheet metadata attribute namespace")
+    }
+    let allowed = if name == "phoneticPr" {
+      match a.name.local_name {
+        "fontId" => {
+          ignore(checked_index(a.value, 2147483647))
+          true
+        }
+        "type" =>
+          ["halfwidthKatakana", "fullwidthKatakana", "Hiragana", "noConversion"].contains(
+            a.value,
+          )
+        "alignment" =>
+          ["noControl", "left", "center", "distributed"].contains(a.value)
+        _ => false
+      }
+    } else if name == "headerFooter" {
+      ["differentOddEven", "differentFirst", "scaleWithDoc", "alignWithMargins"].contains(
+        a.name.local_name,
+      ) &&
+      ["0", "1", "true", "false"].contains(a.value)
+    } else {
+      false
+    }
+    guard allowed else {
+      raise Refused("unsupported worksheet metadata attribute or value")
+    }
+  }
+  if name == "phoneticPr" {
+    ignore(attr(node, "fontId"))
   }
 }

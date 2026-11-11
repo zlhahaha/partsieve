@@ -114,7 +114,15 @@ fn build_graph(
         r.kind == office_rel + "sharedStrings" ||
         r.kind == office_rel + "settings" ||
         r.kind == office_rel + "fontTable" ||
-        r.kind == office_rel + "webSettings"
+        r.kind == office_rel + "webSettings" ||
+        (
+          [docx_ct, docm_ct].contains(parts[source_part].content_type) &&
+          [
+            office_rel + "footnotes",
+            office_rel + "endnotes",
+            office_rel + "numbering",
+          ].contains(r.kind)
+        )
       ) {
       Some(
         "main-document implicit relationship; retained indices are not garbage-collected",
@@ -125,6 +133,11 @@ fn build_graph(
       Some("Word VBA supporting metadata owned by its VBA project")
     } else {
       None
+    }
+    let implicit_semantics = if word_custom_relationship(r, parts, xml_nodes) {
+      Some("owned built-in bibliography metadata")
+    } else {
+      implicit_semantics
     }
     if implicit_semantics is Some(semantics) {
       implicit.push({ source: r.source, relationship_index: i, semantics, })
@@ -146,11 +159,20 @@ fn build_graph(
     ct_ns, rel_ns, spreadsheet_ns, drawing_ns, word_drawing_ns, picture_ns, word_ns,
     word_math_ns, word_office_ns, word_macro_ns, "http://schemas.openxmlformats.org/package/2006/metadata/core-properties",
     "http://purl.org/dc/elements/1.1/", "http://purl.org/dc/terms/", "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties",
-    "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes",
+    "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes", bibliography_ns,
+    custom_properties_ns,
   ]
+  let word_package = parts.any(fn(p) {
+    [docx_ct, docm_ct].contains(p.content_type)
+  })
   for part in parts {
     if xml_nodes.get(part.name) is Some(nodes) {
       let mut has_opaque_content = false
+      let modern = if word_package {
+        word_modern_catalog(part, nodes, control)
+      } else {
+        Map([])
+      }
       let mask = if parts.any(fn(p) {
           p.name == part.name && [docx_ct, docm_ct].contains(p.content_type)
         }) {
@@ -167,6 +189,7 @@ fn build_graph(
         let ns = node.element.name.namespace_uri.unwrap_or("")
         let local_name = node.element.name.local_name
         if !mask.contains(ordinal) &&
+          !modern.contains(ordinal) &&
           (
             ns == "http://schemas.openxmlformats.org/markup-compatibility/2006" ||
             ns == "urn:schemas-microsoft-com:vml" ||
@@ -187,11 +210,14 @@ fn build_graph(
             a.value == "edit"
           if !mask.contains(ordinal) &&
             !inert_shape_attribute &&
+            !modern.contains(ordinal) &&
+            !word_modern_attribute(part, node, a) &&
             attribute_ns != "" &&
             attribute_ns != relationship_ns &&
             attribute_ns != word_ns &&
             attribute_ns != word_math_ns &&
             attribute_ns != word_macro_ns &&
+            attribute_ns != custom_properties_ns &&
             attribute_ns != "http://www.w3.org/XML/1998/namespace" &&
             attribute_ns != "http://www.w3.org/2001/XMLSchema-instance" {
             has_opaque_content = true

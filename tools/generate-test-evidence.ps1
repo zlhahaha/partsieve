@@ -19,7 +19,13 @@ $taskCases = @(
   @('tests/fixtures/business/report-1904.xlsm','tests/generated/business-v3/report-1904.xlsx','v2',''),
   @('tests/fixtures/business/report-inline.xlsm','tests/generated/business-v3/report-inline.xlsx','v2',''),
   @('tests/fixtures/business/document-layout.docm','tests/generated/business-v3/document-layout.docx','v2',''),
-  @('tests/fixtures/business/document-template.docm','tests/generated/business-v3/document-template.docx','v2','')
+  @('tests/fixtures/business/document-template.docm','tests/generated/business-v3/document-template.docx','v2',''),
+  @('tests/fixtures/business/document-notes-lists.docm','tests/generated/business-v3/document-notes-lists.docx','v2',''),
+  @('tests/fixtures/poi/word-modern/footnotes.docx','docs/evidence/word-modern/footnotes.docx','v2',''),
+  @('tests/fixtures/poi/word-modern/endnotes.docx','docs/evidence/word-modern/endnotes.docx','v2',''),
+  @('tests/fixtures/poi/word-modern/Numbering.docx','docs/evidence/word-modern/Numbering.docx','v2',''),
+  @('tests/fixtures/poi/word-modern/NumberingWOverrides.docx','docs/evidence/word-modern/NumberingWOverrides.docx','v2',''),
+  @('tests/fixtures/poi/word-modern/NumberingWithOutOfOrderId.docx','docs/evidence/word-modern/NumberingWithOutOfOrderId.docx','v2','')
 )
 foreach ($taskCase in $taskCases) {
   $taskSource = Join-Path $taskRoot $taskCase[0]

@@ -62,6 +62,41 @@
       "license": "Apache-2.0; preserve full upstream LICENSE and NOTICE",
       "source": "https://github.com/apache/poi/blob/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/EmbeddedDocument.docx",
       "derivation": "Extracted embedded worksheet, EMF preview or object XML; standalone namespace declarations added to XML only. Original DOCX SHA256 3cb521da0faab3b8a9e7c5d155961b4f5506fb2ceda8e69e0790d03ee01767f2. No embedded content executed."
+    },
+    {
+      "path": "tests/fixtures/poi/word-modern/footnotes.docx",
+      "bytes": 12823,
+      "sha256": "9070094b27ff5201477f4de4b2c027730c66cb889106a1609c5adeed207a59c1",
+      "license": "Apache-2.0; preserve full upstream LICENSE and NOTICE",
+      "source": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/footnotes.docx"
+    },
+    {
+      "path": "tests/fixtures/poi/word-modern/endnotes.docx",
+      "bytes": 13553,
+      "sha256": "6e2e1b2dabb0ae6b9b26ddd613dca446ba0710ecc8b4008722abc4ed592934e3",
+      "license": "Apache-2.0; preserve full upstream LICENSE and NOTICE",
+      "source": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/endnotes.docx"
+    },
+    {
+      "path": "tests/fixtures/poi/word-modern/Numbering.docx",
+      "bytes": 13808,
+      "sha256": "776a59dcf0e290f1988602e6305e2d9cb2e31f631dc4aa751593c23cddbaad4d",
+      "license": "Apache-2.0; preserve full upstream LICENSE and NOTICE",
+      "source": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/Numbering.docx"
+    },
+    {
+      "path": "tests/fixtures/poi/word-modern/NumberingWOverrides.docx",
+      "bytes": 15190,
+      "sha256": "3754dee43880ce4c9e962eca41ac78c353999888282c9ada528efbb826e2bee6",
+      "license": "Apache-2.0; preserve full upstream LICENSE and NOTICE",
+      "source": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/NumberingWOverrides.docx"
+    },
+    {
+      "path": "tests/fixtures/poi/word-modern/NumberingWithOutOfOrderId.docx",
+      "bytes": 12978,
+      "sha256": "fa2843a6297bb3e874f9c6dc8aac944704fba4d0d631b94627be7dbeaf12ed0f",
+      "license": "Apache-2.0; preserve full upstream LICENSE and NOTICE",
+      "source": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/NumberingWithOutOfOrderId.docx"
     }
   ],
   "usage": "Real benign Word DOCM VBA handler fixture. Original is never opened in Office. Macro is only statically extracted, never executed."

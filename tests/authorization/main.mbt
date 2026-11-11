@@ -266,7 +266,7 @@ fn main raise {
   )
   run.record("passive-input-needs-no-removal-permissions")
   let invalid = @host.read_bounded(
-    "tests/fixtures/poi/SampleDoc.docx", 33554432,
+    "tests/fixtures/business/document-fields.docx", 33554432,
   )
   denied(
     @sieve.preview_document(invalid),

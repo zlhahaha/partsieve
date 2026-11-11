@@ -58,7 +58,7 @@ if (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'demo-inputs.json')) {
     $inputs = @(
       @('report.xlsm', (Join-Path $demoRepo 'tests/fixtures/business/report-1900.xlsm')),
       @('word-three-objects.docm', $multiSource),
-      @('unsupported.docx', (Join-Path $demoRepo 'tests/fixtures/poi/SampleDoc.docx'))
+      @('unsupported.docx', (Join-Path $demoRepo 'tests/fixtures/business/document-fields.docx'))
     )
     $inputRecords = @()
     foreach ($item in $inputs) {

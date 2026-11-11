@@ -8,7 +8,7 @@
 | Milky2018/xml | [0.5.0](https://mooncakes.io/docs/Milky2018/xml@0.5.0/) | Apache-2.0 | NamespaceReader / Writer；本项目在 parser 前做资源 preflight 与 DTD 拒绝 |
 | moonbitlang/x | [0.5.5](https://mooncakes.io/docs/moonbitlang/x@0.5.5/) | Apache-2.0 | SHA-256、私有 worker/可信 SDK 示例的 fs、进程退出 |
 | XlsxWriter | [固定 commit](https://github.com/jmcnamara/XlsxWriter/tree/5d4606d89a955226d2d0825a0f44309043ae7251) | BSD-2-Clause | 真实 Excel XLSM/XLSX 比较 fixture；没有使用 Python Office 逻辑实现 MoonBit 核心 |
-| Apache POI | [固定 commit](https://github.com/apache/poi/tree/12c3688d130035f3dc2ca2a0f50d929456435a93) | Apache-2.0 | 真实 SimpleMacro.docm、公开宏源与超出配置的 SampleDoc.docx；只复用测试数据，没有复用 Java 核心实现 |
+| Apache POI | [固定 commit](https://github.com/apache/poi/tree/12c3688d130035f3dc2ca2a0f50d929456435a93) | Apache-2.0 | SimpleMacro.docm、公开宏源、SampleDoc.docx 及五份脚注和编号测试文档 |
 | DocumentFormat.OpenXml | [Open XML SDK](https://github.com/dotnet/Open-XML-SDK), 3.3.0 | MIT | 仅独立测试校验，未进入 MoonBit 运行时 |
 | DocBleach | [固定 revision](https://github.com/docbleach/DocBleach/tree/a42309704108719dfb308783cd36ab363d185450) | MIT | 只参考 OOXML 功能划分和规则思路，无代码/fixture 复制或运行时调用；见 [功能对照](docbleach-comparison.md) |
 

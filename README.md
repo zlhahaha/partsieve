@@ -1,82 +1,78 @@
 # PartSieve
 
-MoonBit Office 文档清理与保留验证库。面向文档接收和报表交付，在已验证范围内移除 VBA 宏、Word 外部模板及受支持的嵌入 OLE 对象，输出可继续编辑的 DOCX/XLSX，并从实际输出重新检查引用和所有内部文件的处理结果。不执行宏，不访问外部资源。
+PartSieve 是 MoonBit 实现的 Office 文档清理与保留验证库。它面向外来文档接收和报表交付，在支持范围内移除 VBA、Word 外部模板和嵌入 OLE，并核验实际生成的可编辑 DOCX/XLSX。回执记录移除、重写和原样保留的部件。处理过程无需启动 Office、执行宏或访问外部资源。
 
-当前版本 **0.8.0-spike**，范围明确的实验版本，不承诺任意 Office 文件安全或视觉完全一致。参考 [DocBleach 的功能划分](docs/docbleach-comparison.md)，核心和命令行流程由 MoonBit 实现；小型 C 适配层只封装系统文件与进程接口。正常使用不需要 Python。
+## 版本与安装
 
-## 支持范围
-
-| 输入与内容 | 处理和保留 |
+| 使用方式 | 功能 |
 | --- | --- |
-| XLSX/XLSM：中文/英文文本、数字、布尔值、日期、多工作表、常用样式 | 共享/内联文本、1900/1904日期系统、工作表名称与顺序、字体/颜色/边框/对齐/数字格式及合并单元格保留；移除 VBA、转 XLSX |
-| DOCX/DOCM：段落、表格、合并单元格、内嵌 PNG/JPEG、分节页眉页脚 | 正常内容和图片原始数据保留；校验正文、页眉和页脚各自引用；移除 VBA、转 DOCX |
-| Word 设置中一个 HTTP(S) 外部模板 | 同步移除 attachedTemplate 元素和设置本地关系；核验其余设置语义，不下载模板 |
-| Word/Excel HTTP(S) 点击超链接 | 保留正文/页眉页脚或工作表中的链接、显示内容和目标；不访问地址；在 allowed_capabilities 中记录 |
-| Word 正文最多32个独立嵌入 OLE | 同步删除整个内嵌对象、专属预览图、CFB载荷和引用；其余正文、表格、图片和链接经复核保留 |
-| 公式、外部图片/工作簿、ActiveX、Excel OLE、链接型/共享/未知 OLE、签名、未知扩展 | 拒绝重建，返回原因，不生成成功文件对 |
+| Mooncakes 已发布的 `0.8.0-spike` | 下表所列的基础保留与清理、回执验证、目录批处理。SDK 提供 `assess`、`prepare`、`rebuild_verified`、`rebuild_verified_with_plan` 和 `verify_contract`。 |
+| 当前源码中的未发布功能 | `clean_document` 等返回结构化错误的 SDK 入口、内容损失预览与授权，以及 Word 脚注、尾注、多级编号和部分 Office 兼容扩展。见 [SDK](docs/sdk.md)、[授权流程](docs/authorization.md)和 [Word 结构支持](docs/word-structures.md)。 |
 
-OLE 支持最多32个正文内嵌对象，各自拥有独立载荷、关系和已建模的 VML 预览结构；共享载荷/预览或形状标识、嵌套对象及超额对象拒绝；专属 PNG/JPEG/EMF 预览随对象删除，不保留可点击对象或递归清理其内容。独立 VML、浮动图片、SVG、复杂绘图、字段和其他未知布局仍拒绝。点击链接仅允许 ASCII DNS/IPv4 主机及可选有效端口，其他协议、凭据式地址、IPv6 与内部书签暂拒绝。日期按原有值及格式保留，不提供公式计算或渲染引擎。详见 [兼容矩阵](docs/compatibility-matrix.md)。
-
-## 安装与使用
+使用已发布的库，在 MoonBit 项目中添加依赖并导入 `"zlhahaha/partsieve" @sieve`。
 
 ```powershell
 moon add zlhahaha/partsieve@0.8.0-spike
 ```
 
-调用方导入 `"zlhahaha/partsieve" @sieve`。主要接口：`assess`、`prepare`、`rebuild_verified`、`rebuild_verified_with_plan`、`verify_contract`；传入 bytes 和可选 Limits。报告包含能力、覆盖、处理计划、逐项去向与检查状态。`audit/plan/rebuild/verify/inspect_graph` 继续提供。
+## 支持范围
 
-GitHub主分支新增[面向业务的SDK](docs/sdk.md)：默认`clean_document`一次返回已核验输出及回执；需要先审查再执行时使用`prepare_document`/`execute_document_plan`，归档核验用`verify_document`。新入口返回带稳定错误代码和操作类型的Result，业务无需解析英文提示；旧抛错接口保持兼容。该SDK待后续大版本统一发布，当前Mooncakes 0.8.0不包含。
+| 输入或内容 | 已发布版本的处理 |
+| --- | --- |
+| XLSX / XLSM | 保留共享及内联文本、数字、布尔值、1900/1904 日期系统、工作表顺序、常见单元格样式和合并区域。移除受支持的 VBA，输出 XLSX。 |
+| DOCX / DOCM | 保留段落、表格、合并单元格、内嵌 PNG/JPEG 和分节页眉页脚。移除受支持的 VBA，输出 DOCX。 |
+| Word 外部模板 | 移除受支持的 HTTP(S) 附加模板及其设置引用。 |
+| Word / Excel 点击链接 | 保留符合配置的 HTTP(S) 链接及目标，在回执中列出。 |
+| Word 嵌入 OLE | 支持最多 32 个独立正文对象，删除对象、专属预览、载荷及引用。共享、链接型和嵌套对象会触发拒绝。 |
 
-需要限制内容损失时，使用[预览与授权流程](docs/authorization.md)：`preview_document`列出VBA、OLE及其专属预览、外部模板和格式转换；调用方明确允许范围后，`execute_authorized_document`重新核对原件、计划及权限，超出范围整次拒绝。可运行`moon run examples/authorization --target native --deny-warn`查看仅去宏拒绝OLE删除、显式授权后交付及记录核验。
+公式、外部工作簿或图片、ActiveX、Excel OLE、签名以及超出配置的内容会触发拒绝。支持范围按文档内容判定。日期以原始数值和格式保留，部件字节与引用核验的适用范围见 [兼容矩阵](docs/compatibility-matrix.md)和[保留契约](docs/preservation-contract.md)。
+
+## 可下载样例
+
+直接打开无宏输出，查看清理后保留的内容。含宏原件用于 PartSieve 命令行复现。
+
+| 场景 | 原件 | 无宏输出 | 可查看的内容 |
+| --- | --- | --- | --- |
+| Word 文档接收 | [DOCM](tests/fixtures/business/document-template.docm) | [DOCX](examples/business/preview/document-template.docx) | 合并表格、PNG/JPEG、两节的页眉页脚。清理移除了 VBA 和外部模板引用。 |
+| Excel 报表交付 | [XLSM](tests/fixtures/business/report-1900.xlsm) | [XLSX](examples/business/preview/report-1900.xlsx) | 三张工作表、中英文、日期、货币格式和合并单元格。清理移除了 VBA。 |
+
+这两组业务样例使用项目自建内容，宏来源和许可见[业务样本来源](tests/fixtures/business/README.md)。当前源码还支持重建 Apache POI 的[脚注文档](tests/fixtures/poi/word-modern/footnotes.docx)和[多级编号文档](tests/fixtures/poi/word-modern/NumberingWOverrides.docx)，输出与原件字节一致。样本来源、其他原件和验证命令见 [Word 结构验证](docs/word-structures.md)。
+
+## 从源码运行
+
+使用 `moonc 0.10.14+7d59c7ec9`、Native C 工具链及 PowerShell 7。Windows 使用 MSVC。以下命令在包含本 README 的源码目录运行。
 
 ```powershell
-git clone https://github.com/zlhahaha/partsieve.git
-cd partsieve
 moon update
 moon install
 moon build --target native --deny-warn
-moon run examples/business --target native
-moon run cmd/main --target native -- rebuild tests/fixtures/business/report-1900.xlsm -o report.xlsx --receipt report.json --receipt-format v2
-moon run cmd/main --target native -- rebuild tests/fixtures/business/document-template.docm -o document.docx --receipt document.json --receipt-format v2
-moon run cmd/main --target native -- verify document.docx --original tests/fixtures/business/document-template.docm --receipt document.json --receipt-format v2
+New-Item -ItemType Directory -Force tests/generated/quickstart | Out-Null
+moon run cmd/main --target native -- rebuild tests/fixtures/business/report-1900.xlsm -o tests/generated/quickstart/report.xlsx --receipt tests/generated/quickstart/report.json --receipt-format v2
+moon run cmd/main --target native -- verify tests/generated/quickstart/report.xlsx --original tests/fixtures/business/report-1900.xlsm --receipt tests/generated/quickstart/report.json --receipt-format v2
 ```
 
-[业务示例](examples/business/README.md) 覆盖五个支持输入和一个拒绝输入。样本为注明来源的作者自建组合文档，真实第三方采用尚未确认。CLI `prepare INPUT` 可保存计划，再以 `rebuild INPUT --plan PLAN.json` 执行；每个字段均独立重算。
-
-0.8新增[目录批处理](docs/batch.md)：`moon run cmd/main --target native -- batch INPUT_DIR -o NEW_OUTPUT_DIR --json`。按文件名逐份处理顶层DOCX/DOCM/XLSX/XLSM，单份拒绝或失败后继续，汇总写入`batch.json`；输出目录必须全新，默认v2回执。该功能包含在0.8.0-spike中。
-
-新增链接/OLE组合示例与边界见 [链接与OLE](docs/links-ole.md)，可用 `moon run tests/next --target native` 生成并验证。v2 配置仅为已识别的链接/OLE场景启用，已有业务 v1 路径保留。建议使用 `--receipt-format v2`。0.7 更新工具标识；旧报告需用对应版本验证，或基于真实文件重新生成。独立客户端/完整格式检查在 SDK 中为 NotChecked，不沿用历史 Pass。
-
-输出与报告不覆盖已有文件，临时输出从磁盘重新验证后配套发布；两个路径不保证事务原子性。退出码：0完成，2完整性/保留/报告不符，3不支持/不完整/资源拒绝，4文件读写或用法错误。缺少原件时保留检查NotChecked、整体Incomplete、退出3。
-
-输入上限32MiB、输出64MiB；其他限额见公开 Limits。数值仍为实验值，SDK默认工作预算为5亿计费单位，支持跨调用共享及协作取消（不是时间或内存保证），详见[资源预算](docs/resources.md)；原生CLI每次worker调用超时60秒（可用 --timeout-ms 降低）。较大输入可先 `moon build --release --target native --deny-warn`，CLI加 `--release`。CLI与内部worker均限制输入读取；子进程通过管道限制报告大小并受超时控制。
-
-可运行[共享预算与取消示例](examples/resources/main.mbt)：`moon run examples/resources --target native --deny-warn`。新增五组大文件正例及两组超限例，覆盖Word约1/4/7MiB文本、5000/20000行工作表、预算与输入/输出边界和中途取消；CI保存实际耗时/内存观察记录。
-
-[固定验收演示](docs/acceptance-demo.md)：运行 `./tools/acceptance-demo.ps1`，生成包含本机命令行、样本、中文讲解及结果的一键演示包；重复演示使用包内 `run-demo.ps1`，每次新建结果目录。
-
-## 验证与兼容性
-
-固定工具链 `moonc 0.10.14+7d59c7ec9`，依赖见 [锁定记录](docs/dependency-lock.json)。Windows Native/MSVC（PowerShell 7）：
+`prepare INPUT` 可先保存计划，再通过 `rebuild INPUT --plan PLAN.json` 执行。执行时重新核验原件与计划。通过 [目录批处理](docs/batch.md) 可以一次处理目录顶层的支持格式，并从 `batch.json` 获取每份文档的处理结果。
 
 ```powershell
-.\tools\check.ps1
-# Replace RUN with the directory printed by the check script:
-python tests/independent_business.py tests/generated/check-runs/RUN/business --next tests/generated/check-runs/RUN/next
+moon run cmd/main --target native -- batch INPUT_DIR -o tests/generated/NEW_OUTPUT_DIR --json
 ```
 
-GitHub主分支的检查脚本每次新建`tests/generated/check-runs/时间-随机ID/`，其中`run.json`记录Running/Pass/Fail，`business/`、`evidence/`、`next/`及`demo/`只保存本次结果；旧目录不会被清理、复用或修改权限。单独运行`generate-test-evidence.ps1`也默认新建目录，显式指定已有目录会拒绝。CI在干净检出中从成功的本次目录导出固定名称供独立校验使用。已发布0.8.0包内仍为原检查/四步演示脚本，以上改进待下一版同步。
+请为文档、回执和批处理目录使用新的输出路径。CLI 退出码 `0` 表示成功，`2` 表示完整性或保留检查失败，`3` 表示不支持或检查不完整，`4` 表示用法或文件操作错误。归档核验需要实际输出和原件。默认输入上限 32 MiB、输出上限 64 MiB，每次工作进程限时 60 秒。见[资源预算](docs/resources.md)。
 
-已安装全部固定依赖时可用`./tools/check.ps1 -Offline`跳过索引更新/依赖安装；依赖来源摘要、工具链、构建及完整测试仍检查，依赖缺失或不匹配时失败。默认联网流程与CI保持一致。
+## 验证与复现
 
-GitHub主分支69个MoonBit测试包含293次历史命令调用回归、6组SDK结果/预算/错误及篡改边界检查、6组内容损失授权检查，以及宿主/URL/单元格边界检查；另有16项真实样本授权集成检查；另有十个链接/OLE组合、46个拒绝案例及URL/回执篡改检查。公开仓库仅保留三个Python独立校验脚本，使用它们时另装jsonschema 4.23.0。Windows/MSVC与Linux Native在CI执行同一套回归。CI将本次实际生成的输出交给独立ZIP/XML与Open XML SDK检查，报告保存为Actions artifacts。WPS本地验证三份表格与两份Word输出的读取、编辑、另存和重开；Word保存副本仍有三处WPS生成的styles顺序错误，不能视为格式通过。原始输出与客户端保存副本分开记录。
+当前源码的离线验收通过 79 个 MoonBit 测试，包含 293 次历史 CLI 调用。独立 ZIP/XML 检查通过 21 组。五份固定 Apache POI 脚注、尾注和编号文档的输出哈希与原件一致，全部通过 Office 2013 格式校验。Office 2007 校验中，`NumberingWOverrides.docx` 的原件和输出均有相同的样式属性错误。另有 20 份兼容性基线，当前 7 份支持、13 份拒绝。见 [Word 结构验证](docs/word-structures.md)和[兼容性语料](docs/external-corpus.md)。
 
-[架构](docs/architecture.md)、[威胁模型](docs/threat-model.md)、[保留契约](docs/preservation-contract.md)、[报告格式](docs/receipt-v2.schema.json)。Schema只约束形状；完整核验需要真实原件和输出。申报书、交接、工作记录与截图仅在本地维护。
+```powershell
+./tools/check.ps1
+# 将 RUN 替换为脚本打印的本次运行目录名
+python tests/independent_business.py tests/generated/check-runs/RUN/business --next tests/generated/check-runs/RUN/next --word-modern tests/generated/check-runs/RUN/evidence/word-modern
+```
 
-2026-10-29补齐WPS12.1.0.29161对2/3/32对象清理输出的打开、编辑、另存和重开验证，未观察到修复提示。保存副本仍各有三处客户端新增样式顺序错误，且关系型链接被改写为字段，不能保证再次通过当前输入配置；32对象长段落在本机100%下部分字形裁切，120%可正常查看。诊断与适用边界见[兼容矩阵](docs/compatibility-matrix.md#wps保存与显示的已知限制)。
+已安装[锁定依赖](docs/dependency-lock.json)时可用 `./tools/check.ps1 -Offline`。日常运行只需 Native 工具链。独立验证另用 Python、`jsonschema==4.23.0` 和 Open XML SDK。复跑脚本将生成文件写入 `tests/generated/check-runs/`，CI 在 GitHub Actions artifacts 中提供实际输出和验证报告。可直接运行[业务示例](examples/business/README.md)或[验收演示](docs/acceptance-demo.md)。
 
-另有[120个固定种子健壮性案例](https://github.com/zlhahaha/partsieve/blob/main/tests/robustness/README.md)，包含ZIP截断/CRC/头部破坏、非法XML与内部路径、计划及输出篡改、精确预算与取消；33次CLI拒绝均不留下成功文件对，4次正常CLI检查和4个已有文件/路径冲突保护检查通过。由MoonBit实现，Windows/Linux CI保存本次JSON证据；不代表穷尽模糊测试或全格式安全保证。
+## 设计与许可
 
-## 许可与来源
+查看[架构](docs/architecture.md)、[威胁模型](docs/threat-model.md)、[回执格式](docs/receipt-v2.schema.json)及 [DocBleach 功能对照](docs/docbleach-comparison.md)。PartSieve 的处理核心使用 MoonBit，原生 C 适配层提供文件和进程接口。
 
-Apache-2.0。运行时复用 flate0.8.4、Milky2018/xml0.5.0、moonbitlang/x0.5.5。上游测试数据来自XlsxWriter（BSD-2-Clause）与Apache POI（Apache-2.0）；新增布局和图片为自建，宏字节及其原始来源许可保留。见 [第三方说明](docs/third-party.md) 和 [样本来源](tests/fixtures/business/README.md)。未移植Python/Java Office核心，未分发WPS或用户文档。
+源码采用 Apache-2.0。测试夹具包含自建文档和具有固定来源与许可的 Apache POI、XlsxWriter 样本。见[第三方许可](docs/third-party.md)和[业务样本来源](tests/fixtures/business/README.md)。

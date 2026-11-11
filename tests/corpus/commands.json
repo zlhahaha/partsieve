@@ -3869,8 +3869,8 @@
         }
       ],
       "outputs": [],
-      "code": 3,
-      "report_hash": "13b584ad775a7501aff25b76a072fa0346c4b8dca0954201485e4a475a53c07a"
+      "code": 0,
+      "report_hash": "f19e9cd769e84f8f05328a5183da0e691be40be9fb2595584f07761018442c14"
     },
     {
       "name": "planner_regression/166/macro01.xlsm/prepare",
@@ -5005,8 +5005,8 @@
         }
       ],
       "outputs": [],
-      "code": 3,
-      "report_hash": "7446036389c18054719d48222a40808902eda3daac976deb5981e1abf5bf425c"
+      "code": 0,
+      "report_hash": "b6e8b04f2cab2a9e172d99bea9632693e18d202fdf5ed853e64c39f86ed22f3a"
     },
     {
       "name": "receipt_regression/196/macro01.xlsm/rebuild",
@@ -6107,19 +6107,19 @@
       "outputs": [
         {
           "name": "f1.docx",
-          "after": null,
+          "after": "ea2c517bd7be4628887eb97f630334b93b894f4522d2c0adae263e602d76df92",
           "json": false,
           "report_hash": null
         },
         {
           "name": "f2.json",
-          "after": null,
+          "after": "25fdb89950e3741c7f93cef53c17e35233d9f6c70c4147d9140f3f620e213d69",
           "json": true,
-          "report_hash": null
+          "report_hash": "f8bdd2b45258b316907eddf6ad3899edf72d92eb3a7caa17f649af690cccf09f"
         }
       ],
-      "code": 3,
-      "report_hash": "7446036389c18054719d48222a40808902eda3daac976deb5981e1abf5bf425c"
+      "code": 0,
+      "report_hash": "0d6a10998a6a4f20a2098eb0ea9a32510adaab3687418f4bf6ef69ea68c985b9"
     },
     {
       "name": "receipt_regression/231/truncated.docm/rebuild",

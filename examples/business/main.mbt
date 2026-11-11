@@ -4,12 +4,12 @@ fn main raise {
   for
     name in [
       "business/report-1900.xlsm", "business/report-1904.xlsm", "business/report-inline.xlsm",
-      "business/document-layout.docm", "business/document-template.docm", "poi/SampleDoc.docx",
+      "business/document-layout.docm", "business/document-template.docm", "business/document-fields.docx",
     ] {
     let input = @host.read_bounded("tests/fixtures/" + name, 33554432)
     match @sieve.clean_document(input) {
       Ok(rebuilt) => {
-        assert_true(name != "poi/SampleDoc.docx")
+        assert_true(name != "business/document-fields.docx")
         let checked = rebuilt.receipt
         assert_eq(checked.result, @sieve.Pass)
         println(
@@ -26,7 +26,7 @@ fn main raise {
         )
       }
       Err(error) => {
-        assert_eq(name, "poi/SampleDoc.docx", msg=error.message)
+        assert_eq(name, "business/document-fields.docx", msg=error.message)
         assert_eq(error.code, @sieve.UnsupportedDocument)
         assert_eq(error.operation, @sieve.CleanDocument)
         println(

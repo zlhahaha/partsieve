@@ -1,5 +1,14 @@
 # 兼容矩阵（2026-10-29）
 
+## 主分支后续验证（2026-11-11，未发布）
+
+- 新增有界脚注/尾注、显式多级编号及覆盖、常见样式/位置制表符与属性向量保留，具体契约见[Word 结构扩展](word-structures.md)。
+- 新固定含宏组合样本的原件和去宏输出通过独立 ZIP/XML 与 Open XML SDK 检查。相同二十份第三方基线现为 7 支持、13 拒绝。
+- 五份 Apache POI 脚注和编号原件全部通过重建。Office 2013 校验全部通过。`NumberingWOverrides.docx` 的原件和输出在 Office 2007 校验中均有同样的 15 个样式筛选属性错误。见[具体结果](word-structures.md)。
+- 本轮没有新增 WPS/Microsoft Office/LibreOffice 的打开、编辑、另存或渲染验收。以下历史客户端结果保留原有适用范围。
+
+## 历史发布配置及客户端记录
+
 当前配置既有业务v1及链接/OLE业务v2，版本0.8.0-spike。结果只适用于已验证范围，不表示任意同格式文档均支持。
 
 | 场景 | SDK/CLI保留验证 | 独立ZIP/XML / Open XML SDK3.3.0 Office2007 | WPS（版本见说明） |

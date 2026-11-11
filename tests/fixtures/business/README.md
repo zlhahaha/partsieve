@@ -11,6 +11,12 @@ third-party adoption or a claim to support arbitrary Office documents.
   separate headers/footers and header/footer images.
 - `document-template.docm`: the layout above with a settings-local HTTP(S)
   attached-template reference pointing to `example.invalid`, never fetched.
+- `document-notes-lists.docm`: Chinese/English text, normal footnote/endnote
+  and separator definitions, two explicit numbering levels with a start override,
+  Heading1 outline/font properties and inert document-property vectors. Added
+  2026-11-10 with literal OOXML and fixed ZIP timestamps; same pinned POI VBA source.
+- `document-fields.docx`: a valid DOCX with an unsupported DATE field used in
+  the SDK and delivery refusal examples.
 
 New content/layout/images: PartSieve authors, Apache-2.0. Generated with
 XlsxWriter 3.2.9 and CPython XML/Pillow; no Office reader/writer implementation

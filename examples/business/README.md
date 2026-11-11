@@ -20,15 +20,20 @@ one work budget across plan preparation/execution and demonstrates a typed
 cancellation branch. See [SDK integration](../../docs/sdk.md) for error-code
 semantics and compatibility with the existing throwing APIs.
 
-To publish actual local files through the bounded CLI, choose new destinations:
+The checked-in previews are the verified macro-free
+[Word document](preview/document-template.docx) and
+[Excel workbook](preview/report-1900.xlsx). Use them for Office client checks.
+Rebuild from the original fixtures with the CLI and verify each output against
+its original and receipt. Choose a fresh output directory for each run.
 
 ```powershell
+New-Item -ItemType Directory -Force tests/generated/business-demo | Out-Null
 # Report delivery: Chinese text, dates, three sheets and styles.
-moon run cmd/main --target native -- rebuild tests/fixtures/business/report-1900.xlsm -o report.xlsx --receipt report.json --receipt-format v2
+moon run cmd/main --target native -- rebuild tests/fixtures/business/report-1900.xlsm -o tests/generated/business-demo/report-1900.xlsx --receipt tests/generated/business-demo/report-1900.json --receipt-format v2
+moon run cmd/main --target native -- verify tests/generated/business-demo/report-1900.xlsx --original tests/fixtures/business/report-1900.xlsm --receipt tests/generated/business-demo/report-1900.json --receipt-format v2
 # Document intake: table, PNG/JPEG, section headers/footers and remote template.
-moon run cmd/main --target native -- rebuild tests/fixtures/business/document-template.docm -o document.docx --receipt document.json --receipt-format v2
-# Archive verification: actual original/output/report, not just the Pass field.
-moon run cmd/main --target native -- verify document.docx --original tests/fixtures/business/document-template.docm --receipt document.json --receipt-format v2
+moon run cmd/main --target native -- rebuild tests/fixtures/business/document-template.docm -o tests/generated/business-demo/document-template.docx --receipt tests/generated/business-demo/document-template.json --receipt-format v2
+moon run cmd/main --target native -- verify tests/generated/business-demo/document-template.docx --original tests/fixtures/business/document-template.docm --receipt tests/generated/business-demo/document-template.json --receipt-format v2
 ```
 
 For independently reproducible acceptance evidence:

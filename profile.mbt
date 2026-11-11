@@ -167,10 +167,21 @@ fn validate_static_xml_part(pkg : Package, p : PartRecord) -> Unit raise {
   guard root == expected_root else {
     raise Refused("part root/content type mismatch")
   }
+  if is_word_format(report.format) && expected_root == "Properties" {
+    validate_word_property_vectors(nodes, pkg.control)
+  }
   let parents : Array[String] = []
+  let modern = if is_word_format(report.format) {
+    word_modern_catalog(p, nodes, pkg.control)
+  } else {
+    Map([])
+  }
   let sheet_refs : Array[String] = []
   let sheet_names : Array[String] = []
-  for node in nodes {
+  for ordinal, node in nodes {
+    if modern.contains(ordinal) {
+      continue
+    }
     pkg.control.checkpoint(
       "spreadsheet-profile-node",
       1 + node.element.attributes.length(),
@@ -184,6 +195,20 @@ fn validate_static_xml_part(pkg : Package, p : PartRecord) -> Unit raise {
       parents[parents.length() - 1]
     } else {
       ""
+    }
+    if expected_root == "theme" && local_name == "lumMod" {
+      guard ns == drawing_ns &&
+        ["schemeClr", "srgbClr", "sysClr"].contains(parent) &&
+        exact_node_attributes(node, None, ["val"]) &&
+        node.element.attributes.length() == 1 &&
+        empty_node(node) &&
+        (
+          ordinal + 1 == nodes.length() ||
+          nodes[ordinal + 1].depth <= node.depth
+        ) else {
+        raise Refused("unsupported luminance modifier")
+      }
+      ignore(checked_index(attr(node, "val"), 2147483647))
     }
     if expected_root == "workbook" {
       let shape_ok = match local_name {
@@ -229,6 +254,8 @@ fn validate_static_xml_part(pkg : Package, p : PartRecord) -> Unit raise {
         | "pageSetup"
         | "printOptions"
         | "mergeCells"
+        | "phoneticPr"
+        | "headerFooter"
         | "hyperlinks" => parent == "worksheet"
         "pageSetUpPr" | "outlinePr" => parent == "sheetPr"
         "sheetView" => parent == "sheetViews"
@@ -246,6 +273,9 @@ fn validate_static_xml_part(pkg : Package, p : PartRecord) -> Unit raise {
       }
       guard shape_ok else {
         raise Refused("unsupported worksheet element placement")
+      }
+      if ["phoneticPr", "headerFooter"].contains(local_name) {
+        validate_sheet_metadata(node, parent)
       }
     }
     if expected_root == "worksheet" && local_name == "hyperlink" {
@@ -288,7 +318,7 @@ fn validate_static_xml_part(pkg : Package, p : PartRecord) -> Unit raise {
         "worksheet", "sheetPr", "pageSetUpPr", "outlinePr", "dimension", "sheetViews",
         "sheetView", "selection", "sheetFormatPr", "cols", "col", "sheetData", "row",
         "c", "v", "is", "t", "r", "rPr", "pageMargins", "pageSetup", "printOptions",
-        "mergeCells", "mergeCell", "hyperlinks", "hyperlink",
+        "mergeCells", "mergeCell", "hyperlinks", "hyperlink", "phoneticPr", "headerFooter",
       ].contains(local_name)
     } else if expected_root == "sst" {
       ns == spreadsheet_ns &&
@@ -315,7 +345,7 @@ fn validate_static_xml_part(pkg : Package, p : PartRecord) -> Unit raise {
         "gsLst", "gs", "tint", "satMod", "shade", "lin", "path", "fillToRect", "lnStyleLst",
         "ln", "prstDash", "miter", "effectStyleLst", "effectStyle", "effectLst",
         "outerShdw", "alpha", "bgFillStyleLst", "objectDefaults", "extraClrSchemeLst",
-        "scene3d", "camera", "lightRig", "rot", "sp3d", "bevelT",
+        "lumMod", "scene3d", "camera", "lightRig", "rot", "sp3d", "bevelT",
       ].contains(local_name)
     } else if expected_root == "coreProperties" {
       [
@@ -350,17 +380,38 @@ fn validate_static_xml_part(pkg : Package, p : PartRecord) -> Unit raise {
         ].contains(local_name)
       )
     if is_word_format(report.format) && expected_root == "Properties" {
-      guard ns ==
-        "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" &&
-        (if local_name == "Properties" {
+      let ep = "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"
+      let vt = "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"
+      let placement = if ns == ep {
+        if local_name == "Properties" {
           node.depth == 0
         } else {
-          node.depth == 1
-        }) else {
+          node.depth == 1 && parent == "Properties"
+        }
+      } else if ns == vt {
+        (
+          local_name == "vector" &&
+          ["HeadingPairs", "TitlesOfParts"].contains(parent) &&
+          node.depth == 2
+        ) ||
+        (local_name == "variant" && parent == "vector" && node.depth == 3) ||
+        (
+          ["lpstr", "i4"].contains(local_name) &&
+          (
+            (parent == "variant" && node.depth == 4) ||
+            (parent == "vector" && node.depth == 3)
+          )
+        )
+      } else {
+        false
+      }
+      guard placement else {
         raise Refused("unsupported Word document-property placement")
       }
       if local_name == "Template" {
-        guard node.text_fragments.join("").trim() == "Normal.dotm" else {
+        guard ["Normal", "Normal.dot", "Normal.dotm"].contains(
+          node.text_fragments.join("").trim().to_owned(),
+        ) else {
           raise Refused("non-default Word template property unsupported")
         }
       }

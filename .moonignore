@@ -15,6 +15,10 @@ docs/release.md
 # Development handoff/roadmap are local workspace records.
 HANDOFF.md
 plan.md
+local-records/
+docs/review-preservation.md
+docs/downstream-pilot.md
+docs/integrations/moonreader-pilot.patch
 docs/demand-evidence.md
 docs/spike-report.md
 docs/word-vba.md
@@ -45,3 +49,8 @@ tests/robustness/
 tests/batch/
 
 tests/authorization/
+
+# Explicit third-party compatibility measurement is development-only.
+tests/external/
+tools/check-external-corpus.ps1
+tests/fixtures/poi/word-modern/

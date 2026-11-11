@@ -707,6 +707,73 @@ fn main raise {
   ])
   assert_eq(forged.code, 2)
   println("Pass: URL tampering and forged allowed-capability Receipt refused")
+  word_modern_rejections()
+}
+
+///|
+fn word_modern_rejections() -> Unit raise {
+  let sources = "customXml/item1.xml"
+  let properties = "customXml/itemProps1.xml"
+  let numbering = "word/numbering.xml"
+  let settings = "word/settings.xml"
+  let theme = "word/theme/theme1.xml"
+  let fallback = "<mc:Fallback><w:numFmt w:val=\"decimal\"/></mc:Fallback>"
+  for
+    case in [
+      (
+        "bibliography-external-style", "footnotes", sources, "\\APA.XSL", "https://example.invalid/style.xsl",
+      ),
+      (
+        "bibliography-nonempty-sources", "footnotes", sources, "</b:Sources>", "<b:Source/></b:Sources>",
+      ),
+      (
+        "bibliography-foreign-schema", "footnotes", properties, "ds:uri=\"http://schemas.openxmlformats.org/officeDocument/2006/bibliography\"",
+        "ds:uri=\"https://example.invalid/schema\"",
+      ),
+      (
+        "bibliography-external-relation", "footnotes", "word/_rels/document.xml.rels",
+        "Target=\"../customXml/item1.xml\"", "Target=\"https://example.invalid/item.xml\" TargetMode=\"External\"",
+      ),
+      (
+        "bibliography-shared-ownership", "footnotes", "word/_rels/document.xml.rels",
+        "</Relationships>", "<Relationship Id='customShared' Type='http://schemas.openxmlformats.org/officeDocument/2006/relationships/customXml' Target='../customXml/item1.xml'/></Relationships>",
+      ),
+      (
+        "modern-unknown-ignorable-element", "Numbering", settings, "</w:settings>",
+        "<w15:unknown/></w:settings>",
+      ),
+      (
+        "modern-invalid-doc-id", "NumberingWithOutOfOrderId", settings, "w15:val=\"{",
+        "w15:val=\"X{",
+      ),
+      (
+        "modern-unknown-number-restart-value", "NumberingWOverrides", numbering,
+        "w15:restartNumberingAfterBreak=\"0\"", "w15:restartNumberingAfterBreak=\"unknown\"",
+      ),
+      (
+        "modern-shadowed-choice-prefix", "Numbering", numbering, "<mc:Choice Requires=\"w14\">",
+        "<mc:Choice Requires='w14' xmlns:w14='urn:unexpected'>",
+      ),
+      (
+        "modern-active-fallback", "Numbering", numbering, fallback, "<mc:Fallback><w:fldSimple w:instr='DATE'/></mc:Fallback>",
+      ),
+      (
+        "modern-ambiguous-number-format",
+        "Numbering",
+        numbering,
+        fallback + "</mc:AlternateContent>",
+        fallback + "</mc:AlternateContent><w:numFmt w:val='decimal'/>",
+      ),
+      (
+        "modern-unrecognized-theme-extension", "NumberingWOverrides", theme, "{05A4C25C-085E-4340-85A3-A5531E510DB2}",
+        "https://example.invalid/theme",
+      ),
+    ] {
+    let (name, source, part, original, replacement) = case
+    let archive = fixture("poi/word-modern/" + source + ".docx")
+    edit(archive, part, original, replacement)
+    rejected(name, archive)
+  }
 }
 
 ///|
