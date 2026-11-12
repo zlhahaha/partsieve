@@ -92,8 +92,8 @@ test "integrity failures unsupported syntax and incomplete parsing have distinct
       assert_eq(rule.state, NotChecked)
     }
   }
-  assert_eq(Pass.to_json(), "Pass".to_json())
-  assert_eq(IncompleteResult.to_json(), "Incomplete".to_json())
-  assert_eq(NotChecked.to_json(), "NotChecked".to_json())
-  assert_eq(Vba.to_json(), "VBA".to_json())
+  assert_eq(Pass.to_json(), Json::string("Pass"))
+  assert_eq(IncompleteResult.to_json(), Json::string("Incomplete"))
+  assert_eq(NotChecked.to_json(), Json::string("NotChecked"))
+  assert_eq(Vba.to_json(), Json::string("VBA"))
 }

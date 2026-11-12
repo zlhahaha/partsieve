@@ -1,21 +1,23 @@
 ///|
+#derive(Debug)
 pub(all) suberror HostError {
   Io(String)
   Limit(String)
-} derive(Debug)
+}
 
 ///|
+#derive(Debug)
 pub(all) struct DirectoryEntry {
   name : String
   kind : String
-} derive(Debug)
+}
 
 ///|
 pub extend DirectoryEntry with Debug::{to_repr}
 
 ///|
 #borrow(path)
-extern "C" fn directory_ffi(path : Bytes, limit : Int) -> Bytes = "ps_list_directory"
+extern "C" fn directory_ffi(path : Bytes, limit : Int32) -> Bytes = "ps_list_directory"
 
 ///|
 pub fn create_directory(path : String) -> Unit raise {
@@ -25,7 +27,7 @@ pub fn create_directory(path : String) -> Unit raise {
 ///|
 pub fn list_directory(
   path : String,
-  max_entries? : Int = 1024,
+  max_entries~ : Int32 = 1024,
 ) -> Array[DirectoryEntry] raise {
   guard max_entries > 0 && max_entries <= 1024 else {
     raise Limit("directory entry limit must be 1..1024")
@@ -81,66 +83,66 @@ priv type Process
 extern "C" fn last_error_ffi() -> Bytes = "ps_last_error"
 
 ///|
-extern "C" fn windows_ffi() -> Int = "ps_windows"
+extern "C" fn windows_ffi() -> Int32 = "ps_windows"
 
 ///|
 #borrow(path)
-extern "C" fn open_read_ffi(path : Bytes) -> Int = "ps_open_read"
+extern "C" fn open_read_ffi(path : Bytes) -> Int32 = "ps_open_read"
 
 ///|
 #borrow(path)
-extern "C" fn open_new_ffi(path : Bytes) -> Int = "ps_open_new"
+extern "C" fn open_new_ffi(path : Bytes) -> Int32 = "ps_open_new"
 
 ///|
-extern "C" fn size_ffi(fd : Int) -> Int64 = "ps_size"
+extern "C" fn size_ffi(fd : Int32) -> Int64 = "ps_size"
 
 ///|
 #borrow(data)
 extern "C" fn read_ffi(
-  fd : Int,
+  fd : Int32,
   data : Bytes,
-  offset : Int,
-  count : Int,
-) -> Int = "ps_read"
+  offset : Int32,
+  count : Int32,
+) -> Int32 = "ps_read"
 
 ///|
 #borrow(data)
 extern "C" fn write_ffi(
-  fd : Int,
+  fd : Int32,
   data : Bytes,
-  offset : Int,
-  count : Int,
-) -> Int = "ps_write"
+  offset : Int32,
+  count : Int32,
+) -> Int32 = "ps_write"
 
 ///|
-extern "C" fn close_ffi(fd : Int) -> Int = "ps_close"
+extern "C" fn close_ffi(fd : Int32) -> Int32 = "ps_close"
 
 ///|
-extern "C" fn sync_ffi(fd : Int) -> Int = "ps_sync"
+extern "C" fn sync_ffi(fd : Int32) -> Int32 = "ps_sync"
 
 ///|
 #borrow(path)
-extern "C" fn exists_ffi(path : Bytes) -> Int = "ps_exists"
+extern "C" fn exists_ffi(path : Bytes) -> Int32 = "ps_exists"
 
 ///|
 #borrow(source, target)
-extern "C" fn link_ffi(source : Bytes, target : Bytes) -> Int = "ps_link"
+extern "C" fn link_ffi(source : Bytes, target : Bytes) -> Int32 = "ps_link"
 
 ///|
 #borrow(source, target)
-extern "C" fn same_ffi(source : Bytes, target : Bytes) -> Int = "ps_same_file"
+extern "C" fn same_ffi(source : Bytes, target : Bytes) -> Int32 = "ps_same_file"
 
 ///|
 #borrow(path)
-extern "C" fn unlink_ffi(path : Bytes) -> Int = "ps_unlink"
+extern "C" fn unlink_ffi(path : Bytes) -> Int32 = "ps_unlink"
 
 ///|
 #borrow(path)
-extern "C" fn mkdir_ffi(path : Bytes) -> Int = "ps_mkdir_private"
+extern "C" fn mkdir_ffi(path : Bytes) -> Int32 = "ps_mkdir_private"
 
 ///|
 #borrow(path)
-extern "C" fn rmdir_ffi(path : Bytes) -> Int = "ps_rmdir"
+extern "C" fn rmdir_ffi(path : Bytes) -> Int32 = "ps_rmdir"
 
 ///|
 extern "C" fn temp_root_ffi() -> Bytes = "ps_temp_root"
@@ -156,25 +158,25 @@ extern "C" fn self_ffi() -> Bytes = "ps_self"
 extern "C" fn millis_ffi() -> Int64 = "ps_millis"
 
 ///|
-pub extern "C" fn pause(ms : Int) -> Unit = "ps_pause"
+pub extern "C" fn pause(ms : Int32) -> Unit = "ps_pause"
 
 ///|
 #borrow(executable, args)
 extern "C" fn spawn_ffi(executable : Bytes, args : Bytes) -> Process = "ps_spawn"
 
 ///|
-extern "C" fn null_ffi(process : Process) -> Int = "ps_null"
+extern "C" fn null_ffi(process : Process) -> Int32 = "ps_null"
 
 ///|
 #borrow(data)
 extern "C" fn process_read_ffi(
   process : Process,
   data : Bytes,
-  count : Int,
-) -> Int = "ps_process_read"
+  count : Int32,
+) -> Int32 = "ps_process_read"
 
 ///|
-extern "C" fn poll_ffi(process : Process) -> Int = "ps_process_poll"
+extern "C" fn poll_ffi(process : Process) -> Int32 = "ps_process_poll"
 
 ///|
 extern "C" fn process_close_ffi(process : Process) -> Unit = "ps_process_close"
@@ -199,7 +201,7 @@ fn cstring(value : String) -> Bytes raise {
 }
 
 ///|
-pub fn read_bounded(path : String, cap : Int) -> Bytes raise {
+pub fn read_bounded(path : String, cap : Int32) -> Bytes raise {
   guard cap >= 0 && cap <= 67108864 else { raise Io("invalid read limit") }
   let fd = open_read_ffi(cstring(path))
   guard fd >= 0 else { raise os_error() }
@@ -211,10 +213,15 @@ pub fn read_bounded(path : String, cap : Int) -> Bytes raise {
     guard size <= cap.to_int64() else {
       raise Limit("input/report exceeds byte limit")
     }
-    let output = @buffer.Buffer(size_hint=Int::min(size.to_int(), 65536))
+    let output = @buffer.Buffer(size_hint=Int32::min(size.to_int(), 65536))
     let chunk = Bytes::make(65536, 0)
     while true {
-      let n = read_ffi(fd, chunk, 0, Int::min(65536, cap - output.length() + 1))
+      let n = read_ffi(
+        fd,
+        chunk,
+        0,
+        Int32::min(65536, cap - output.length() + 1),
+      )
       guard n >= 0 else { raise os_error() }
       if n == 0 {
         break
@@ -245,7 +252,7 @@ pub fn write_new(path : String, bytes : Bytes) -> Unit raise {
         fd,
         bytes,
         written,
-        Int::min(65536, bytes.length() - written),
+        Int32::min(65536, bytes.length() - written),
       )
       guard n > 0 else { raise os_error() }
       written += n
@@ -328,7 +335,7 @@ pub fn same_path(a : String, b : String) -> Bool raise {
 }
 
 ///|
-pub fn temp_dir(parent? : String = "") -> String raise {
+pub fn temp_dir(parent~ : String = "") -> String raise {
   let base = if parent == "" {
     @utf8.decode(temp_root_ffi()[:])
   } else {
@@ -357,17 +364,18 @@ pub fn executable() -> String raise {
 }
 
 ///|
+#derive(Debug)
 pub(all) struct ProcessResult {
-  code : Int
+  code : Int32
   stdout : Bytes
-} derive(Debug)
+}
 
 ///|
 pub fn run(
   executable : String,
   args : Array[String],
-  timeout_ms? : Int = 60000,
-  output_limit? : Int = 16777216,
+  timeout_ms~ : Int32 = 60000,
+  output_limit~ : Int32 = 16777216,
 ) -> ProcessResult raise {
   guard timeout_ms > 0 &&
     timeout_ms <= 60000 &&

@@ -21,9 +21,9 @@ fn get_part(archive : @zip.Archive, name : String) -> BytesView raise {
 fn load_package(
   input : Bytes,
   limits : Limits,
-  enforce_profile? : Bool = true,
-  output? : Bool = false,
-  control? : WorkControl = WorkControl::default(),
+  enforce_profile~ : Bool = true,
+  output~ : Bool = false,
+  control~ : WorkControl = WorkControl::default(),
 ) -> Package raise {
   control.checkpoint("package-start", 0)
   limits.validate()
@@ -41,7 +41,7 @@ fn load_package(
   let zl = @zip.ReadLimits::default()
     .with_package_limit(package_limit)
     .with_entry_limit(limits.entry_bytes)
-    .with_total_limit(Int::min(limits.total_bytes, control.remaining()))
+    .with_total_limit(Int32::min(limits.total_bytes, control.remaining()))
     .with_entries_limit(limits.entries)
     .with_preserved_source_limit(package_limit * 2)
   let archive = @zip.read(input[:], limits=zl, cancelled=fn() {
@@ -304,8 +304,8 @@ fn validate_metadata_attributes(
 ///|
 pub fn audit(
   input : Bytes,
-  limits? : Limits = Limits::default(),
-  control? : WorkControl = WorkControl::default(),
+  limits~ : Limits = Limits::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> Audit raise {
   load_package(input, limits, control~).audit
 }

@@ -1,5 +1,5 @@
 ///|
-fn execute_batch(options : Options) -> (Json, Int) raise {
+fn execute_batch(options : Options) -> (Json, Int32) raise {
   let input = @host.absolute(options.input)
   let output = @host.absolute(options.output.unwrap())
   // Inventory completes before creating any outputs, including limit checks.

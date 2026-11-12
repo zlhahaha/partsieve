@@ -1,8 +1,8 @@
 ///|
 priv struct JsonScan {
   text : String
-  mut pos : Int
-  mut items : Int
+  mut pos : Int32
+  mut items : Int32
 }
 
 ///|
@@ -45,7 +45,7 @@ fn JsonScan::string_token(self : JsonScan) -> String raise {
 }
 
 ///|
-fn JsonScan::value(self : JsonScan, depth : Int) -> Unit raise {
+fn JsonScan::value(self : JsonScan, depth : Int32) -> Unit raise {
   self.spaces()
   self.items += 1
   guard self.items <= 200000 else { raise @lib.Incomplete("JSON item limit") }

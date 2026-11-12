@@ -139,7 +139,7 @@ fn extended_office(pkg : Package) -> Bool {
 }
 
 ///|
-fn click_cell(text : String) -> (Int, Int) raise {
+fn click_cell(text : String) -> (Int32, Int32) raise {
   guard text.length() > 1 && text.length() <= 10 else {
     raise Invalid("invalid hyperlink cell reference")
   }

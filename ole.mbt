@@ -19,7 +19,7 @@ fn relationship_attribute(node : Node) -> String raise {
 
 ///|
 // Each group is one independently owned inline subtree; no VML is retained.
-fn ole_group(nodes : Array[Node], begin : Int) -> Array[Int] raise {
+fn ole_group(nodes : Array[Node], begin : Int32) -> Array[Int32] raise {
   let depth = nodes[begin].depth
   guard begin > 0 && depth > 0 else {
     raise Refused("OLE object has no parent run")
@@ -37,7 +37,7 @@ fn ole_group(nodes : Array[Node], begin : Int) -> Array[Int] raise {
   while end < nodes.length() && nodes[end].depth > depth {
     end += 1
   }
-  let indices : Array[Int] = []
+  let indices : Array[Int32] = []
   for i in begin..<end {
     indices.push(i)
   }
@@ -160,8 +160,8 @@ fn ole_group(nodes : Array[Node], begin : Int) -> Array[Int] raise {
 }
 
 ///|
-fn ole_groups(nodes : Array[Node]) -> Array[Array[Int]] raise {
-  let starts : Array[Int] = []
+fn ole_groups(nodes : Array[Node]) -> Array[Array[Int32]] raise {
+  let starts : Array[Int32] = []
   for i, node in nodes {
     if node.element.name.namespace_uri == Some(word_ns) &&
       node.element.name.local_name == "object" {
@@ -173,7 +173,7 @@ fn ole_groups(nodes : Array[Node]) -> Array[Array[Int]] raise {
       }
     }
   }
-  let groups : Array[Array[Int]] = []
+  let groups : Array[Array[Int32]] = []
   let relations : Map[String, Bool] = Map([])
   let identities : Map[String, Bool] = Map([])
   let object_ids : Map[String, Bool] = Map([])
@@ -241,15 +241,15 @@ fn valid_ole_object_id(id : String) -> Bool {
 fn ole_catalog(
   parts : Array[PartRecord],
   nodes : Map[String, Array[Node]],
-) -> Map[String, Map[String, Array[Int]]] {
-  let catalog : Map[String, Map[String, Array[Int]]] = Map([])
+) -> Map[String, Map[String, Array[Int32]]] {
+  let catalog : Map[String, Map[String, Array[Int32]]] = Map([])
   for part in parts {
     if ![docx_ct, docm_ct].contains(part.content_type) {
       continue
     }
     if nodes.get(part.name) is Some(items) {
       let groups = ole_groups(items) catch { _ => [] }
-      let ids : Map[String, Array[Int]] = Map([])
+      let ids : Map[String, Array[Int32]] = Map([])
       for group in groups {
         let id = relationship_attribute(
           items[ole_member(items, group, word_office_ns, "OLEObject")],
@@ -266,10 +266,10 @@ fn ole_catalog(
 
 ///|
 fn ole_catalog_mask(
-  catalog : Map[String, Map[String, Array[Int]]],
+  catalog : Map[String, Map[String, Array[Int32]]],
   source : String,
-) -> Array[Int] {
-  let indices : Array[Int] = []
+) -> Array[Int32] {
+  let indices : Array[Int32] = []
   if catalog.get(source) is Some(groups) {
     for group in groups.values() {
       for i in group {
@@ -283,7 +283,7 @@ fn ole_catalog_mask(
 ///|
 fn ole_declared(
   r : Relationship,
-  catalog : Map[String, Map[String, Array[Int]]],
+  catalog : Map[String, Map[String, Array[Int32]]],
 ) -> Bool {
   !r.external &&
   r.kind == office_rel + "oleObject" &&
@@ -529,10 +529,10 @@ fn verify_source_semantics(
 ///|
 fn ole_member(
   nodes : Array[Node],
-  indices : Array[Int],
+  indices : Array[Int32],
   ns : String,
   name : String,
-) -> Int raise {
+) -> Int32 raise {
   let matches = indices.filter(fn(i) {
     nodes[i].element.name.namespace_uri == Some(ns) &&
     nodes[i].element.name.local_name == name

@@ -1,7 +1,7 @@
 ///|
 priv struct Node {
   element : @xml.NamespaceElement
-  depth : Int
+  depth : Int32
   text_fragments : Array[String]
 }
 
@@ -10,8 +10,8 @@ priv struct Node {
 fn read_xml(
   data : BytesView,
   limits : Limits,
-  metadata? : Bool = false,
-  control? : WorkControl = WorkControl::default(),
+  metadata~ : Bool = false,
+  control~ : WorkControl = WorkControl::default(),
 ) -> Array[Node] raise {
   read_xml_checked(data, limits, metadata~, control) catch {
     Refused(reason) => raise Refused(reason)
@@ -129,7 +129,7 @@ fn read_xml_checked(
   let reader = @xml.NamespaceReader::from_string(text)
   let result : Array[Node] = []
   let mut current = 0
-  let open_nodes : Array[Int] = []
+  let open_nodes : Array[Int32] = []
   while true {
     control.checkpoint("xml-event", 1)
     let event = reader.read_event()
@@ -201,7 +201,7 @@ fn metadata_nodes(
   ns : String,
   root : String,
   children : Array[String],
-  control? : WorkControl = WorkControl::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> Array[Node] raise {
   let nodes = read_xml(data, limits, metadata=true, control~)
   guard nodes.length() > 0 &&

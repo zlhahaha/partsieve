@@ -1,0 +1,1436 @@
+{
+  "platform": "Microsoft Windows NT 10.0.22631.0",
+  "rows": [
+    {
+      "client": "Microsoft Word",
+      "version": "16.0",
+      "build": "16.0.20527",
+      "case": "document-template",
+      "stage": "source",
+      "before_sha256": "fcf80d572771fc10ff84c8c125a882195b7f1c540bbce08644dcdafb0ccb65ce",
+      "before": {
+        "text": "PartSieve 文档接收示例 / Document intake\r项目\r\u0007交付内容\r\u0007状态\r\u0007\r\u0007文档接收\r\u0007保留表格和图片\r\u0007可编辑\r\u0007\r\u0007日期\r\u00072026-10-22\r\u0007已核验\r\u0007\r\u0007合并单元格 / merged cells\r\u0007\r\u0007/\r\f第二节：独立页眉页脚 / Second section\r",
+        "tables": 1,
+        "images": 1,
+        "sections": [
+          {
+            "header": "页眉 / header1\r/\r",
+            "footer": "页脚 / footer1\r/\r",
+            "header_images": 1,
+            "footer_images": 1
+          },
+          {
+            "header": "页眉 / header2\r/\r",
+            "footer": "页脚 / footer2\r/\r",
+            "header_images": 1,
+            "footer_images": 1
+          }
+        ],
+        "notes": [],
+        "endnotes": [],
+        "numbering": [],
+        "link_targets": [],
+        "hyperlink_fields": [],
+        "first_paragraph_style": "正文"
+      },
+      "after": {
+        "text": "PartSieve 文档接收示例 / Document intake\r项目\r\u0007交付内容\r\u0007状态\r\u0007\r\u0007文档接收\r\u0007保留表格和图片\r\u0007可编辑\r\u0007\r\u0007日期\r\u00072026-10-22\r\u0007已核验\r\u0007\r\u0007合并单元格 / merged cells\r\u0007\r\u0007/\r\f第二节：独立页眉页脚 / Second section\r",
+        "tables": 1,
+        "images": 1,
+        "sections": [
+          {
+            "header": "页眉 / header1\r/\r",
+            "footer": "页脚 / footer1\r/\r",
+            "header_images": 1,
+            "footer_images": 1
+          },
+          {
+            "header": "页眉 / header2\r/\r",
+            "footer": "页脚 / footer2\r/\r",
+            "header_images": 1,
+            "footer_images": 1
+          }
+        ],
+        "notes": [],
+        "endnotes": [],
+        "numbering": [],
+        "link_targets": [],
+        "hyperlink_fields": [],
+        "first_paragraph_style": "正文"
+      },
+      "edit_persisted": true,
+      "saved_sha256": "772574f24fea5d68ce7d6b09fe9bfef1c43f45462170179c74c235bdef3f7c0b",
+      "fields_changed_on_save": [],
+      "result": "Pass"
+    },
+    {
+      "client": "Microsoft Word",
+      "version": "16.0",
+      "build": "16.0.20527",
+      "case": "document-template",
+      "stage": "clean",
+      "before_sha256": "a32b987464bcec90f11328182ae440412a7ef6affdaed284aa8aec35c26c39b7",
+      "before": {
+        "text": "PartSieve 文档接收示例 / Document intake\r项目\r\u0007交付内容\r\u0007状态\r\u0007\r\u0007文档接收\r\u0007保留表格和图片\r\u0007可编辑\r\u0007\r\u0007日期\r\u00072026-10-22\r\u0007已核验\r\u0007\r\u0007合并单元格 / merged cells\r\u0007\r\u0007/\r\f第二节：独立页眉页脚 / Second section\r",
+        "tables": 1,
+        "images": 1,
+        "sections": [
+          {
+            "header": "页眉 / header1\r/\r",
+            "footer": "页脚 / footer1\r/\r",
+            "header_images": 1,
+            "footer_images": 1
+          },
+          {
+            "header": "页眉 / header2\r/\r",
+            "footer": "页脚 / footer2\r/\r",
+            "header_images": 1,
+            "footer_images": 1
+          }
+        ],
+        "notes": [],
+        "endnotes": [],
+        "numbering": [],
+        "link_targets": [],
+        "hyperlink_fields": [],
+        "first_paragraph_style": "正文"
+      },
+      "after": {
+        "text": "PartSieve 文档接收示例 / Document intake\r项目\r\u0007交付内容\r\u0007状态\r\u0007\r\u0007文档接收\r\u0007保留表格和图片\r\u0007可编辑\r\u0007\r\u0007日期\r\u00072026-10-22\r\u0007已核验\r\u0007\r\u0007合并单元格 / merged cells\r\u0007\r\u0007/\r\f第二节：独立页眉页脚 / Second section\r",
+        "tables": 1,
+        "images": 1,
+        "sections": [
+          {
+            "header": "页眉 / header1\r/\r",
+            "footer": "页脚 / footer1\r/\r",
+            "header_images": 1,
+            "footer_images": 1
+          },
+          {
+            "header": "页眉 / header2\r/\r",
+            "footer": "页脚 / footer2\r/\r",
+            "header_images": 1,
+            "footer_images": 1
+          }
+        ],
+        "notes": [],
+        "endnotes": [],
+        "numbering": [],
+        "link_targets": [],
+        "hyperlink_fields": [],
+        "first_paragraph_style": "正文"
+      },
+      "edit_persisted": true,
+      "saved_sha256": "7ae69fcffb983d13f92b7696966854f61db49e151cb828eaabd329791c385e9a",
+      "fields_changed_on_save": [],
+      "result": "Pass",
+      "fields_changed_on_rebuild": []
+    },
+    {
+      "client": "Microsoft Word",
+      "version": "16.0",
+      "build": "16.0.20527",
+      "case": "document-notes-lists",
+      "stage": "source",
+      "before_sha256": "18315aca948d53183a094cf865649c24cbc10fa97f0d50b1b9d2c7f80d4e2a1e",
+      "before": {
+        "text": "订单交付 / Order delivery\r订单 A：1234.50\r交付说明：保留原始数值\r金额说明\u0002归档说明\u0002\r",
+        "tables": 0,
+        "images": 0,
+        "sections": [
+          {
+            "header": "\r",
+            "footer": "\r",
+            "header_images": 0,
+            "footer_images": 0
+          }
+        ],
+        "notes": [
+          "脚注：订单金额按原始值保留。"
+        ],
+        "endnotes": [
+          "尾注：本文件用于可复现验收。"
+        ],
+        "numbering": [
+          "3.",
+          "3.1."
+        ],
+        "link_targets": [],
+        "hyperlink_fields": [],
+        "first_paragraph_style": "标题 1"
+      },
+      "after": {
+        "text": "订单交付 / Order delivery\r订单 A：1234.50\r交付说明：保留原始数值\r金额说明\u0002归档说明\u0002\r",
+        "tables": 0,
+        "images": 0,
+        "sections": [
+          {
+            "header": "\r",
+            "footer": "\r",
+            "header_images": 0,
+            "footer_images": 0
+          }
+        ],
+        "notes": [
+          "脚注：订单金额按原始值保留。"
+        ],
+        "endnotes": [
+          "尾注：本文件用于可复现验收。"
+        ],
+        "numbering": [
+          "3.",
+          "3.1."
+        ],
+        "link_targets": [],
+        "hyperlink_fields": [],
+        "first_paragraph_style": "标题 1"
+      },
+      "edit_persisted": true,
+      "saved_sha256": "9a569ed2d996714f70fbc8b86436c321da7c65a63d54c6fe3a86c7876ac67691",
+      "fields_changed_on_save": [],
+      "result": "Pass"
+    },
+    {
+      "client": "Microsoft Word",
+      "version": "16.0",
+      "build": "16.0.20527",
+      "case": "document-notes-lists",
+      "stage": "clean",
+      "before_sha256": "e0e64150b3810d75119d3474a3df14161fc6776e7660788faf7a6047277b8efa",
+      "before": {
+        "text": "订单交付 / Order delivery\r订单 A：1234.50\r交付说明：保留原始数值\r金额说明\u0002归档说明\u0002\r",
+        "tables": 0,
+        "images": 0,
+        "sections": [
+          {
+            "header": "\r",
+            "footer": "\r",
+            "header_images": 0,
+            "footer_images": 0
+          }
+        ],
+        "notes": [
+          "脚注：订单金额按原始值保留。"
+        ],
+        "endnotes": [
+          "尾注：本文件用于可复现验收。"
+        ],
+        "numbering": [
+          "3.",
+          "3.1."
+        ],
+        "link_targets": [],
+        "hyperlink_fields": [],
+        "first_paragraph_style": "标题 1"
+      },
+      "after": {
+        "text": "订单交付 / Order delivery\r订单 A：1234.50\r交付说明：保留原始数值\r金额说明\u0002归档说明\u0002\r",
+        "tables": 0,
+        "images": 0,
+        "sections": [
+          {
+            "header": "\r",
+            "footer": "\r",
+            "header_images": 0,
+            "footer_images": 0
+          }
+        ],
+        "notes": [
+          "脚注：订单金额按原始值保留。"
+        ],
+        "endnotes": [
+          "尾注：本文件用于可复现验收。"
+        ],
+        "numbering": [
+          "3.",
+          "3.1."
+        ],
+        "link_targets": [],
+        "hyperlink_fields": [],
+        "first_paragraph_style": "标题 1"
+      },
+      "edit_persisted": true,
+      "saved_sha256": "8688ef9a8be5f8d47e965d2cd14bbc136a0b99f7529f7cc442d3466f564ae71a",
+      "fields_changed_on_save": [],
+      "result": "Pass",
+      "fields_changed_on_rebuild": []
+    },
+    {
+      "client": "Microsoft Word",
+      "version": "16.0",
+      "build": "16.0.20527",
+      "case": "word-links",
+      "stage": "source",
+      "before_sha256": "d5365ce74ef17fe921179988f91b926049faa102927ce79e0f26cec363c7822a",
+      "before": {
+        "text": "PartSieve 文档接收示例 / Document intake官网 链接\r项目\r\u0007交付内容\r\u0007状态\r\u0007\r\u0007文档接收\r\u0007保留表格和图片\r\u0007可编辑\r\u0007\r\u0007日期\r\u00072026-10-22\r\u0007已核验\r\u0007\r\u0007合并单元格 / merged cells\r\u0007\r\u0007/\r\f第二节：独立页眉页脚 / Second section\r",
+        "tables": 1,
+        "images": 1,
+        "sections": [
+          {
+            "header": "页眉 / header1官网 链接\r/\r",
+            "footer": "页脚 / footer1官网 链接\r/\r",
+            "header_images": 1,
+            "footer_images": 1
+          },
+          {
+            "header": "页眉 / header2\r/\r",
+            "footer": "页脚 / footer2\r/\r",
+            "header_images": 1,
+            "footer_images": 1
+          }
+        ],
+        "notes": [],
+        "endnotes": [],
+        "numbering": [],
+        "link_targets": [
+          "https://example.invalid/docs?q=1&lang=zh"
+        ],
+        "hyperlink_fields": [
+          "HYPERLINK \"https://example.invalid/docs?q=1&lang=zh\" \\l \"section\""
+        ],
+        "first_paragraph_style": "正文"
+      },
+      "after": {
+        "text": "PartSieve 文档接收示例 / Document intake官网 链接\r项目\r\u0007交付内容\r\u0007状态\r\u0007\r\u0007文档接收\r\u0007保留表格和图片\r\u0007可编辑\r\u0007\r\u0007日期\r\u00072026-10-22\r\u0007已核验\r\u0007\r\u0007合并单元格 / merged cells\r\u0007\r\u0007/\r\f第二节：独立页眉页脚 / Second section\r",
+        "tables": 1,
+        "images": 1,
+        "sections": [
+          {
+            "header": "页眉 / header1官网 链接\r/\r",
+            "footer": "页脚 / footer1官网 链接\r/\r",
+            "header_images": 1,
+            "footer_images": 1
+          },
+          {
+            "header": "页眉 / header2\r/\r",
+            "footer": "页脚 / footer2\r/\r",
+            "header_images": 1,
+            "footer_images": 1
+          }
+        ],
+        "notes": [],
+        "endnotes": [],
+        "numbering": [],
+        "link_targets": [
+          "https://example.invalid/docs?q=1&lang=zh"
+        ],
+        "hyperlink_fields": [
+          "HYPERLINK \"https://example.invalid/docs?q=1&lang=zh\" \\l \"section\""
+        ],
+        "first_paragraph_style": "正文"
+      },
+      "edit_persisted": true,
+      "saved_sha256": "9b87019c0de60e8ae92ac3be344431ff64287d0378ac80100fbb9b56a361105c",
+      "fields_changed_on_save": [],
+      "result": "Pass"
+    },
+    {
+      "client": "Microsoft Word",
+      "version": "16.0",
+      "build": "16.0.20527",
+      "case": "word-links",
+      "stage": "clean",
+      "before_sha256": "ec0cfcf7cb78be325a9f5e1824eb6ae2213a05185793f8e3cb9c5bb2100c26cb",
+      "before": {
+        "text": "PartSieve 文档接收示例 / Document intake官网 链接\r项目\r\u0007交付内容\r\u0007状态\r\u0007\r\u0007文档接收\r\u0007保留表格和图片\r\u0007可编辑\r\u0007\r\u0007日期\r\u00072026-10-22\r\u0007已核验\r\u0007\r\u0007合并单元格 / merged cells\r\u0007\r\u0007/\r\f第二节：独立页眉页脚 / Second section\r",
+        "tables": 1,
+        "images": 1,
+        "sections": [
+          {
+            "header": "页眉 / header1官网 链接\r/\r",
+            "footer": "页脚 / footer1官网 链接\r/\r",
+            "header_images": 1,
+            "footer_images": 1
+          },
+          {
+            "header": "页眉 / header2\r/\r",
+            "footer": "页脚 / footer2\r/\r",
+            "header_images": 1,
+            "footer_images": 1
+          }
+        ],
+        "notes": [],
+        "endnotes": [],
+        "numbering": [],
+        "link_targets": [
+          "https://example.invalid/docs?q=1&lang=zh"
+        ],
+        "hyperlink_fields": [
+          "HYPERLINK \"https://example.invalid/docs?q=1&lang=zh\" \\l \"section\""
+        ],
+        "first_paragraph_style": "正文"
+      },
+      "after": {
+        "text": "PartSieve 文档接收示例 / Document intake官网 链接\r项目\r\u0007交付内容\r\u0007状态\r\u0007\r\u0007文档接收\r\u0007保留表格和图片\r\u0007可编辑\r\u0007\r\u0007日期\r\u00072026-10-22\r\u0007已核验\r\u0007\r\u0007合并单元格 / merged cells\r\u0007\r\u0007/\r\f第二节：独立页眉页脚 / Second section\r",
+        "tables": 1,
+        "images": 1,
+        "sections": [
+          {
+            "header": "页眉 / header1官网 链接\r/\r",
+            "footer": "页脚 / footer1官网 链接\r/\r",
+            "header_images": 1,
+            "footer_images": 1
+          },
+          {
+            "header": "页眉 / header2\r/\r",
+            "footer": "页脚 / footer2\r/\r",
+            "header_images": 1,
+            "footer_images": 1
+          }
+        ],
+        "notes": [],
+        "endnotes": [],
+        "numbering": [],
+        "link_targets": [
+          "https://example.invalid/docs?q=1&lang=zh"
+        ],
+        "hyperlink_fields": [
+          "HYPERLINK \"https://example.invalid/docs?q=1&lang=zh\" \\l \"section\""
+        ],
+        "first_paragraph_style": "正文"
+      },
+      "edit_persisted": true,
+      "saved_sha256": "ae042c871d0f64779a3a006cadf162c1702ec44b51fdebcba4d619d838a00dff",
+      "fields_changed_on_save": [],
+      "result": "Pass",
+      "fields_changed_on_rebuild": []
+    },
+    {
+      "client": "Microsoft Excel",
+      "version": "16.0",
+      "build": "20527",
+      "case": "report-1900",
+      "stage": "source",
+      "before_sha256": "bbcb28f1d9c1a6895187b15ee0e2ff98df330d473120fad7dd3ad4b2a62317d6",
+      "before": {
+        "sheet_names": [
+          "销售明细",
+          "部门汇总",
+          "交付说明"
+        ],
+        "label": "订单 A",
+        "date": "2026-10-22",
+        "date_serial": 46317.0,
+        "amount": 1234.5,
+        "amount_format": "#,##0.00",
+        "merged": "$A$1:$C$1",
+        "bold": true,
+        "fill": 6965029.0
+      },
+      "after": {
+        "sheet_names": [
+          "销售明细",
+          "部门汇总",
+          "交付说明"
+        ],
+        "label": "订单 A",
+        "date": "2026-10-22",
+        "date_serial": 46317.0,
+        "amount": 1234.5,
+        "amount_format": "#,##0.00",
+        "merged": "$A$1:$C$1",
+        "bold": true,
+        "fill": 6965029.0
+      },
+      "edit_persisted": true,
+      "saved_sha256": "ab8a604aae7cfc3eee1ab194d4f397ba315246326f92206ae3e289efd0e4959b",
+      "fields_changed_on_save": [],
+      "result": "Pass"
+    },
+    {
+      "client": "Microsoft Excel",
+      "version": "16.0",
+      "build": "20527",
+      "case": "report-1900",
+      "stage": "clean",
+      "before_sha256": "8332e75de9f125a9a35089e9b767ac55e02b27a5bcdb644a538749f8b6b29c02",
+      "before": {
+        "sheet_names": [
+          "销售明细",
+          "部门汇总",
+          "交付说明"
+        ],
+        "label": "订单 A",
+        "date": "2026-10-22",
+        "date_serial": 46317.0,
+        "amount": 1234.5,
+        "amount_format": "#,##0.00",
+        "merged": "$A$1:$C$1",
+        "bold": true,
+        "fill": 6965029.0
+      },
+      "after": {
+        "sheet_names": [
+          "销售明细",
+          "部门汇总",
+          "交付说明"
+        ],
+        "label": "订单 A",
+        "date": "2026-10-22",
+        "date_serial": 46317.0,
+        "amount": 1234.5,
+        "amount_format": "#,##0.00",
+        "merged": "$A$1:$C$1",
+        "bold": true,
+        "fill": 6965029.0
+      },
+      "edit_persisted": true,
+      "saved_sha256": "fb30591d622ec411ffa93a10cd2dc42d4b7f4127e7831a82eba9b66a76c2d4eb",
+      "fields_changed_on_save": [],
+      "result": "Pass",
+      "fields_changed_on_rebuild": []
+    },
+    {
+      "client": "Microsoft Excel",
+      "version": "16.0",
+      "build": "20527",
+      "case": "report-1904",
+      "stage": "source",
+      "before_sha256": "5b3f882edfa41d8683ad6bc084e78339b33b50e963ede419c740a86e9e303bbd",
+      "before": {
+        "sheet_names": [
+          "销售明细",
+          "部门汇总",
+          "交付说明"
+        ],
+        "label": "订单 A",
+        "date": "2026-10-22",
+        "date_serial": 44855.0,
+        "amount": 1234.5,
+        "amount_format": "#,##0.00",
+        "merged": "$A$1:$C$1",
+        "bold": true,
+        "fill": 6965029.0
+      },
+      "after": {
+        "sheet_names": [
+          "销售明细",
+          "部门汇总",
+          "交付说明"
+        ],
+        "label": "订单 A",
+        "date": "2026-10-22",
+        "date_serial": 44855.0,
+        "amount": 1234.5,
+        "amount_format": "#,##0.00",
+        "merged": "$A$1:$C$1",
+        "bold": true,
+        "fill": 6965029.0
+      },
+      "edit_persisted": true,
+      "saved_sha256": "b222602efc9a1c896cdf2dc14740db4e25f10a11a0cd16d9e78bbf4e131db006",
+      "fields_changed_on_save": [],
+      "result": "Pass"
+    },
+    {
+      "client": "Microsoft Excel",
+      "version": "16.0",
+      "build": "20527",
+      "case": "report-1904",
+      "stage": "clean",
+      "before_sha256": "52d83aa786cc517ecc17c02821f67b93b67866abc731d5150fa6a0c951ff5ecc",
+      "before": {
+        "sheet_names": [
+          "销售明细",
+          "部门汇总",
+          "交付说明"
+        ],
+        "label": "订单 A",
+        "date": "2026-10-22",
+        "date_serial": 44855.0,
+        "amount": 1234.5,
+        "amount_format": "#,##0.00",
+        "merged": "$A$1:$C$1",
+        "bold": true,
+        "fill": 6965029.0
+      },
+      "after": {
+        "sheet_names": [
+          "销售明细",
+          "部门汇总",
+          "交付说明"
+        ],
+        "label": "订单 A",
+        "date": "2026-10-22",
+        "date_serial": 44855.0,
+        "amount": 1234.5,
+        "amount_format": "#,##0.00",
+        "merged": "$A$1:$C$1",
+        "bold": true,
+        "fill": 6965029.0
+      },
+      "edit_persisted": true,
+      "saved_sha256": "6dce1c2f870625695c69c08c3cf8dcc8f25c573b403e31f7312a2cbab9e7c85e",
+      "fields_changed_on_save": [],
+      "result": "Pass",
+      "fields_changed_on_rebuild": []
+    },
+    {
+      "client": "WPS Writer",
+      "version": "12.0",
+      "build": "12.1.0.29161",
+      "case": "document-template",
+      "stage": "source",
+      "before_sha256": "fcf80d572771fc10ff84c8c125a882195b7f1c540bbce08644dcdafb0ccb65ce",
+      "before": {
+        "text": "PartSieve 文档接收示例 / Document intake\r项目\r\u0007交付内容\r\u0007状态\r\u0007\r\u0007文档接收\r\u0007保留表格和图片\r\u0007可编辑\r\u0007\r\u0007日期\r\u00072026-10-22\r\u0007已核验\r\u0007\r\u0007合并单元格 / merged cells\r\u0007\r\u0007/\r\f第二节：独立页眉页脚 / Second section\r",
+        "tables": 1,
+        "images": 1,
+        "sections": [
+          {
+            "header": "页眉 / header1\r\u0001\r",
+            "footer": "页脚 / footer1\r\u0001\r",
+            "header_images": 1,
+            "footer_images": 1
+          },
+          {
+            "header": "页眉 / header2\r\u0001\r",
+            "footer": "页脚 / footer2\r\u0001\r",
+            "header_images": 1,
+            "footer_images": 1
+          }
+        ],
+        "notes": [],
+        "endnotes": [],
+        "numbering": [],
+        "link_targets": [],
+        "hyperlink_fields": [],
+        "first_paragraph_style": "正文"
+      },
+      "after": {
+        "text": "PartSieve 文档接收示例 / Document intake\r项目\r\u0007交付内容\r\u0007状态\r\u0007\r\u0007文档接收\r\u0007保留表格和图片\r\u0007可编辑\r\u0007\r\u0007日期\r\u00072026-10-22\r\u0007已核验\r\u0007\r\u0007合并单元格 / merged cells\r\u0007\r\u0007/\r\f第二节：独立页眉页脚 / Second section\r",
+        "tables": 1,
+        "images": 1,
+        "sections": [
+          {
+            "header": "页眉 / header1\r\u0001\r",
+            "footer": "页脚 / footer1\r\u0001\r",
+            "header_images": 1,
+            "footer_images": 1
+          },
+          {
+            "header": "页眉 / header2\r\u0001\r",
+            "footer": "页脚 / footer2\r\u0001\r",
+            "header_images": 1,
+            "footer_images": 1
+          }
+        ],
+        "notes": [],
+        "endnotes": [],
+        "numbering": [],
+        "link_targets": [],
+        "hyperlink_fields": [],
+        "first_paragraph_style": "正文"
+      },
+      "edit_persisted": true,
+      "saved_sha256": "6f93144feab0205665863751ed5475d70eb3c4886f41d31532f2ceb2ebbaadde",
+      "fields_changed_on_save": [],
+      "result": "Pass"
+    },
+    {
+      "client": "WPS Writer",
+      "version": "12.0",
+      "build": "12.1.0.29161",
+      "case": "document-template",
+      "stage": "clean",
+      "before_sha256": "a32b987464bcec90f11328182ae440412a7ef6affdaed284aa8aec35c26c39b7",
+      "before": {
+        "text": "PartSieve 文档接收示例 / Document intake\r项目\r\u0007交付内容\r\u0007状态\r\u0007\r\u0007文档接收\r\u0007保留表格和图片\r\u0007可编辑\r\u0007\r\u0007日期\r\u00072026-10-22\r\u0007已核验\r\u0007\r\u0007合并单元格 / merged cells\r\u0007\r\u0007/\r\f第二节：独立页眉页脚 / Second section\r",
+        "tables": 1,
+        "images": 1,
+        "sections": [
+          {
+            "header": "页眉 / header1\r\u0001\r",
+            "footer": "页脚 / footer1\r\u0001\r",
+            "header_images": 1,
+            "footer_images": 1
+          },
+          {
+            "header": "页眉 / header2\r\u0001\r",
+            "footer": "页脚 / footer2\r\u0001\r",
+            "header_images": 1,
+            "footer_images": 1
+          }
+        ],
+        "notes": [],
+        "endnotes": [],
+        "numbering": [],
+        "link_targets": [],
+        "hyperlink_fields": [],
+        "first_paragraph_style": "正文"
+      },
+      "after": {
+        "text": "PartSieve 文档接收示例 / Document intake\r项目\r\u0007交付内容\r\u0007状态\r\u0007\r\u0007文档接收\r\u0007保留表格和图片\r\u0007可编辑\r\u0007\r\u0007日期\r\u00072026-10-22\r\u0007已核验\r\u0007\r\u0007合并单元格 / merged cells\r\u0007\r\u0007/\r\f第二节：独立页眉页脚 / Second section\r",
+        "tables": 1,
+        "images": 1,
+        "sections": [
+          {
+            "header": "页眉 / header1\r\u0001\r",
+            "footer": "页脚 / footer1\r\u0001\r",
+            "header_images": 1,
+            "footer_images": 1
+          },
+          {
+            "header": "页眉 / header2\r\u0001\r",
+            "footer": "页脚 / footer2\r\u0001\r",
+            "header_images": 1,
+            "footer_images": 1
+          }
+        ],
+        "notes": [],
+        "endnotes": [],
+        "numbering": [],
+        "link_targets": [],
+        "hyperlink_fields": [],
+        "first_paragraph_style": "正文"
+      },
+      "edit_persisted": true,
+      "saved_sha256": "bf717277275e2cbffeea96da5bc432d4793a2c757602d85660968a5a131ddf10",
+      "fields_changed_on_save": [],
+      "result": "Pass",
+      "fields_changed_on_rebuild": []
+    },
+    {
+      "client": "WPS Writer",
+      "version": "12.0",
+      "build": "12.1.0.29161",
+      "case": "document-notes-lists",
+      "stage": "source",
+      "before_sha256": "18315aca948d53183a094cf865649c24cbc10fa97f0d50b1b9d2c7f80d4e2a1e",
+      "before": {
+        "text": "订单交付 / Order delivery\r订单 A：1234.50\r交付说明：保留原始数值\r金额说明\u0002归档说明\u0002\r",
+        "tables": 0,
+        "images": 0,
+        "sections": [
+          {
+            "header": "\r",
+            "footer": "\r",
+            "header_images": 0,
+            "footer_images": 0
+          }
+        ],
+        "notes": [
+          "脚注：订单金额按原始值保留。"
+        ],
+        "endnotes": [
+          "尾注：本文件用于可复现验收。"
+        ],
+        "numbering": [
+          "3.",
+          "3.1."
+        ],
+        "link_targets": [],
+        "hyperlink_fields": [],
+        "first_paragraph_style": "标题 1"
+      },
+      "after": {
+        "text": "订单交付 / Order delivery\r订单 A：1234.50\r交付说明：保留原始数值\r金额说明\u0002归档说明\u0002\r",
+        "tables": 0,
+        "images": 0,
+        "sections": [
+          {
+            "header": "\r",
+            "footer": "\r",
+            "header_images": 0,
+            "footer_images": 0
+          }
+        ],
+        "notes": [
+          "脚注：订单金额按原始值保留。"
+        ],
+        "endnotes": [
+          "尾注：本文件用于可复现验收。"
+        ],
+        "numbering": [
+          "3.",
+          "3.1."
+        ],
+        "link_targets": [],
+        "hyperlink_fields": [],
+        "first_paragraph_style": "标题 1"
+      },
+      "edit_persisted": true,
+      "saved_sha256": "f0eac718a7cd42893e50bda2eb0e7eadbc9ef9025edd4fcdc5dcf0e87948616e",
+      "fields_changed_on_save": [],
+      "result": "Pass"
+    },
+    {
+      "client": "WPS Writer",
+      "version": "12.0",
+      "build": "12.1.0.29161",
+      "case": "document-notes-lists",
+      "stage": "clean",
+      "before_sha256": "e0e64150b3810d75119d3474a3df14161fc6776e7660788faf7a6047277b8efa",
+      "before": {
+        "text": "订单交付 / Order delivery\r订单 A：1234.50\r交付说明：保留原始数值\r金额说明\u0002归档说明\u0002\r",
+        "tables": 0,
+        "images": 0,
+        "sections": [
+          {
+            "header": "\r",
+            "footer": "\r",
+            "header_images": 0,
+            "footer_images": 0
+          }
+        ],
+        "notes": [
+          "脚注：订单金额按原始值保留。"
+        ],
+        "endnotes": [
+          "尾注：本文件用于可复现验收。"
+        ],
+        "numbering": [
+          "3.",
+          "3.1."
+        ],
+        "link_targets": [],
+        "hyperlink_fields": [],
+        "first_paragraph_style": "标题 1"
+      },
+      "after": {
+        "text": "订单交付 / Order delivery\r订单 A：1234.50\r交付说明：保留原始数值\r金额说明\u0002归档说明\u0002\r",
+        "tables": 0,
+        "images": 0,
+        "sections": [
+          {
+            "header": "\r",
+            "footer": "\r",
+            "header_images": 0,
+            "footer_images": 0
+          }
+        ],
+        "notes": [
+          "脚注：订单金额按原始值保留。"
+        ],
+        "endnotes": [
+          "尾注：本文件用于可复现验收。"
+        ],
+        "numbering": [
+          "3.",
+          "3.1."
+        ],
+        "link_targets": [],
+        "hyperlink_fields": [],
+        "first_paragraph_style": "标题 1"
+      },
+      "edit_persisted": true,
+      "saved_sha256": "78c257009cced27a910b96d612429799392c5888e268a3dfefc8b0c76723eb5e",
+      "fields_changed_on_save": [],
+      "result": "Pass",
+      "fields_changed_on_rebuild": []
+    },
+    {
+      "client": "WPS Writer",
+      "version": "12.0",
+      "build": "12.1.0.29161",
+      "case": "word-links",
+      "stage": "source",
+      "before_sha256": "d5365ce74ef17fe921179988f91b926049faa102927ce79e0f26cec363c7822a",
+      "before": {
+        "text": "PartSieve 文档接收示例 / Document intake官网 链接\r项目\r\u0007交付内容\r\u0007状态\r\u0007\r\u0007文档接收\r\u0007保留表格和图片\r\u0007可编辑\r\u0007\r\u0007日期\r\u00072026-10-22\r\u0007已核验\r\u0007\r\u0007合并单元格 / merged cells\r\u0007\r\u0007/\r\f第二节：独立页眉页脚 / Second section\r",
+        "tables": 1,
+        "images": 1,
+        "sections": [
+          {
+            "header": "页眉 / header1官网 链接\r\u0001\r",
+            "footer": "页脚 / footer1官网 链接\r\u0001\r",
+            "header_images": 1,
+            "footer_images": 1
+          },
+          {
+            "header": "页眉 / header2\r\u0001\r",
+            "footer": "页脚 / footer2\r\u0001\r",
+            "header_images": 1,
+            "footer_images": 1
+          }
+        ],
+        "notes": [],
+        "endnotes": [],
+        "numbering": [],
+        "link_targets": [
+          "https://example.invalid/docs?q=1&lang=zh#section"
+        ],
+        "hyperlink_fields": [
+          " HYPERLINK \"https://example.invalid/docs?q=1&lang=zh#section\" "
+        ],
+        "first_paragraph_style": "正文"
+      },
+      "after": {
+        "text": "PartSieve 文档接收示例 / Document intake官网 链接\r项目\r\u0007交付内容\r\u0007状态\r\u0007\r\u0007文档接收\r\u0007保留表格和图片\r\u0007可编辑\r\u0007\r\u0007日期\r\u00072026-10-22\r\u0007已核验\r\u0007\r\u0007合并单元格 / merged cells\r\u0007\r\u0007/\r\f第二节：独立页眉页脚 / Second section\r",
+        "tables": 1,
+        "images": 1,
+        "sections": [
+          {
+            "header": "页眉 / header1官网 链接\r\u0001\r",
+            "footer": "页脚 / footer1官网 链接\r\u0001\r",
+            "header_images": 1,
+            "footer_images": 1
+          },
+          {
+            "header": "页眉 / header2\r\u0001\r",
+            "footer": "页脚 / footer2\r\u0001\r",
+            "header_images": 1,
+            "footer_images": 1
+          }
+        ],
+        "notes": [],
+        "endnotes": [],
+        "numbering": [],
+        "link_targets": [
+          "https://example.invalid/docs?q=1&lang=zh#section"
+        ],
+        "hyperlink_fields": [
+          " HYPERLINK \"https://example.invalid/docs?q=1&lang=zh#section\" "
+        ],
+        "first_paragraph_style": "正文"
+      },
+      "edit_persisted": true,
+      "saved_sha256": "031c733fb2e4c7c569a55d33734b96194988cdb80f3ebdf79b07cca67dbbc804",
+      "fields_changed_on_save": [],
+      "result": "Pass"
+    },
+    {
+      "client": "WPS Writer",
+      "version": "12.0",
+      "build": "12.1.0.29161",
+      "case": "word-links",
+      "stage": "clean",
+      "before_sha256": "ec0cfcf7cb78be325a9f5e1824eb6ae2213a05185793f8e3cb9c5bb2100c26cb",
+      "before": {
+        "text": "PartSieve 文档接收示例 / Document intake官网 链接\r项目\r\u0007交付内容\r\u0007状态\r\u0007\r\u0007文档接收\r\u0007保留表格和图片\r\u0007可编辑\r\u0007\r\u0007日期\r\u00072026-10-22\r\u0007已核验\r\u0007\r\u0007合并单元格 / merged cells\r\u0007\r\u0007/\r\f第二节：独立页眉页脚 / Second section\r",
+        "tables": 1,
+        "images": 1,
+        "sections": [
+          {
+            "header": "页眉 / header1官网 链接\r\u0001\r",
+            "footer": "页脚 / footer1官网 链接\r\u0001\r",
+            "header_images": 1,
+            "footer_images": 1
+          },
+          {
+            "header": "页眉 / header2\r\u0001\r",
+            "footer": "页脚 / footer2\r\u0001\r",
+            "header_images": 1,
+            "footer_images": 1
+          }
+        ],
+        "notes": [],
+        "endnotes": [],
+        "numbering": [],
+        "link_targets": [
+          "https://example.invalid/docs?q=1&lang=zh#section"
+        ],
+        "hyperlink_fields": [
+          " HYPERLINK \"https://example.invalid/docs?q=1&lang=zh#section\" "
+        ],
+        "first_paragraph_style": "正文"
+      },
+      "after": {
+        "text": "PartSieve 文档接收示例 / Document intake官网 链接\r项目\r\u0007交付内容\r\u0007状态\r\u0007\r\u0007文档接收\r\u0007保留表格和图片\r\u0007可编辑\r\u0007\r\u0007日期\r\u00072026-10-22\r\u0007已核验\r\u0007\r\u0007合并单元格 / merged cells\r\u0007\r\u0007/\r\f第二节：独立页眉页脚 / Second section\r",
+        "tables": 1,
+        "images": 1,
+        "sections": [
+          {
+            "header": "页眉 / header1官网 链接\r\u0001\r",
+            "footer": "页脚 / footer1官网 链接\r\u0001\r",
+            "header_images": 1,
+            "footer_images": 1
+          },
+          {
+            "header": "页眉 / header2\r\u0001\r",
+            "footer": "页脚 / footer2\r\u0001\r",
+            "header_images": 1,
+            "footer_images": 1
+          }
+        ],
+        "notes": [],
+        "endnotes": [],
+        "numbering": [],
+        "link_targets": [
+          "https://example.invalid/docs?q=1&lang=zh#section"
+        ],
+        "hyperlink_fields": [
+          " HYPERLINK \"https://example.invalid/docs?q=1&lang=zh#section\" "
+        ],
+        "first_paragraph_style": "正文"
+      },
+      "edit_persisted": true,
+      "saved_sha256": "bb5d1b1d9c52c90f0cb1516dfbda0203fcafcfdca177d771a37b8090ece66fe2",
+      "fields_changed_on_save": [],
+      "result": "Pass",
+      "fields_changed_on_rebuild": []
+    },
+    {
+      "client": "WPS Spreadsheets",
+      "version": "12.0",
+      "build": "29161",
+      "case": "report-1900",
+      "stage": "source",
+      "before_sha256": "bbcb28f1d9c1a6895187b15ee0e2ff98df330d473120fad7dd3ad4b2a62317d6",
+      "before": {
+        "sheet_names": [
+          "销售明细",
+          "部门汇总",
+          "交付说明"
+        ],
+        "label": "订单 A",
+        "date": "2026-10-22",
+        "date_serial": 46317.0,
+        "amount": 1234.5,
+        "amount_format": "#,##0.00",
+        "merged": "$A$1:$C$1",
+        "bold": true,
+        "fill": 6965029.0
+      },
+      "after": {
+        "sheet_names": [
+          "销售明细",
+          "部门汇总",
+          "交付说明"
+        ],
+        "label": "订单 A",
+        "date": "2026-10-22",
+        "date_serial": 46317.0,
+        "amount": 1234.5,
+        "amount_format": "#,##0.00",
+        "merged": "$A$1:$C$1",
+        "bold": true,
+        "fill": 6965029.0
+      },
+      "edit_persisted": true,
+      "saved_sha256": "9036484fddfaf38ebab77cfedbfe8d0960ce93ca299eb473f36269d2c062ae84",
+      "fields_changed_on_save": [],
+      "result": "Pass"
+    },
+    {
+      "client": "WPS Spreadsheets",
+      "version": "12.0",
+      "build": "29161",
+      "case": "report-1900",
+      "stage": "clean",
+      "before_sha256": "8332e75de9f125a9a35089e9b767ac55e02b27a5bcdb644a538749f8b6b29c02",
+      "before": {
+        "sheet_names": [
+          "销售明细",
+          "部门汇总",
+          "交付说明"
+        ],
+        "label": "订单 A",
+        "date": "2026-10-22",
+        "date_serial": 46317.0,
+        "amount": 1234.5,
+        "amount_format": "#,##0.00",
+        "merged": "$A$1:$C$1",
+        "bold": true,
+        "fill": 6965029.0
+      },
+      "after": {
+        "sheet_names": [
+          "销售明细",
+          "部门汇总",
+          "交付说明"
+        ],
+        "label": "订单 A",
+        "date": "2026-10-22",
+        "date_serial": 46317.0,
+        "amount": 1234.5,
+        "amount_format": "#,##0.00",
+        "merged": "$A$1:$C$1",
+        "bold": true,
+        "fill": 6965029.0
+      },
+      "edit_persisted": true,
+      "saved_sha256": "003fa3e02e5733410f61f06f953d83387e2ffb1792b7de9e33548bfc44a9f41e",
+      "fields_changed_on_save": [],
+      "result": "Pass",
+      "fields_changed_on_rebuild": []
+    },
+    {
+      "client": "WPS Spreadsheets",
+      "version": "12.0",
+      "build": "29161",
+      "case": "report-1904",
+      "stage": "source",
+      "before_sha256": "5b3f882edfa41d8683ad6bc084e78339b33b50e963ede419c740a86e9e303bbd",
+      "before": {
+        "sheet_names": [
+          "销售明细",
+          "部门汇总",
+          "交付说明"
+        ],
+        "label": "订单 A",
+        "date": "2026-10-22",
+        "date_serial": 44855.0,
+        "amount": 1234.5,
+        "amount_format": "#,##0.00",
+        "merged": "$A$1:$C$1",
+        "bold": true,
+        "fill": 6965029.0
+      },
+      "after": {
+        "sheet_names": [
+          "销售明细",
+          "部门汇总",
+          "交付说明"
+        ],
+        "label": "订单 A",
+        "date": "2026-10-22",
+        "date_serial": 44855.0,
+        "amount": 1234.5,
+        "amount_format": "#,##0.00",
+        "merged": "$A$1:$C$1",
+        "bold": true,
+        "fill": 6965029.0
+      },
+      "edit_persisted": true,
+      "saved_sha256": "5fd3bfdc56817d64b3bd9c89c98018e747c0aa00a99c677921582f8b21565b5c",
+      "fields_changed_on_save": [],
+      "result": "Pass"
+    },
+    {
+      "client": "WPS Spreadsheets",
+      "version": "12.0",
+      "build": "29161",
+      "case": "report-1904",
+      "stage": "clean",
+      "before_sha256": "52d83aa786cc517ecc17c02821f67b93b67866abc731d5150fa6a0c951ff5ecc",
+      "before": {
+        "sheet_names": [
+          "销售明细",
+          "部门汇总",
+          "交付说明"
+        ],
+        "label": "订单 A",
+        "date": "2026-10-22",
+        "date_serial": 44855.0,
+        "amount": 1234.5,
+        "amount_format": "#,##0.00",
+        "merged": "$A$1:$C$1",
+        "bold": true,
+        "fill": 6965029.0
+      },
+      "after": {
+        "sheet_names": [
+          "销售明细",
+          "部门汇总",
+          "交付说明"
+        ],
+        "label": "订单 A",
+        "date": "2026-10-22",
+        "date_serial": 44855.0,
+        "amount": 1234.5,
+        "amount_format": "#,##0.00",
+        "merged": "$A$1:$C$1",
+        "bold": true,
+        "fill": 6965029.0
+      },
+      "edit_persisted": true,
+      "saved_sha256": "4d03ca025c68d70f66819f4c252ee66f68997394ab34809980250d30157aba13",
+      "fields_changed_on_save": [],
+      "result": "Pass",
+      "fields_changed_on_rebuild": []
+    }
+  ],
+  "openxml": {
+    "tool": "DocumentFormat.OpenXml",
+    "version": "3.3.0",
+    "target": "Office2013",
+    "reports": [
+      {
+        "path": "original/document-notes-lists.docm",
+        "sha256": "18315aca948d53183a094cf865649c24cbc10fa97f0d50b1b9d2c7f80d4e2a1e",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "original/document-template.docm",
+        "sha256": "fcf80d572771fc10ff84c8c125a882195b7f1c540bbce08644dcdafb0ccb65ce",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "original/report-1900.xlsm",
+        "sha256": "bbcb28f1d9c1a6895187b15ee0e2ff98df330d473120fad7dd3ad4b2a62317d6",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "original/report-1904.xlsm",
+        "sha256": "5b3f882edfa41d8683ad6bc084e78339b33b50e963ede419c740a86e9e303bbd",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "original/word-links.docm",
+        "sha256": "d5365ce74ef17fe921179988f91b926049faa102927ce79e0f26cec363c7822a",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "partsieve/document-notes-lists.docx",
+        "sha256": "e0e64150b3810d75119d3474a3df14161fc6776e7660788faf7a6047277b8efa",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "partsieve/document-template.docx",
+        "sha256": "a32b987464bcec90f11328182ae440412a7ef6affdaed284aa8aec35c26c39b7",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "partsieve/report-1900.xlsx",
+        "sha256": "8332e75de9f125a9a35089e9b767ac55e02b27a5bcdb644a538749f8b6b29c02",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "partsieve/report-1904.xlsx",
+        "sha256": "52d83aa786cc517ecc17c02821f67b93b67866abc731d5150fa6a0c951ff5ecc",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "partsieve/word-links.docx",
+        "sha256": "ec0cfcf7cb78be325a9f5e1824eb6ae2213a05185793f8e3cb9c5bb2100c26cb",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "client/Excel.Application-report-1900-clean.xlsx",
+        "sha256": "fb30591d622ec411ffa93a10cd2dc42d4b7f4127e7831a82eba9b66a76c2d4eb",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "client/Excel.Application-report-1900-source.xlsx",
+        "sha256": "ab8a604aae7cfc3eee1ab194d4f397ba315246326f92206ae3e289efd0e4959b",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "client/Excel.Application-report-1904-clean.xlsx",
+        "sha256": "6dce1c2f870625695c69c08c3cf8dcc8f25c573b403e31f7312a2cbab9e7c85e",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "client/Excel.Application-report-1904-source.xlsx",
+        "sha256": "b222602efc9a1c896cdf2dc14740db4e25f10a11a0cd16d9e78bbf4e131db006",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "client/KET.Application-report-1900-clean.xlsx",
+        "sha256": "003fa3e02e5733410f61f06f953d83387e2ffb1792b7de9e33548bfc44a9f41e",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "client/KET.Application-report-1900-source.xlsx",
+        "sha256": "9036484fddfaf38ebab77cfedbfe8d0960ce93ca299eb473f36269d2c062ae84",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "client/KET.Application-report-1904-clean.xlsx",
+        "sha256": "4d03ca025c68d70f66819f4c252ee66f68997394ab34809980250d30157aba13",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "client/KET.Application-report-1904-source.xlsx",
+        "sha256": "5fd3bfdc56817d64b3bd9c89c98018e747c0aa00a99c677921582f8b21565b5c",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "client/KWPS.Application-document-notes-lists-clean.docx",
+        "sha256": "78c257009cced27a910b96d612429799392c5888e268a3dfefc8b0c76723eb5e",
+        "status": "Fail",
+        "errors": [
+          {
+            "Id": "Sch_UnexpectedElementContentExpectingComplex",
+            "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority'.",
+            "Part": "/word/styles.xml",
+            "XPath": "/w:styles[1]/w:style[4]"
+          },
+          {
+            "Id": "Sch_UnexpectedElementContentExpectingComplex",
+            "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority'.",
+            "Part": "/word/styles.xml",
+            "XPath": "/w:styles[1]/w:style[3]"
+          },
+          {
+            "Id": "Sch_UnexpectedElementContentExpectingComplex",
+            "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority'.",
+            "Part": "/word/styles.xml",
+            "XPath": "/w:styles[1]/w:style[1]"
+          }
+        ]
+      },
+      {
+        "path": "client/KWPS.Application-document-notes-lists-source.docx",
+        "sha256": "f0eac718a7cd42893e50bda2eb0e7eadbc9ef9025edd4fcdc5dcf0e87948616e",
+        "status": "Fail",
+        "errors": [
+          {
+            "Id": "Sch_UnexpectedElementContentExpectingComplex",
+            "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority'.",
+            "Part": "/word/styles.xml",
+            "XPath": "/w:styles[1]/w:style[4]"
+          },
+          {
+            "Id": "Sch_UnexpectedElementContentExpectingComplex",
+            "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority'.",
+            "Part": "/word/styles.xml",
+            "XPath": "/w:styles[1]/w:style[3]"
+          },
+          {
+            "Id": "Sch_UnexpectedElementContentExpectingComplex",
+            "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority'.",
+            "Part": "/word/styles.xml",
+            "XPath": "/w:styles[1]/w:style[1]"
+          }
+        ]
+      },
+      {
+        "path": "client/KWPS.Application-document-template-clean.docx",
+        "sha256": "bf717277275e2cbffeea96da5bc432d4793a2c757602d85660968a5a131ddf10",
+        "status": "Fail",
+        "errors": [
+          {
+            "Id": "Sch_UnexpectedElementContentExpectingComplex",
+            "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority'.",
+            "Part": "/word/styles.xml",
+            "XPath": "/w:styles[1]/w:style[3]"
+          },
+          {
+            "Id": "Sch_UnexpectedElementContentExpectingComplex",
+            "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority'.",
+            "Part": "/word/styles.xml",
+            "XPath": "/w:styles[1]/w:style[2]"
+          },
+          {
+            "Id": "Sch_UnexpectedElementContentExpectingComplex",
+            "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority'.",
+            "Part": "/word/styles.xml",
+            "XPath": "/w:styles[1]/w:style[1]"
+          }
+        ]
+      },
+      {
+        "path": "client/KWPS.Application-document-template-source.docx",
+        "sha256": "6f93144feab0205665863751ed5475d70eb3c4886f41d31532f2ceb2ebbaadde",
+        "status": "Fail",
+        "errors": [
+          {
+            "Id": "Sch_UnexpectedElementContentExpectingComplex",
+            "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority'.",
+            "Part": "/word/styles.xml",
+            "XPath": "/w:styles[1]/w:style[3]"
+          },
+          {
+            "Id": "Sch_UnexpectedElementContentExpectingComplex",
+            "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority'.",
+            "Part": "/word/styles.xml",
+            "XPath": "/w:styles[1]/w:style[2]"
+          },
+          {
+            "Id": "Sch_UnexpectedElementContentExpectingComplex",
+            "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority'.",
+            "Part": "/word/styles.xml",
+            "XPath": "/w:styles[1]/w:style[1]"
+          }
+        ]
+      },
+      {
+        "path": "client/KWPS.Application-word-links-clean.docx",
+        "sha256": "bb5d1b1d9c52c90f0cb1516dfbda0203fcafcfdca177d771a37b8090ece66fe2",
+        "status": "Fail",
+        "errors": [
+          {
+            "Id": "Sch_UnexpectedElementContentExpectingComplex",
+            "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority'.",
+            "Part": "/word/styles.xml",
+            "XPath": "/w:styles[1]/w:style[3]"
+          },
+          {
+            "Id": "Sch_UnexpectedElementContentExpectingComplex",
+            "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority'.",
+            "Part": "/word/styles.xml",
+            "XPath": "/w:styles[1]/w:style[2]"
+          },
+          {
+            "Id": "Sch_UnexpectedElementContentExpectingComplex",
+            "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority'.",
+            "Part": "/word/styles.xml",
+            "XPath": "/w:styles[1]/w:style[1]"
+          }
+        ]
+      },
+      {
+        "path": "client/KWPS.Application-word-links-source.docx",
+        "sha256": "031c733fb2e4c7c569a55d33734b96194988cdb80f3ebdf79b07cca67dbbc804",
+        "status": "Fail",
+        "errors": [
+          {
+            "Id": "Sch_UnexpectedElementContentExpectingComplex",
+            "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority'.",
+            "Part": "/word/styles.xml",
+            "XPath": "/w:styles[1]/w:style[3]"
+          },
+          {
+            "Id": "Sch_UnexpectedElementContentExpectingComplex",
+            "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority'.",
+            "Part": "/word/styles.xml",
+            "XPath": "/w:styles[1]/w:style[2]"
+          },
+          {
+            "Id": "Sch_UnexpectedElementContentExpectingComplex",
+            "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:uiPriority'.",
+            "Part": "/word/styles.xml",
+            "XPath": "/w:styles[1]/w:style[1]"
+          }
+        ]
+      },
+      {
+        "path": "client/Word.Application-document-notes-lists-clean.docx",
+        "sha256": "8688ef9a8be5f8d47e965d2cd14bbc136a0b99f7529f7cc442d3466f564ae71a",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "client/Word.Application-document-notes-lists-source.docx",
+        "sha256": "9a569ed2d996714f70fbc8b86436c321da7c65a63d54c6fe3a86c7876ac67691",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "client/Word.Application-document-template-clean.docx",
+        "sha256": "7ae69fcffb983d13f92b7696966854f61db49e151cb828eaabd329791c385e9a",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "client/Word.Application-document-template-source.docx",
+        "sha256": "772574f24fea5d68ce7d6b09fe9bfef1c43f45462170179c74c235bdef3f7c0b",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "client/Word.Application-word-links-clean.docx",
+        "sha256": "ae042c871d0f64779a3a006cadf162c1702ec44b51fdebcba4d619d838a00dff",
+        "status": "Pass",
+        "errors": []
+      },
+      {
+        "path": "client/Word.Application-word-links-source.docx",
+        "sha256": "9b87019c0de60e8ae92ac3be344431ff64287d0378ac80100fbb9b56a361105c",
+        "status": "Pass",
+        "errors": []
+      }
+    ]
+  }
+}

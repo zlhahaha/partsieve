@@ -23,7 +23,7 @@ fn array(value : Json) -> Array[Json] {
 }
 
 ///|
-fn integer(value : Json) -> Int {
+fn integer(value : Json) -> Int32 {
   match value {
     Number(n, ..) => n.to_int()
     _ => abort("expected integer")

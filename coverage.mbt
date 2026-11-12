@@ -127,7 +127,7 @@ fn require_supported_profile(pkg : Package) -> Unit raise {
 ///|
 fn add_capability_finding(
   findings : Array[CapabilityFinding],
-  index : Map[String, Int],
+  index : Map[String, Int32],
   capability : Capability,
   source : String,
   part : String,
@@ -172,7 +172,7 @@ fn assess_package(pkg : Package) -> Assessment raise {
   let decision = profile_decision(pkg)
   pkg.control.checkpoint("assessment", 1)
   let findings : Array[CapabilityFinding] = []
-  let index : Map[String, Int] = Map([])
+  let index : Map[String, Int32] = Map([])
   for part in pkg.audit.parts {
     pkg.control.checkpoint("assessment-part", 1)
     let ct = part.content_type.to_lower()
@@ -364,7 +364,7 @@ fn failed_assessment(
   limits : Limits,
   status : ResultStatus,
   reason : String,
-  control? : WorkControl = WorkControl::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> Assessment {
   let input_hash = if control.stop_reason() is None &&
     input.length() <= limits.input_bytes &&
@@ -417,8 +417,8 @@ fn failed_assessment(
 // Detailed assessment returns explicit negative states, never publishable bytes.
 pub fn assess(
   input : Bytes,
-  limits? : Limits = Limits::default(),
-  control? : WorkControl = WorkControl::default(),
+  limits~ : Limits = Limits::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> Assessment {
   assess_package(load_package(input, limits, enforce_profile=false, control~)) catch {
     Invalid(reason) => failed_assessment(input, limits, Fail, reason, control~)

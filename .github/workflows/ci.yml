@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   native:
-    name: Windows Native CLI and SDK regression
+    name: Supported MoonBit 0.10.20 / Windows Native
     runs-on: windows-2022
     timeout-minutes: 20
     steps:
@@ -31,7 +31,7 @@ jobs:
       - name: Install pinned MoonBit toolchain
         shell: pwsh
         env:
-          MOONBIT_INSTALL_VERSION: '0.10.14+7d59c7ec9'
+          MOONBIT_INSTALL_VERSION: '0.10.20+65efd5b93'
         run: |
           $ErrorActionPreference = 'Stop'
           Invoke-WebRequest https://cli.moonbitlang.com/install/powershell.ps1 -OutFile "$env:RUNNER_TEMP\install-moonbit.ps1"
@@ -95,14 +95,14 @@ jobs:
             docs/evidence/word-verified.receipt.json
 
   linux-native:
-    name: Linux Native CLI and SDK regression
+    name: Supported MoonBit 0.10.20 / Linux Native
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - name: Install pinned MoonBit toolchain
         env:
-          MOONBIT_INSTALL_VERSION: '0.10.14+7d59c7ec9'
+          MOONBIT_INSTALL_VERSION: '0.10.20+65efd5b93'
         run: |
           curl --fail --silent --show-error https://cli.moonbitlang.com/install/unix.sh -o "$RUNNER_TEMP/install-moonbit.sh"
           bash "$RUNNER_TEMP/install-moonbit.sh"

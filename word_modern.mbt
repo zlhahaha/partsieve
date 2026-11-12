@@ -36,7 +36,7 @@ fn empty_node(node : Node) -> Bool {
 }
 
 ///|
-fn hex_text(value : String, length : Int) -> Bool {
+fn hex_text(value : String, length : Int32) -> Bool {
   value.length() == length &&
   value
   .code_units()
@@ -100,7 +100,7 @@ fn word_modern_attribute(
 ///|
 fn namespace_at(
   nodes : Array[Node],
-  index : Int,
+  index : Int32,
   prefix : String,
   control : WorkControl,
 ) -> String? raise {
@@ -128,8 +128,8 @@ fn word_modern_catalog(
   part : PartRecord,
   nodes : Array[Node],
   control : WorkControl,
-) -> Map[Int, Bool] raise {
-  let allowed : Map[Int, Bool] = Map([])
+) -> Map[Int32, Bool] raise {
+  let allowed : Map[Int32, Bool] = Map([])
   if ![
       "application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml",

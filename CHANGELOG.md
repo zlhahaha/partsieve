@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.9.0
+
+- Pin MoonBit 0.10.20 for Windows and Linux Native. Preserve a single bounded Excel extended editing-time property without modifying its payload.
 
 - Support all five pinned POI footnote, endnote and numbering documents. Preserve empty built-in APA metadata, scoped markup compatibility branches, Office 2013 document and theme metadata, numbering overrides, bookmarks and proofing ranges. Add independent validation and rejection tests for malicious variants.
 - Preserve bounded Word footnote/endnote definitions, separator settings, explicit multi-level numbering and level/start overrides. Bind note/numbering IDs to uniquely owned internal parts; reject dangling/duplicate IDs, mismatched markers/levels, ambiguous overrides and unsupported inheritance or active content.

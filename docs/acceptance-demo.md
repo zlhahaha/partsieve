@@ -7,7 +7,7 @@ GitHub主分支新增第五步批处理演示；已发布0.8.0包内仍为原四
 
 ## 一次准备
 
-从仓库根目录使用PowerShell 7，具备README要求的MoonBit 0.10.14和Native编译环境：
+从仓库根目录使用PowerShell 7，具备README要求的MoonBit 0.10.20和Native编译环境：
 
 ```powershell
 moon update

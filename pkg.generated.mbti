@@ -3,6 +3,7 @@ package "zlhahaha/partsieve"
 
 import {
   "moonbitlang/core/debug",
+  "moonbitlang/core/json",
 }
 
 // Values
@@ -18,7 +19,7 @@ pub fn digest(BytesView) -> String
 
 pub fn execute_authorized_document(Bytes, DocumentAuthorization, control? : WorkControl) -> Result[AuthorizedRebuilt, SdkFailure]
 
-pub fn execute_document_plan(Bytes, Json, limits? : Limits, control? : WorkControl) -> Result[VerifiedRebuilt, SdkFailure]
+pub fn execute_document_plan(Bytes, @json.Json, limits? : Limits, control? : WorkControl) -> Result[VerifiedRebuilt, SdkFailure]
 
 pub fn inspect_graph(Bytes, limits? : Limits, control? : WorkControl) -> PackageGraph raise
 
@@ -34,9 +35,9 @@ pub fn rebuild(Bytes, limits? : Limits, control? : WorkControl) -> Rebuilt raise
 
 pub fn rebuild_verified(Bytes, limits? : Limits, control? : WorkControl) -> VerifiedRebuilt raise
 
-pub fn rebuild_verified_with_plan(Bytes, Json, limits? : Limits, control? : WorkControl) -> VerifiedRebuilt raise
+pub fn rebuild_verified_with_plan(Bytes, @json.Json, limits? : Limits, control? : WorkControl) -> VerifiedRebuilt raise
 
-pub fn rebuild_with_plan(Bytes, Json, limits? : Limits, control? : WorkControl) -> Rebuilt raise
+pub fn rebuild_with_plan(Bytes, @json.Json, limits? : Limits, control? : WorkControl) -> Rebuilt raise
 
 pub fn resolve_target(String, String) -> String raise
 
@@ -47,14 +48,16 @@ pub fn verify_contract(Bytes, Bytes, limits? : Limits, control? : WorkControl) -
 pub fn verify_document(Bytes, Bytes, limits? : Limits, control? : WorkControl) -> Result[VerifiedReceipt, SdkFailure]
 
 // Errors
+#derive(@debug.Debug)
 pub(all) suberror SieveError {
   Refused(String)
   Incomplete(String)
   Invalid(String)
-} derive(@debug.Debug)
+}
 pub fn SieveError::to_repr(Self) -> @debug.Repr
 
 // Types and methods
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct Assessment {
   schema : String
   input_hash : String?
@@ -62,12 +65,13 @@ pub(all) struct Assessment {
   coverage : Coverage
   decision : Decision
   graph : PackageGraph?
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn Assessment::equal(Self, Self) -> Bool
 pub fn Assessment::not_equal(Self, Self) -> Bool
-pub fn Assessment::to_json(Self) -> Json
+pub fn Assessment::to_json(Self) -> @json.Json
 pub fn Assessment::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct Audit {
   schema : String
   input_hash : String
@@ -80,12 +84,13 @@ pub(all) struct Audit {
   parts : Array[PartRecord]
   relationships : Array[Relationship]
   findings : Array[Finding]
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn Audit::equal(Self, Self) -> Bool
 pub fn Audit::not_equal(Self, Self) -> Bool
-pub fn Audit::to_json(Self) -> Json
+pub fn Audit::to_json(Self) -> @json.Json
 pub fn Audit::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct AuthorizationRecord {
   schema : String
   input_hash : String
@@ -93,10 +98,10 @@ pub(all) struct AuthorizationRecord {
   output_hash : String
   permissions : RemovalPermissions
   summary : ChangeSummary
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn AuthorizationRecord::equal(Self, Self) -> Bool
 pub fn AuthorizationRecord::not_equal(Self, Self) -> Bool
-pub fn AuthorizationRecord::to_json(Self) -> Json
+pub fn AuthorizationRecord::to_json(Self) -> @json.Json
 pub fn AuthorizationRecord::to_repr(Self) -> @debug.Repr
 
 pub(all) struct AuthorizedRebuilt {
@@ -105,6 +110,7 @@ pub(all) struct AuthorizedRebuilt {
   authorization : AuthorizationRecord
 }
 
+#derive(Eq, @debug.Debug)
 pub(all) enum Capability {
   Vba
   HttpHyperlink
@@ -115,12 +121,13 @@ pub(all) enum Capability {
   ActiveX
   UnknownExternalRelationship
   UnknownPotentiallyActiveExtension
-} derive(Eq, @debug.Debug)
+}
 pub fn Capability::equal(Self, Self) -> Bool
 pub fn Capability::not_equal(Self, Self) -> Bool
-pub fn Capability::to_json(Self) -> Json
+pub fn Capability::to_json(Self) -> @json.Json
 pub fn Capability::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct CapabilityFinding {
   rule_id : String
   capability : Capability
@@ -129,55 +136,60 @@ pub(all) struct CapabilityFinding {
   certainty : Certainty
   rebuild_support : RebuildSupport
   evidence : Array[String]
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn CapabilityFinding::equal(Self, Self) -> Bool
 pub fn CapabilityFinding::not_equal(Self, Self) -> Bool
-pub fn CapabilityFinding::to_json(Self) -> Json
+pub fn CapabilityFinding::to_json(Self) -> @json.Json
 pub fn CapabilityFinding::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum Certainty {
   Declared
   Uncertain
-} derive(Eq, @debug.Debug)
+}
 pub fn Certainty::equal(Self, Self) -> Bool
 pub fn Certainty::not_equal(Self, Self) -> Bool
-pub fn Certainty::to_json(Self) -> Json
+pub fn Certainty::to_json(Self) -> @json.Json
 pub fn Certainty::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum ChangeKind {
   VbaRemoval
   OleRemoval
   TemplateRemoval
   MacroFormatConversion
-} derive(Eq, @debug.Debug)
+}
 pub fn ChangeKind::equal(Self, Self) -> Bool
 pub fn ChangeKind::label(Self) -> String
 pub fn ChangeKind::not_equal(Self, Self) -> Bool
-pub fn ChangeKind::to_json(Self) -> Json
+pub fn ChangeKind::to_json(Self) -> @json.Json
 pub fn ChangeKind::to_repr(Self) -> @debug.Repr
-pub impl ToJson for ChangeKind
+pub impl @json.ToJson for ChangeKind
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct ChangeSummary {
   changes : Array[ContentChange]
   removed_parts : Array[String]
   rewritten_parts : Array[String]
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn ChangeSummary::equal(Self, Self) -> Bool
 pub fn ChangeSummary::not_equal(Self, Self) -> Bool
-pub fn ChangeSummary::to_json(Self) -> Json
+pub fn ChangeSummary::to_json(Self) -> @json.Json
 pub fn ChangeSummary::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum CheckState {
   Checked
   NotChecked
   IncompleteCheck
   Opaque
-} derive(Eq, @debug.Debug)
+}
 pub fn CheckState::equal(Self, Self) -> Bool
 pub fn CheckState::not_equal(Self, Self) -> Bool
-pub fn CheckState::to_json(Self) -> Json
+pub fn CheckState::to_json(Self) -> @json.Json
 pub fn CheckState::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct CheckedOperation {
   operation_id : String
   kind : PlanOperationKind
@@ -190,32 +202,35 @@ pub(all) struct CheckedOperation {
   expected_after_hash : String?
   depends_on : Array[String]
   reason : String
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn CheckedOperation::equal(Self, Self) -> Bool
 pub fn CheckedOperation::not_equal(Self, Self) -> Bool
-pub fn CheckedOperation::to_json(Self) -> Json
+pub fn CheckedOperation::to_json(Self) -> @json.Json
 pub fn CheckedOperation::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct ContentChange {
   kind : ChangeKind
-  count : Int
+  count : Int32
   removed_parts : Array[String]
   effect : String
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn ContentChange::equal(Self, Self) -> Bool
 pub fn ContentChange::not_equal(Self, Self) -> Bool
-pub fn ContentChange::to_json(Self) -> Json
+pub fn ContentChange::to_json(Self) -> @json.Json
 pub fn ContentChange::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct ContentTypeIndex {
   content_type : String
   parts : Array[String]
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn ContentTypeIndex::equal(Self, Self) -> Bool
 pub fn ContentTypeIndex::not_equal(Self, Self) -> Bool
-pub fn ContentTypeIndex::to_json(Self) -> Json
+pub fn ContentTypeIndex::to_json(Self) -> @json.Json
 pub fn ContentTypeIndex::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct ContractDisposition {
   part : String
   classification : PreservationKind
@@ -224,12 +239,13 @@ pub(all) struct ContractDisposition {
   decision_id : String?
   rule_id : String?
   reason : String
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn ContractDisposition::equal(Self, Self) -> Bool
 pub fn ContractDisposition::not_equal(Self, Self) -> Bool
-pub fn ContractDisposition::to_json(Self) -> Json
+pub fn ContractDisposition::to_json(Self) -> @json.Json
 pub fn ContractDisposition::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct Coverage {
   declared_profile : String
   rules : Array[RuleCoverage]
@@ -237,32 +253,34 @@ pub(all) struct Coverage {
   unchecked_features : Array[String]
   parse_complete : Bool
   parse_error : String?
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn Coverage::equal(Self, Self) -> Bool
 pub fn Coverage::not_equal(Self, Self) -> Bool
-pub fn Coverage::to_json(Self) -> Json
+pub fn Coverage::to_json(Self) -> @json.Json
 pub fn Coverage::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct Decision {
   result : ResultStatus
   rebuild_allowed : Bool
   profile : String
   reason : String
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn Decision::equal(Self, Self) -> Bool
 pub fn Decision::not_equal(Self, Self) -> Bool
-pub fn Decision::to_json(Self) -> Json
+pub fn Decision::to_json(Self) -> @json.Json
 pub fn Decision::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct Disposition {
   part : String
   classification : String
   before_hash : String
   after_hash : String?
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn Disposition::equal(Self, Self) -> Bool
 pub fn Disposition::not_equal(Self, Self) -> Bool
-pub fn Disposition::to_json(Self) -> Json
+pub fn Disposition::to_json(Self) -> @json.Json
 pub fn Disposition::to_repr(Self) -> @debug.Repr
 
 pub struct DocumentAuthorization {
@@ -274,10 +292,11 @@ pub struct DocumentPreview {
 }
 pub fn DocumentPreview::input_hash(Self) -> String
 pub fn DocumentPreview::plan_hash(Self) -> String
-pub fn DocumentPreview::plan_json(Self) -> Json
+pub fn DocumentPreview::plan_json(Self) -> @json.Json
 pub fn DocumentPreview::summary(Self) -> ChangeSummary
-pub fn DocumentPreview::to_json(Self) -> Json
+pub fn DocumentPreview::to_json(Self) -> @json.Json
 
+#derive(Eq, @debug.Debug)
 pub(all) enum FailureCode {
   InvalidConfiguration
   UnsupportedDocument
@@ -289,76 +308,82 @@ pub(all) enum FailureCode {
   WorkBudgetExceeded
   InternalFailure
   AuthorizationDenied
-} derive(Eq, @debug.Debug)
+}
 pub fn FailureCode::equal(Self, Self) -> Bool
 pub fn FailureCode::label(Self) -> String
 pub fn FailureCode::not_equal(Self, Self) -> Bool
-pub fn FailureCode::to_json(Self) -> Json
+pub fn FailureCode::to_json(Self) -> @json.Json
 pub fn FailureCode::to_repr(Self) -> @debug.Repr
-pub impl ToJson for FailureCode
+pub impl @json.ToJson for FailureCode
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct Finding {
   rule : String
   capability : String
   part : String
   evidence : Array[String]
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn Finding::equal(Self, Self) -> Bool
 pub fn Finding::not_equal(Self, Self) -> Bool
-pub fn Finding::to_json(Self) -> Json
+pub fn Finding::to_json(Self) -> @json.Json
 pub fn Finding::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct GraphNode {
   part : String
-  inbound : Array[Int]
-  outbound : Array[Int]
-  xml_references : Array[Int]
+  inbound : Array[Int32]
+  outbound : Array[Int32]
+  xml_references : Array[Int32]
   reachable : Bool
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn GraphNode::equal(Self, Self) -> Bool
 pub fn GraphNode::not_equal(Self, Self) -> Bool
-pub fn GraphNode::to_json(Self) -> Json
+pub fn GraphNode::to_json(Self) -> @json.Json
 pub fn GraphNode::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct ImplicitReference {
   source : String
-  relationship_index : Int
+  relationship_index : Int32
   semantics : String
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn ImplicitReference::equal(Self, Self) -> Bool
 pub fn ImplicitReference::not_equal(Self, Self) -> Bool
-pub fn ImplicitReference::to_json(Self) -> Json
+pub fn ImplicitReference::to_json(Self) -> @json.Json
 pub fn ImplicitReference::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct Limits {
-  input_bytes : Int
-  entry_bytes : Int
-  total_bytes : Int
-  entries : Int
-  xml_bytes : Int
-  xml_depth : Int
-  xml_nodes : Int
-  xml_attributes : Int
-  output_bytes : Int
-} derive(Eq, ToJson, @debug.Debug)
+  input_bytes : Int32
+  entry_bytes : Int32
+  total_bytes : Int32
+  entries : Int32
+  xml_bytes : Int32
+  xml_depth : Int32
+  xml_nodes : Int32
+  xml_attributes : Int32
+  output_bytes : Int32
+}
 pub fn Limits::default() -> Self
 pub fn Limits::equal(Self, Self) -> Bool
 pub fn Limits::not_equal(Self, Self) -> Bool
-pub fn Limits::to_json(Self) -> Json
+pub fn Limits::to_json(Self) -> @json.Json
 pub fn Limits::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct Operation {
   kind : String
   part : String
   relationship_id : String
   rule : String
   reason : String
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn Operation::equal(Self, Self) -> Bool
 pub fn Operation::not_equal(Self, Self) -> Bool
-pub fn Operation::to_json(Self) -> Json
+pub fn Operation::to_json(Self) -> @json.Json
 pub fn Operation::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct PackageGraph {
   schema : String
   root : String
@@ -371,22 +396,24 @@ pub(all) struct PackageGraph {
   reachable : Array[String]
   orphan_candidates : Array[String]
   coverage_gaps : Array[String]
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn PackageGraph::equal(Self, Self) -> Bool
 pub fn PackageGraph::not_equal(Self, Self) -> Bool
-pub fn PackageGraph::to_json(Self) -> Json
+pub fn PackageGraph::to_json(Self) -> @json.Json
 pub fn PackageGraph::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct PartRecord {
   name : String
   content_type : String
   sha256 : String
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn PartRecord::equal(Self, Self) -> Bool
 pub fn PartRecord::not_equal(Self, Self) -> Bool
-pub fn PartRecord::to_json(Self) -> Json
+pub fn PartRecord::to_json(Self) -> @json.Json
 pub fn PartRecord::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum PlanOperationKind {
   RemovePart
   RemoveRelationship
@@ -394,35 +421,38 @@ pub(all) enum PlanOperationKind {
   RewriteRelationshipPart
   RewriteContentTypes
   ChangeMainContentType
-} derive(Eq, @debug.Debug)
+}
 pub fn PlanOperationKind::equal(Self, Self) -> Bool
 pub fn PlanOperationKind::not_equal(Self, Self) -> Bool
-pub fn PlanOperationKind::to_json(Self) -> Json
+pub fn PlanOperationKind::to_json(Self) -> @json.Json
 pub fn PlanOperationKind::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum PolicyAction {
   AllowAction
   RemoveAction
   RefuseAction
-} derive(Eq, @debug.Debug)
+}
 pub fn PolicyAction::equal(Self, Self) -> Bool
 pub fn PolicyAction::not_equal(Self, Self) -> Bool
-pub fn PolicyAction::to_json(Self) -> Json
+pub fn PolicyAction::to_json(Self) -> @json.Json
 pub fn PolicyAction::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct PolicyDecision {
   decision_id : String
-  finding_index : Int?
+  finding_index : Int32?
   action : PolicyAction
   rule_id : String
   part : String
   reason : String
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn PolicyDecision::equal(Self, Self) -> Bool
 pub fn PolicyDecision::not_equal(Self, Self) -> Bool
-pub fn PolicyDecision::to_json(Self) -> Json
+pub fn PolicyDecision::to_json(Self) -> @json.Json
 pub fn PolicyDecision::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct PreparedPlan {
   schema : String
   tool : String
@@ -442,40 +472,43 @@ pub(all) struct PreparedPlan {
   coverage : Coverage
   gate : Decision
   unavailable_handlers : Array[String]
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn PreparedPlan::equal(Self, Self) -> Bool
 pub fn PreparedPlan::not_equal(Self, Self) -> Bool
-pub fn PreparedPlan::to_json(Self) -> Json
+pub fn PreparedPlan::to_json(Self) -> @json.Json
 pub fn PreparedPlan::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum Presence {
   Present
   Absent
   Unknown
-} derive(Eq, @debug.Debug)
+}
 pub fn Presence::equal(Self, Self) -> Bool
 pub fn Presence::not_equal(Self, Self) -> Bool
-pub fn Presence::to_json(Self) -> Json
+pub fn Presence::to_json(Self) -> @json.Json
 pub fn Presence::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum PreservationKind {
   BytePreservedKind
   SemanticallyRewrittenKind
   RemovedByPolicyKind
   RegeneratedMetadataKind
-} derive(Eq, @debug.Debug)
+}
 pub fn PreservationKind::equal(Self, Self) -> Bool
 pub fn PreservationKind::not_equal(Self, Self) -> Bool
-pub fn PreservationKind::to_json(Self) -> Json
+pub fn PreservationKind::to_json(Self) -> @json.Json
 pub fn PreservationKind::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum RebuildSupport {
   Supported
   NotSupported
-} derive(Eq, @debug.Debug)
+}
 pub fn RebuildSupport::equal(Self, Self) -> Bool
 pub fn RebuildSupport::not_equal(Self, Self) -> Bool
-pub fn RebuildSupport::to_json(Self) -> Json
+pub fn RebuildSupport::to_json(Self) -> @json.Json
 pub fn RebuildSupport::to_repr(Self) -> @debug.Repr
 
 pub(all) struct Rebuilt {
@@ -483,6 +516,7 @@ pub(all) struct Rebuilt {
   receipt : Receipt
 }
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct Receipt {
   schema : String
   tool : String
@@ -491,8 +525,8 @@ pub(all) struct Receipt {
   profile : String
   input_hash : String
   output_hash : String
-  input_size : Int
-  output_size : Int
+  input_size : Int32
+  output_size : Int32
   input_format : String
   output_format : String
   limits : Limits
@@ -503,12 +537,13 @@ pub(all) struct Receipt {
   preservation : String
   independent_validation : String
   limitations : Array[String]
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn Receipt::equal(Self, Self) -> Bool
 pub fn Receipt::not_equal(Self, Self) -> Bool
-pub fn Receipt::to_json(Self) -> Json
+pub fn Receipt::to_json(Self) -> @json.Json
 pub fn Receipt::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct Relationship {
   source : String
   id : String
@@ -516,50 +551,54 @@ pub(all) struct Relationship {
   target : String
   resolved : String
   external : Bool
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn Relationship::equal(Self, Self) -> Bool
 pub fn Relationship::not_equal(Self, Self) -> Bool
-pub fn Relationship::to_json(Self) -> Json
+pub fn Relationship::to_json(Self) -> @json.Json
 pub fn Relationship::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct RemovalPermissions {
   remove_vba : Bool
   remove_ole : Bool
   remove_remote_template : Bool
   convert_macro_format : Bool
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn RemovalPermissions::all_supported() -> Self
 pub fn RemovalPermissions::allows(Self, ChangeKind) -> Bool
 pub fn RemovalPermissions::deny_all() -> Self
 pub fn RemovalPermissions::equal(Self, Self) -> Bool
 pub fn RemovalPermissions::macros_only() -> Self
 pub fn RemovalPermissions::not_equal(Self, Self) -> Bool
-pub fn RemovalPermissions::to_json(Self) -> Json
+pub fn RemovalPermissions::to_json(Self) -> @json.Json
 pub fn RemovalPermissions::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum ResultStatus {
   Pass
   Fail
   IncompleteResult
   Unsupported
-} derive(Eq, @debug.Debug)
+}
 pub fn ResultStatus::equal(Self, Self) -> Bool
 pub fn ResultStatus::not_equal(Self, Self) -> Bool
-pub fn ResultStatus::to_json(Self) -> Json
+pub fn ResultStatus::to_json(Self) -> @json.Json
 pub fn ResultStatus::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct RewritePlan {
   schema : String
   input_hash : String
   policy : String
   profile : String
   operations : Array[Operation]
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn RewritePlan::equal(Self, Self) -> Bool
 pub fn RewritePlan::not_equal(Self, Self) -> Bool
-pub fn RewritePlan::to_json(Self) -> Json
+pub fn RewritePlan::to_json(Self) -> @json.Json
 pub fn RewritePlan::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct RuleCoverage {
   rule_id : String
   capability : Capability
@@ -567,22 +606,24 @@ pub(all) struct RuleCoverage {
   presence : Presence
   rebuild_support : RebuildSupport
   reason : String
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn RuleCoverage::equal(Self, Self) -> Bool
 pub fn RuleCoverage::not_equal(Self, Self) -> Bool
-pub fn RuleCoverage::to_json(Self) -> Json
+pub fn RuleCoverage::to_json(Self) -> @json.Json
 pub fn RuleCoverage::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct SdkFailure {
   code : FailureCode
   operation : SdkOperation
   message : String
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn SdkFailure::equal(Self, Self) -> Bool
 pub fn SdkFailure::not_equal(Self, Self) -> Bool
-pub fn SdkFailure::to_json(Self) -> Json
+pub fn SdkFailure::to_json(Self) -> @json.Json
 pub fn SdkFailure::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum SdkOperation {
   CleanDocument
   PrepareDocument
@@ -591,22 +632,23 @@ pub(all) enum SdkOperation {
   PreviewDocument
   AuthorizeDocument
   ExecuteAuthorizedDocument
-} derive(Eq, @debug.Debug)
+}
 pub fn SdkOperation::equal(Self, Self) -> Bool
 pub fn SdkOperation::not_equal(Self, Self) -> Bool
-pub fn SdkOperation::to_json(Self) -> Json
+pub fn SdkOperation::to_json(Self) -> @json.Json
 pub fn SdkOperation::to_repr(Self) -> @debug.Repr
-pub impl ToJson for SdkOperation
+pub impl @json.ToJson for SdkOperation
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct VerificationCheck {
   check_id : String
   state : CheckState
   result : ResultStatus?
   detail : String
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn VerificationCheck::equal(Self, Self) -> Bool
 pub fn VerificationCheck::not_equal(Self, Self) -> Bool
-pub fn VerificationCheck::to_json(Self) -> Json
+pub fn VerificationCheck::to_json(Self) -> @json.Json
 pub fn VerificationCheck::to_repr(Self) -> @debug.Repr
 
 pub(all) struct VerifiedRebuilt {
@@ -614,6 +656,7 @@ pub(all) struct VerifiedRebuilt {
   receipt : VerifiedReceipt
 }
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct VerifiedReceipt {
   schema : String
   tool : String
@@ -622,8 +665,8 @@ pub(all) struct VerifiedReceipt {
   profile : String
   input_hash : String
   output_hash : String
-  input_size : Int
-  output_size : Int
+  input_size : Int32
+  output_size : Int32
   input_format : String
   output_format : String
   limits : Limits
@@ -640,48 +683,50 @@ pub(all) struct VerifiedReceipt {
   independent_validation : CheckState
   independent_tools : Array[String]
   limitations : Array[String]
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn VerifiedReceipt::equal(Self, Self) -> Bool
 pub fn VerifiedReceipt::not_equal(Self, Self) -> Bool
-pub fn VerifiedReceipt::to_json(Self) -> Json
+pub fn VerifiedReceipt::to_json(Self) -> @json.Json
 pub fn VerifiedReceipt::to_repr(Self) -> @debug.Repr
 
 pub struct WorkControl {
-  allowance : Int
+  allowance : Int32
   should_cancel : (String) -> Bool
-  mut consumed : Int
+  mut consumed : Int32
   mut stopped : String?
   mut stopped_kind : WorkStopKind?
 }
 pub fn WorkControl::cancel(Self) -> Unit
 pub fn WorkControl::default() -> Self
-pub fn WorkControl::new(work_units? : Int, should_cancel? : (String) -> Bool) -> Self raise
-pub fn WorkControl::remaining(Self) -> Int
+pub fn WorkControl::new(work_units? : Int32, should_cancel? : (String) -> Bool) -> Self raise
+pub fn WorkControl::remaining(Self) -> Int32
 pub fn WorkControl::stop_kind(Self) -> WorkStopKind?
 pub fn WorkControl::stop_reason(Self) -> String?
-pub fn WorkControl::used(Self) -> Int
+pub fn WorkControl::used(Self) -> Int32
 
+#derive(Eq, @debug.Debug)
 pub(all) enum WorkStopKind {
   CancelRequested
   AllowanceExhausted
-} derive(Eq, @debug.Debug)
+}
 pub fn WorkStopKind::equal(Self, Self) -> Bool
 pub fn WorkStopKind::not_equal(Self, Self) -> Bool
 pub fn WorkStopKind::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct XmlReference {
   source : String
-  element_index : Int
-  depth : Int
+  element_index : Int32
+  depth : Int32
   element_namespace : String
   element_name : String
   attribute_name : String
   relationship_id : String
-  relationship_index : Int
-} derive(Eq, ToJson, @debug.Debug)
+  relationship_index : Int32
+}
 pub fn XmlReference::equal(Self, Self) -> Bool
 pub fn XmlReference::not_equal(Self, Self) -> Bool
-pub fn XmlReference::to_json(Self) -> Json
+pub fn XmlReference::to_json(Self) -> @json.Json
 pub fn XmlReference::to_repr(Self) -> @debug.Repr
 
 // Type aliases

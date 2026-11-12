@@ -115,3 +115,58 @@ test "Word content relationship source identity and exact element context are re
   assert_true(is_template_relationship(relation))
   assert_eq(is_template_relationship({ ..relation, external: false, }), false)
 }
+
+///|
+test "spreadsheet editing time is preserved and restricted to a single bounded property" {
+  fn with_editing_time(fragment : String) -> Bytes raise {
+    let source = planner_fixture()
+    let archive = @zip.read(source[:])
+    let types = get_part(archive, "[Content_Types].xml")
+    let types_text = @utf8.decode_lossy(types[:]).replace(
+      old="</Types>",
+      new="<Override PartName='/docProps/app.xml' ContentType='application/vnd.openxmlformats-officedocument.extended-properties+xml'/></Types>",
+    )
+    assert_true(
+      archive.replace("[Content_Types].xml", @utf8.encode(types_text[:])[:]),
+    )
+    let relations = get_part(archive, "_rels/.rels")
+    let rel_text = @utf8.decode_lossy(relations[:]).replace(
+      old="</Relationships>",
+      new="<Relationship Id='app' Type='" +
+        office_rel +
+        "extended-properties' Target='docProps/app.xml'/></Relationships>",
+    )
+    assert_true(archive.replace("_rels/.rels", @utf8.encode(rel_text[:])[:]))
+    let app = "<Properties xmlns='http://schemas.openxmlformats.org/officeDocument/2006/extended-properties'>" +
+      fragment +
+      "</Properties>"
+    archive.add("docProps/app.xml", @utf8.encode(app[:])[:])
+    @zip.write(archive)
+  }
+  let source = with_editing_time("<TotalTime>2</TotalTime>")
+  let rebuilt = rebuild_verified(source)
+  assert_eq(rebuilt.receipt.result, Pass)
+  assert_eq(
+    get_part(@zip.read(source[:]), "docProps/app.xml"),
+    get_part(@zip.read(rebuilt.bytes[:]), "docProps/app.xml"),
+  )
+  for
+    fragment in [
+      "<TotalTime>2</TotalTime><TotalTime>3</TotalTime>", "<TotalTime xmlns='urn:other'>2</TotalTime>",
+      "<Application><TotalTime>2</TotalTime></Application>", "<TotalTime><Application>2</Application></TotalTime>",
+      "<TotalTime href='https://example.invalid'>2</TotalTime>", "<TotalTime xmlns:r='http://schemas.openxmlformats.org/officeDocument/2006/relationships' r:id='missing'>2</TotalTime>",
+    ] {
+    expect_refused(fn() raise {
+      ignore(rebuild_verified(with_editing_time(fragment)))
+    })
+  }
+  for text in ["-1", "1000000001", "1.5", ""] {
+    expect_invalid(fn() raise {
+      ignore(
+        rebuild_verified(
+          with_editing_time("<TotalTime>" + text + "</TotalTime>"),
+        ),
+      )
+    })
+  }
+}

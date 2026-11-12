@@ -79,10 +79,10 @@ fn run_case(name : String) -> Unit raise {
     expect_incomplete(fn() raise { ignore(@sieve.rebuild_verified(input)) })
     println(
       Json::object({
-        "case": name.to_json(),
-        "input_bytes": input.length().to_json(),
-        "result": "ExpectedIncomplete".to_json(),
-        "reason": report.decision.reason.to_json(),
+        "case": ToJson::to_json(name),
+        "input_bytes": ToJson::to_json(input.length()),
+        "result": Json::string("ExpectedIncomplete"),
+        "reason": ToJson::to_json(report.decision.reason),
       }).stringify(),
     )
     return
@@ -139,16 +139,16 @@ fn run_case(name : String) -> Unit raise {
   assert_eq(zip_cancelled.stop_reason(), Some("operation cancelled by caller"))
   println(
     Json::object({
-      "case": name.to_json(),
-      "input_bytes": input.length().to_json(),
-      "output_bytes": rebuilt.bytes.length().to_json(),
-      "output_sha256": rebuilt.receipt.output_hash.to_json(),
-      "work_used": used.to_json(),
-      "result": "Pass".to_json(),
-      "checks": [
+      "case": ToJson::to_json(name),
+      "input_bytes": ToJson::to_json(input.length()),
+      "output_bytes": ToJson::to_json(rebuilt.bytes.length()),
+      "output_sha256": ToJson::to_json(rebuilt.receipt.output_hash),
+      "work_used": ToJson::to_json(used),
+      "result": Json::string("Pass"),
+      "checks": ToJson::to_json([
         "verified-rebuild", "work-minus-one", "input-minus-one", "output-minus-one",
         "xml-cancel", "zip-cancel",
-      ].to_json(),
+      ]),
     }).stringify(),
   )
 }

@@ -184,8 +184,8 @@ fn make_plan(pkg : Package) -> RewritePlan raise {
 ///|
 pub fn plan(
   input : Bytes,
-  limits? : Limits = Limits::default(),
-  control? : WorkControl = WorkControl::default(),
+  limits~ : Limits = Limits::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> RewritePlan raise {
   make_plan(load_package(input, limits, control~))
 }
@@ -415,8 +415,8 @@ fn legacy_receipt(
 pub fn verify(
   output : Bytes,
   original : Bytes,
-  limits? : Limits = Limits::default(),
-  control? : WorkControl = WorkControl::default(),
+  limits~ : Limits = Limits::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> Receipt raise {
   legacy_receipt(
     verify_packages(output, original, limits, control),
@@ -429,8 +429,8 @@ pub fn verify(
 ///|
 pub fn rebuild(
   input : Bytes,
-  limits? : Limits = Limits::default(),
-  control? : WorkControl = WorkControl::default(),
+  limits~ : Limits = Limits::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> Rebuilt raise {
   let before = load_package(input, limits, control~)
   let bytes = execute(before, limits)

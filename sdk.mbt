@@ -1,6 +1,7 @@
 ///|
 /// Stable business categories. Do not branch on SdkFailure.message.
 /// ProcessingIncomplete includes parser/structural limits without a finer code.
+#derive(Eq, Debug)
 pub(all) enum FailureCode {
   InvalidConfiguration
   UnsupportedDocument
@@ -12,7 +13,7 @@ pub(all) enum FailureCode {
   WorkBudgetExceeded
   InternalFailure
   AuthorizationDenied
-} derive(Eq, Debug)
+}
 
 ///|
 pub extend FailureCode with Eq::{equal, not_equal}
@@ -25,7 +26,7 @@ pub extend FailureCode with ToJson::{to_json}
 
 ///|
 pub impl ToJson for FailureCode with fn to_json(self) -> Json {
-  self.label().to_json()
+  Json::string(self.label())
 }
 
 ///|
@@ -45,6 +46,7 @@ pub fn FailureCode::label(self : FailureCode) -> String {
 }
 
 ///|
+#derive(Eq, Debug)
 pub(all) enum SdkOperation {
   CleanDocument
   PrepareDocument
@@ -53,7 +55,7 @@ pub(all) enum SdkOperation {
   PreviewDocument
   AuthorizeDocument
   ExecuteAuthorizedDocument
-} derive(Eq, Debug)
+}
 
 ///|
 pub extend SdkOperation with Eq::{equal, not_equal}
@@ -66,25 +68,28 @@ pub extend SdkOperation with ToJson::{to_json}
 
 ///|
 pub impl ToJson for SdkOperation with fn to_json(self) -> Json {
-  (match self {
-    CleanDocument => "clean_document"
-    PrepareDocument => "prepare_document"
-    ExecuteDocumentPlan => "execute_document_plan"
-    VerifyDocument => "verify_document"
-    PreviewDocument => "preview_document"
-    AuthorizeDocument => "authorize_document"
-    ExecuteAuthorizedDocument => "execute_authorized_document"
-  }).to_json()
+  Json::string(
+    match self {
+      CleanDocument => "clean_document"
+      PrepareDocument => "prepare_document"
+      ExecuteDocumentPlan => "execute_document_plan"
+      VerifyDocument => "verify_document"
+      PreviewDocument => "preview_document"
+      AuthorizeDocument => "authorize_document"
+      ExecuteAuthorizedDocument => "execute_authorized_document"
+    },
+  )
 }
 
 ///|
 /// Only an Err contains this diagnostic; never a partial document or receipt.
 /// Message is explanatory and may change independently of the stable code.
+#derive(Eq, Debug, ToJson)
 pub(all) struct SdkFailure {
   code : FailureCode
   operation : SdkOperation
   message : String
-} derive(Eq, Debug, ToJson)
+}
 
 ///|
 pub extend SdkFailure with Eq::{equal, not_equal}
@@ -179,8 +184,8 @@ fn sdk_preflight(
 /// This includes the legacy implementation's verification, not an extra pass.
 pub fn clean_document(
   input : Bytes,
-  limits? : Limits = Limits::default(),
-  control? : WorkControl = WorkControl::default(),
+  limits~ : Limits = Limits::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> Result[VerifiedRebuilt, SdkFailure] {
   let operation = CleanDocument
   if sdk_preflight(input, None, limits, control, operation) is Some(error) {
@@ -195,8 +200,8 @@ pub fn clean_document(
 /// Inspect/prepare without producing output; useful before caller confirmation.
 pub fn prepare_document(
   input : Bytes,
-  limits? : Limits = Limits::default(),
-  control? : WorkControl = WorkControl::default(),
+  limits~ : Limits = Limits::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> Result[PreparedPlan, SdkFailure] {
   let operation = PrepareDocument
   if sdk_preflight(input, None, limits, control, operation) is Some(error) {
@@ -212,8 +217,8 @@ pub fn prepare_document(
 pub fn execute_document_plan(
   input : Bytes,
   plan : Json,
-  limits? : Limits = Limits::default(),
-  control? : WorkControl = WorkControl::default(),
+  limits~ : Limits = Limits::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> Result[VerifiedRebuilt, SdkFailure] {
   let operation = ExecuteDocumentPlan
   if sdk_preflight(input, None, limits, control, operation) is Some(error) {
@@ -229,8 +234,8 @@ pub fn execute_document_plan(
 pub fn verify_document(
   output : Bytes,
   original : Bytes,
-  limits? : Limits = Limits::default(),
-  control? : WorkControl = WorkControl::default(),
+  limits~ : Limits = Limits::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> Result[VerifiedReceipt, SdkFailure] {
   let operation = VerifyDocument
   if sdk_preflight(original, Some(output), limits, control, operation)

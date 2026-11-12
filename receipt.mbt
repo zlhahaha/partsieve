@@ -50,8 +50,8 @@ fn contract_dispositions(
 pub fn verify_contract(
   output : Bytes,
   original : Bytes,
-  limits? : Limits = Limits::default(),
-  control? : WorkControl = WorkControl::default(),
+  limits~ : Limits = Limits::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> VerifiedReceipt raise {
   // The compatibility verifier reparses actual serialized output, compares its
   // full graph with independently generated expected changes, and checks every
@@ -149,8 +149,8 @@ pub fn verify_contract(
 ///|
 pub fn rebuild_verified(
   input : Bytes,
-  limits? : Limits = Limits::default(),
-  control? : WorkControl = WorkControl::default(),
+  limits~ : Limits = Limits::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> VerifiedRebuilt raise {
   let bytes = execute(load_package(input, limits, control~), limits)
   { bytes, receipt: verify_contract(bytes, input, limits~, control~), }
@@ -160,8 +160,8 @@ pub fn rebuild_verified(
 pub fn rebuild_verified_with_plan(
   input : Bytes,
   supplied : Json,
-  limits? : Limits = Limits::default(),
-  control? : WorkControl = WorkControl::default(),
+  limits~ : Limits = Limits::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> VerifiedRebuilt raise {
   let bytes = execute_supplied_plan(input, supplied, limits, control)
   { bytes, receipt: verify_contract(bytes, input, limits~, control~), }

@@ -1,22 +1,24 @@
 ///|
+#derive(Debug)
 pub(all) suberror SieveError {
   Refused(String)
   Incomplete(String)
   Invalid(String)
-} derive(Debug)
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct Limits {
-  input_bytes : Int
-  entry_bytes : Int
-  total_bytes : Int
-  entries : Int
-  xml_bytes : Int
-  xml_depth : Int
-  xml_nodes : Int
-  xml_attributes : Int
-  output_bytes : Int
-} derive(ToJson, Eq, Debug)
+  input_bytes : Int32
+  entry_bytes : Int32
+  total_bytes : Int32
+  entries : Int32
+  xml_bytes : Int32
+  xml_depth : Int32
+  xml_nodes : Int32
+  xml_attributes : Int32
+  output_bytes : Int32
+}
 
 ///|
 pub fn Limits::default() -> Limits {
@@ -59,13 +61,15 @@ fn Limits::validate(self : Limits) -> Unit raise {
 }
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct PartRecord {
   name : String
   content_type : String
   sha256 : String
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct Relationship {
   source : String
   id : String
@@ -73,17 +77,19 @@ pub(all) struct Relationship {
   target : String
   resolved : String
   external : Bool
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct Finding {
   rule : String
   capability : String
   part : String
   evidence : Array[String]
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct Audit {
   schema : String
   input_hash : String
@@ -96,35 +102,39 @@ pub(all) struct Audit {
   parts : Array[PartRecord]
   relationships : Array[Relationship]
   findings : Array[Finding]
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct Operation {
   kind : String
   part : String
   relationship_id : String
   rule : String
   reason : String
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct RewritePlan {
   schema : String
   input_hash : String
   policy : String
   profile : String
   operations : Array[Operation]
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct Disposition {
   part : String
   classification : String
   before_hash : String
   after_hash : String?
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct Receipt {
   schema : String
   tool : String
@@ -133,8 +143,8 @@ pub(all) struct Receipt {
   profile : String
   input_hash : String
   output_hash : String
-  input_size : Int
-  output_size : Int
+  input_size : Int32
+  output_size : Int32
   input_format : String
   output_format : String
   limits : Limits
@@ -145,7 +155,7 @@ pub(all) struct Receipt {
   preservation : String
   independent_validation : String
   limitations : Array[String]
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
 pub(all) struct Rebuilt {

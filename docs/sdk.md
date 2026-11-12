@@ -1,6 +1,6 @@
 # 开发者接入与稳定失败结果
 
-本文描述GitHub主分支的新SDK入口，尚未发布到Mooncakes；0.8.0仍使用原有抛错API。大版本发布前保持旧入口兼容，原有Receipt/Plan JSON格式及工具标识不变。
+本文描述 Mooncakes 0.9.0 的结构化 SDK 入口。0.8.0-spike 使用原有抛错 API。大版本发布前保持旧入口兼容，原有Receipt/Plan JSON格式及工具标识不变。
 
 ## 选择调用路径
 

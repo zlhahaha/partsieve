@@ -178,6 +178,7 @@ fn validate_static_xml_part(pkg : Package, p : PartRecord) -> Unit raise {
   }
   let sheet_refs : Array[String] = []
   let sheet_names : Array[String] = []
+  let mut total_time_seen = false
   for ordinal, node in nodes {
     if modern.contains(ordinal) {
       continue
@@ -195,6 +196,31 @@ fn validate_static_xml_part(pkg : Package, p : PartRecord) -> Unit raise {
       parents[parents.length() - 1]
     } else {
       ""
+    }
+    if !is_word_format(report.format) &&
+      expected_root == "Properties" &&
+      local_name == "TotalTime" {
+      let ep = "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"
+      guard !total_time_seen &&
+        nodes[0].element.name.namespace_uri == Some(ep) &&
+        ns == ep &&
+        node.depth == 1 &&
+        parent == "Properties" &&
+        node.element.attributes.is_empty() &&
+        (
+          ordinal + 1 == nodes.length() ||
+          nodes[ordinal + 1].depth <= node.depth
+        ) else {
+        raise Refused("invalid or duplicate spreadsheet editing time property")
+      }
+      ignore(
+        checked_index(
+          node.text_fragments.join("").trim().to_owned(),
+          1000000001,
+        ),
+      )
+      total_time_seen = true
+      continue
     }
     if expected_root == "theme" && local_name == "lumMod" {
       guard ns == drawing_ns &&

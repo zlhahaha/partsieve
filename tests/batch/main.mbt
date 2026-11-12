@@ -5,7 +5,11 @@ fn output_root() -> String {
 
 ///|
 #borrow(source, target)
-extern "C" fn fixture_ffi(source : Bytes, target : Bytes, kind : Int) -> Int = "ps_batch_fixture"
+extern "C" fn fixture_ffi(
+  source : Bytes,
+  target : Bytes,
+  kind : Int32,
+) -> Int32 = "ps_batch_fixture"
 
 ///|
 priv struct Run {
@@ -30,7 +34,7 @@ fn Run::save(self : Run, result : String) -> Unit raise {
       {
         "schema": "partsieve.batch-regression.v1",
         "result": result,
-        "cases": self.cases.to_json(),
+        "cases": ToJson::to_json(self.cases),
         "case_count": self.cases.length(),
       } : Json).stringify(),
   )
@@ -40,7 +44,7 @@ fn Run::save(self : Run, result : String) -> Unit raise {
 fn Run::record(
   self : Run,
   name : String,
-  result? : String = "Pass",
+  result~ : String = "Pass",
 ) -> Unit raise {
   self.cases.push({ "name": name, "result": result })
   self.save("Running")
@@ -58,13 +62,13 @@ fn Run::batch(
   self : Run,
   source : String,
   output : String,
-  code : Int,
+  code : Int32,
 ) -> Json raise {
   let process = @host.run(self.exe, ["batch", source, "-o", output, "--json"])
   let report = @cli.parse_json(process.stdout)
   assert_eq(process.code, code, msg=report.stringify())
   if field(report, "schema") == Json::string("partsieve.batch.v1") {
-    assert_eq(field(report, "exit_code"), code.to_json())
+    assert_eq(field(report, "exit_code"), ToJson::to_json(code))
     assert_eq(
       @cli.parse_json(@host.read_bounded(output + "/batch.json", 16777216)),
       report,
@@ -202,7 +206,7 @@ fn main raise {
       ("failed", 2),
       ("skipped", 3),
     ] {
-    assert_eq(field(report, key), count.to_json())
+    assert_eq(field(report, key), ToJson::to_json(count))
   }
   for
     (name, suffix) in [
@@ -223,8 +227,8 @@ fn main raise {
     Array(rows) => rows.map(row => field(row, "input"))
     _ => fail("entries array")
   }
-  assert_eq(names[0], "00-broken.docm".to_json())
-  assert_eq(names[1], "01-unsupported.docm".to_json())
+  assert_eq(names[0], Json::string("00-broken.docm"))
+  assert_eq(names[1], Json::string("01-unsupported.docm"))
   assert_false(@host.exists(out + "/inside.docm.cleaned.docx"))
   run.record("mixed-continues-after-failures-sorted-top-level")
   let summary = @host.read_bounded(out + "/batch.json", 16777216)
@@ -255,7 +259,7 @@ fn main raise {
           "failed"
         },
       ),
-      (1).to_json(),
+      ToJson::to_json(1),
     )
     run.record(name + "-exit-code")
   }
@@ -271,7 +275,7 @@ fn main raise {
     }
     assert_eq(
       field(run.batch(dir, run.root + "/out-" + name, 3), "status"),
-      "NoInputs".to_json(),
+      Json::string("NoInputs"),
     )
     run.record(name + "-no-inputs")
   }
@@ -281,7 +285,7 @@ fn main raise {
   }
   assert_eq(
     field(run.batch(cap, run.root + "/cap-exact", 3), "skipped"),
-    (1024).to_json(),
+    ToJson::to_json(1024),
   )
   run.record("entry-cap-exact-counts-ignored")
   @host.write_new(cap + "/excess.txt", b"")
@@ -309,7 +313,7 @@ fn main raise {
   )
   @host.write_new(plain_sheet + "/ignored.txt", b"skip")
   let plain_report = run.batch(plain_sheet, run.root + "/plain-sheet-out", 0)
-  assert_eq(field(plain_report, "skipped"), (1).to_json())
+  assert_eq(field(plain_report, "skipped"), ToJson::to_json(1))
   run.pair(plain_sheet, run.root + "/plain-sheet-out", "file.xlsx", ".xlsx")
   run.record("xlsx-and-ignored-files-do-not-fail-batch")
   let special = run.directory("special")
@@ -344,8 +348,8 @@ fn main raise {
     )
   }
   let special_report = run.batch(special, run.root + "/special-output", 3)
-  assert_eq(field(special_report, "success"), (0).to_json())
-  assert_eq(field(special_report, "failed"), (0).to_json())
+  assert_eq(field(special_report, "success"), ToJson::to_json(0))
+  assert_eq(field(special_report, "failed"), ToJson::to_json(0))
   run.record("special-inventory-no-successful-pairs")
   run.save("Pass")
   println(

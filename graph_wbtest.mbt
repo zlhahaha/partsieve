@@ -8,7 +8,7 @@ fn graph_edge(
   source : String,
   id : String,
   target : String,
-  external? : Bool = false,
+  external~ : Bool = false,
 ) -> Relationship {
   {
     source,

@@ -16,13 +16,13 @@ pub fn exists(String) -> Bool raise
 
 pub fn link_new(String, String) -> Unit raise
 
-pub fn list_directory(String, max_entries? : Int) -> Array[DirectoryEntry] raise
+pub fn list_directory(String, max_entries? : Int32) -> Array[DirectoryEntry] raise
 
 pub fn parent(String) -> String raise
 
-pub fn pause(Int) -> Unit
+pub fn pause(Int32) -> Unit
 
-pub fn read_bounded(String, Int) -> Bytes raise
+pub fn read_bounded(String, Int32) -> Bytes raise
 
 pub fn remove_dir(String) -> Unit raise
 
@@ -30,7 +30,7 @@ pub fn remove_file(String) -> Unit raise
 
 pub fn remove_same(String, String) -> Unit raise
 
-pub fn run(String, Array[String], timeout_ms? : Int, output_limit? : Int) -> ProcessResult raise
+pub fn run(String, Array[String], timeout_ms? : Int32, output_limit? : Int32) -> ProcessResult raise
 
 pub fn same_path(String, String) -> Bool raise
 
@@ -41,23 +41,26 @@ pub fn warning(String) -> Unit
 pub fn write_new(String, Bytes) -> Unit raise
 
 // Errors
+#derive(@debug.Debug)
 pub(all) suberror HostError {
   Io(String)
   Limit(String)
-} derive(@debug.Debug)
+}
 pub fn HostError::to_repr(Self) -> @debug.Repr
 
 // Types and methods
+#derive(@debug.Debug)
 pub(all) struct DirectoryEntry {
   name : String
   kind : String
-} derive(@debug.Debug)
+}
 pub fn DirectoryEntry::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub(all) struct ProcessResult {
-  code : Int
+  code : Int32
   stdout : Bytes
-} derive(@debug.Debug)
+}
 pub fn ProcessResult::to_repr(Self) -> @debug.Repr
 
 // Type aliases

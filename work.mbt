@@ -3,19 +3,20 @@
 /// Units are deterministic accounting credits, not milliseconds or heap bytes.
 /// The cancellation callback must be quick and must not reenter this control.
 pub struct WorkControl {
-  allowance : Int
+  allowance : Int32
   should_cancel : (String) -> Bool
-  mut consumed : Int
+  mut consumed : Int32
   mut stopped : String?
   mut stopped_kind : WorkStopKind?
 }
 
 ///|
 /// Machine-readable, sticky cause; the human-readable stop_reason is unchanged.
+#derive(Eq, Debug)
 pub(all) enum WorkStopKind {
   CancelRequested
   AllowanceExhausted
-} derive(Eq, Debug)
+}
 
 ///|
 pub extend WorkStopKind with Eq::{equal, not_equal}
@@ -43,8 +44,8 @@ pub fn WorkControl::default() -> WorkControl {
 /// The same control may be shared by prepare/rebuild/verify to bound their sum.
 /// A cancelled or exhausted control cannot be reset; create a new one to retry.
 pub fn WorkControl::new(
-  work_units? : Int = 500000000,
-  should_cancel? : (String) -> Bool = _ => false,
+  work_units~ : Int32 = 500000000,
+  should_cancel~ : (String) -> Bool = _ => false,
 ) -> WorkControl raise {
   guard work_units >= 0 && work_units <= 1000000000 else {
     raise Refused("work allowance must be between 0 and 1000000000")
@@ -67,12 +68,12 @@ pub fn WorkControl::cancel(self : WorkControl) -> Unit {
 }
 
 ///|
-pub fn WorkControl::used(self : WorkControl) -> Int {
+pub fn WorkControl::used(self : WorkControl) -> Int32 {
   self.consumed
 }
 
 ///|
-pub fn WorkControl::remaining(self : WorkControl) -> Int {
+pub fn WorkControl::remaining(self : WorkControl) -> Int32 {
   self.allowance - self.consumed
 }
 
@@ -82,7 +83,7 @@ pub fn WorkControl::stop_reason(self : WorkControl) -> String? {
 }
 
 ///|
-fn WorkControl::poll(self : WorkControl, stage : String, units : Int) -> Bool {
+fn WorkControl::poll(self : WorkControl, stage : String, units : Int32) -> Bool {
   if self.stopped is Some(_) {
     return true
   }
@@ -105,7 +106,7 @@ fn WorkControl::poll(self : WorkControl, stage : String, units : Int) -> Bool {
 fn WorkControl::checkpoint(
   self : WorkControl,
   stage : String,
-  units : Int,
+  units : Int32,
 ) -> Unit raise {
   if self.poll(stage, units) {
     raise Incomplete(self.stopped.unwrap())
@@ -117,8 +118,8 @@ fn WorkControl::checkpoint(
 fn WorkControl::pairs(
   self : WorkControl,
   stage : String,
-  left : Int,
-  right : Int,
+  left : Int32,
+  right : Int32,
 ) -> Unit raise {
   self.checkpoint(stage, 0)
   if left > 0 && right > self.remaining() / left {

@@ -67,11 +67,11 @@ test "positional tabs and inert settings have bounded context and values" {
 ///|
 fn structured_word_fixture(
   body : String,
-  notes? : String = "",
-  endnotes? : String = "",
-  numbering? : String = "",
-  settings? : String = "",
-  styles? : String = "",
+  notes~ : String = "",
+  endnotes~ : String = "",
+  numbering~ : String = "",
+  settings~ : String = "",
+  styles~ : String = "",
 ) -> Bytes raise {
   let archive = @zip.Archive()
   let mut types = "<Types xmlns='" +
@@ -133,10 +133,10 @@ fn note_xml(kind : String, content : String) -> String {
 
 ///|
 fn simple_numbering(
-  instance? : String = "7",
-  abstract_id? : String = "3",
-  level? : String = "0",
-  extra? : String = "",
+  instance~ : String = "7",
+  abstract_id~ : String = "3",
+  level~ : String = "0",
+  extra~ : String = "",
 ) -> String {
   note_xml(
     "numbering",

@@ -39,7 +39,7 @@ fn relation(
   id : String,
   kind : String,
   target : String,
-  external? : Bool = false,
+  external~ : Bool = false,
 ) -> Unit raise {
   let split = source.rev_split_once("/").unwrap()
   let part = split.0.to_owned() + "/_rels/" + split.1.to_owned() + ".rels"
@@ -132,7 +132,7 @@ fn sheet_links() -> @zip.Archive raise {
 fn attach_ole(
   archive : @zip.Archive,
   emf : Bool,
-  number? : Int = 0,
+  number~ : Int32 = 0,
 ) -> Unit raise {
   let index = if number == 0 { "" } else { number.to_string() }
   let payload_name = "word/embeddings/worksheet" + index + ".xls"
@@ -200,7 +200,7 @@ fn accepted(
   archive : @zip.Archive,
   suffix : String,
   ole : Bool,
-  clicks? : Bool = true,
+  clicks~ : Bool = true,
 ) -> Bytes raise {
   let input = @zip.write(archive)
   let assessed = @sieve.assess(input)
@@ -429,7 +429,7 @@ fn rejected(name : String, archive : @zip.Archive) -> Unit raise {
 }
 
 ///|
-fn multiple_objects(count : Int, clean? : Bool = false) -> @zip.Archive raise {
+fn multiple_objects(count : Int32, clean~ : Bool = false) -> @zip.Archive raise {
   let base = word_links()
   let archive = if clean {
     @zip.read(@sieve.rebuild_verified(@zip.write(base)).bytes[:])

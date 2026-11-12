@@ -54,3 +54,7 @@ tests/authorization/
 tests/external/
 tools/check-external-corpus.ps1
 tests/fixtures/poi/word-modern/
+
+tools/check-office-clients.ps1
+tools/measure-corpus.py
+tools/spike-formulas.py

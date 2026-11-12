@@ -1,5 +1,5 @@
 ///|
-pub fn worker(args : Array[String]) -> (Json, Int) raise {
+pub fn worker(args : Array[String]) -> (Json, Int32) raise {
   guard args.length() >= 2 else { raise Usage("invalid worker arguments") }
   let command = args[0]
   let input = @host.read_bounded(
@@ -71,7 +71,7 @@ pub fn worker(args : Array[String]) -> (Json, Int) raise {
 }
 
 ///|
-pub fn diagnostic(error : Error) -> (Json, Int) {
+pub fn diagnostic(error : Error) -> (Json, Int32) {
   let (message, code, status) = match error {
     @lib.Invalid(message) => (message, 2, "Fail")
     @lib.Incomplete(message) | @host.Limit(message) =>

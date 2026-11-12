@@ -1,0 +1,1650 @@
+{
+  "schema": "partsieve.corpus-matrix.v1",
+  "source_revision": "12c3688d130035f3dc2ca2a0f50d929456435a93",
+  "license": "Apache-2.0",
+  "manifest_sha256": "ea089d4d770d6c2364962e28b72c2fb22367437ac57ecc3c013a9fbf5209874e",
+  "scope": "Production first refusal, all reported graph gaps and independent OPC signals. Later profile validators can still contain masked blockers.",
+  "policy_counts": {
+    "Refused": 12,
+    "Success": 8
+  },
+  "first_class_counts": {
+    "FormatOrAmbiguity": 3,
+    "ProfileGap": 3,
+    "Unknown": 3,
+    "Formula": 3
+  },
+  "cases": [
+    {
+      "name": "Bug66263-table.docx",
+      "format": "docx",
+      "sha256": "2d3aedaf149375071e54c10a898c1900b343fb22a7b2db9261a32b1452ed7737",
+      "original_schema": {
+        "Office2007": {
+          "status": "Fail",
+          "errors": [
+            {
+              "Id": "Sch_UnexpectedElementContentExpectingComplex",
+              "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:sdt'. List of possible elements expected: <http://schemas.openxmlformats.org/wordprocessingml/2006/main:tblGrid>.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[1]"
+            }
+          ]
+        },
+        "Office2013": {
+          "status": "Fail",
+          "errors": [
+            {
+              "Id": "Sch_UnexpectedElementContentExpectingComplex",
+              "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:sdt'. List of possible elements expected: <http://schemas.openxmlformats.org/wordprocessingml/2006/main:tblGrid>.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[1]"
+            }
+          ]
+        }
+      },
+      "ordinary_features": {
+        "p": 2,
+        "tbl": 1
+      },
+      "policy": "Refused",
+      "first_blocker": "ambiguous or unsupported part URI",
+      "first_class": "FormatOrAmbiguity",
+      "graph_blockers": null,
+      "graph_error": "ambiguous or unsupported part URI",
+      "independent_signals": [],
+      "formulas": [],
+      "output": null
+    },
+    {
+      "name": "EmptyDocumentWithHeaderFooter.docx",
+      "format": "docx",
+      "sha256": "a6ac4223c9b7217426a54303ca52307f3c69cd8cd05b7e788e43fab449b7b45c",
+      "original_schema": {
+        "Office2007": {
+          "status": "Pass",
+          "errors": []
+        },
+        "Office2013": {
+          "status": "Pass",
+          "errors": []
+        }
+      },
+      "ordinary_features": {
+        "p": 12
+      },
+      "policy": "Success",
+      "first_blocker": null,
+      "first_class": null,
+      "graph_blockers": [],
+      "graph_error": null,
+      "independent_signals": [],
+      "formulas": [],
+      "output": {
+        "sha256": "a6ac4223c9b7217426a54303ca52307f3c69cd8cd05b7e788e43fab449b7b45c",
+        "same_archive": true,
+        "same_payloads": true,
+        "changed_parts": []
+      }
+    },
+    {
+      "name": "HeaderFooterUnicode.docx",
+      "format": "docx",
+      "sha256": "ec439ac0643294e1e2961b381983304e044444f3a8f0dc465a98adf9ebee0e67",
+      "original_schema": {
+        "Office2007": {
+          "status": "Pass",
+          "errors": []
+        },
+        "Office2013": {
+          "status": "Pass",
+          "errors": []
+        }
+      },
+      "ordinary_features": {
+        "p": 23
+      },
+      "policy": "Success",
+      "first_blocker": null,
+      "first_class": null,
+      "graph_blockers": [],
+      "graph_error": null,
+      "independent_signals": [],
+      "formulas": [],
+      "output": {
+        "sha256": "ec439ac0643294e1e2961b381983304e044444f3a8f0dc465a98adf9ebee0e67",
+        "same_archive": true,
+        "same_payloads": true,
+        "changed_parts": []
+      }
+    },
+    {
+      "name": "Headers.docx",
+      "format": "docx",
+      "sha256": "bdf91038f9a5454355e6393b7b74fd819a4adc480b4a7011a86e878403952b5b",
+      "original_schema": {
+        "Office2007": {
+          "status": "Pass",
+          "errors": []
+        },
+        "Office2013": {
+          "status": "Pass",
+          "errors": []
+        }
+      },
+      "ordinary_features": {
+        "p": 15
+      },
+      "policy": "Success",
+      "first_blocker": null,
+      "first_class": null,
+      "graph_blockers": [],
+      "graph_error": null,
+      "independent_signals": [],
+      "formulas": [],
+      "output": {
+        "sha256": "bdf91038f9a5454355e6393b7b74fd819a4adc480b4a7011a86e878403952b5b",
+        "same_archive": true,
+        "same_payloads": true,
+        "changed_parts": []
+      }
+    },
+    {
+      "name": "SimpleHeadThreeColFoot.docx",
+      "format": "docx",
+      "sha256": "c682ea30e50785784969ee00b4d6ed8da31e725a64e0251a4f21077f02f19d8e",
+      "original_schema": {
+        "Office2007": {
+          "status": "Pass",
+          "errors": []
+        },
+        "Office2013": {
+          "status": "Pass",
+          "errors": []
+        }
+      },
+      "ordinary_features": {
+        "p": 17
+      },
+      "policy": "Success",
+      "first_blocker": null,
+      "first_class": null,
+      "graph_blockers": [],
+      "graph_error": null,
+      "independent_signals": [],
+      "formulas": [],
+      "output": {
+        "sha256": "c682ea30e50785784969ee00b4d6ed8da31e725a64e0251a4f21077f02f19d8e",
+        "same_archive": true,
+        "same_payloads": true,
+        "changed_parts": []
+      }
+    },
+    {
+      "name": "Styles.docx",
+      "format": "docx",
+      "sha256": "63f3fe4c3b4fbdc211eca8fa7fd31a799ff4438afbf4ca6e771b3aef107c732e",
+      "original_schema": {
+        "Office2007": {
+          "status": "Pass",
+          "errors": []
+        },
+        "Office2013": {
+          "status": "Pass",
+          "errors": []
+        }
+      },
+      "ordinary_features": {
+        "p": 6
+      },
+      "policy": "Success",
+      "first_blocker": null,
+      "first_class": null,
+      "graph_blockers": [],
+      "graph_error": null,
+      "independent_signals": [],
+      "formulas": [],
+      "output": {
+        "sha256": "63f3fe4c3b4fbdc211eca8fa7fd31a799ff4438afbf4ca6e771b3aef107c732e",
+        "same_archive": true,
+        "same_payloads": true,
+        "changed_parts": []
+      }
+    },
+    {
+      "name": "TestTableCellAlign.docx",
+      "format": "docx",
+      "sha256": "2968d4a5d5de21dce1cbeae3235e545cdf4bfd7ae508fe0eed3a9b032773ce17",
+      "original_schema": {
+        "Office2007": {
+          "status": "Fail",
+          "errors": [
+            {
+              "Id": "Sch_UndeclaredAttribute",
+              "Description": "The 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:firstRow' attribute is not declared.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[1]/w:tblPr[1]/w:tblLook[1]"
+            },
+            {
+              "Id": "Sch_UndeclaredAttribute",
+              "Description": "The 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:lastRow' attribute is not declared.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[1]/w:tblPr[1]/w:tblLook[1]"
+            },
+            {
+              "Id": "Sch_UndeclaredAttribute",
+              "Description": "The 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:firstColumn' attribute is not declared.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[1]/w:tblPr[1]/w:tblLook[1]"
+            },
+            {
+              "Id": "Sch_UndeclaredAttribute",
+              "Description": "The 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:lastColumn' attribute is not declared.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[1]/w:tblPr[1]/w:tblLook[1]"
+            },
+            {
+              "Id": "Sch_UndeclaredAttribute",
+              "Description": "The 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:noHBand' attribute is not declared.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[1]/w:tblPr[1]/w:tblLook[1]"
+            },
+            {
+              "Id": "Sch_UndeclaredAttribute",
+              "Description": "The 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:noVBand' attribute is not declared.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[1]/w:tblPr[1]/w:tblLook[1]"
+            }
+          ]
+        },
+        "Office2013": {
+          "status": "Pass",
+          "errors": []
+        }
+      },
+      "ordinary_features": {
+        "p": 5,
+        "tbl": 1
+      },
+      "policy": "Refused",
+      "first_blocker": "unsupported Word XML feature or placement: tblBorders",
+      "first_class": "ProfileGap",
+      "graph_blockers": [],
+      "graph_error": null,
+      "independent_signals": [],
+      "formulas": [],
+      "output": null
+    },
+    {
+      "name": "TestTableColumns.docx",
+      "format": "docx",
+      "sha256": "3b1965a295c4a5c24573a6d5f2ded93f7de3e7a46ffe26b881456f1c4ddd6335",
+      "original_schema": {
+        "Office2007": {
+          "status": "Fail",
+          "errors": [
+            {
+              "Id": "Sch_UndeclaredAttribute",
+              "Description": "The 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:firstRow' attribute is not declared.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[2]/w:tblPr[1]/w:tblLook[1]"
+            },
+            {
+              "Id": "Sch_UndeclaredAttribute",
+              "Description": "The 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:lastRow' attribute is not declared.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[2]/w:tblPr[1]/w:tblLook[1]"
+            },
+            {
+              "Id": "Sch_UndeclaredAttribute",
+              "Description": "The 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:firstColumn' attribute is not declared.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[2]/w:tblPr[1]/w:tblLook[1]"
+            },
+            {
+              "Id": "Sch_UndeclaredAttribute",
+              "Description": "The 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:lastColumn' attribute is not declared.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[2]/w:tblPr[1]/w:tblLook[1]"
+            },
+            {
+              "Id": "Sch_UndeclaredAttribute",
+              "Description": "The 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:noHBand' attribute is not declared.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[2]/w:tblPr[1]/w:tblLook[1]"
+            },
+            {
+              "Id": "Sch_UndeclaredAttribute",
+              "Description": "The 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:noVBand' attribute is not declared.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[2]/w:tblPr[1]/w:tblLook[1]"
+            },
+            {
+              "Id": "Sch_UndeclaredAttribute",
+              "Description": "The 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:firstRow' attribute is not declared.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[1]/w:tblPr[1]/w:tblLook[1]"
+            },
+            {
+              "Id": "Sch_UndeclaredAttribute",
+              "Description": "The 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:lastRow' attribute is not declared.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[1]/w:tblPr[1]/w:tblLook[1]"
+            },
+            {
+              "Id": "Sch_UndeclaredAttribute",
+              "Description": "The 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:firstColumn' attribute is not declared.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[1]/w:tblPr[1]/w:tblLook[1]"
+            },
+            {
+              "Id": "Sch_UndeclaredAttribute",
+              "Description": "The 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:lastColumn' attribute is not declared.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[1]/w:tblPr[1]/w:tblLook[1]"
+            },
+            {
+              "Id": "Sch_UndeclaredAttribute",
+              "Description": "The 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:noHBand' attribute is not declared.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[1]/w:tblPr[1]/w:tblLook[1]"
+            },
+            {
+              "Id": "Sch_UndeclaredAttribute",
+              "Description": "The 'http://schemas.openxmlformats.org/wordprocessingml/2006/main:noVBand' attribute is not declared.",
+              "Part": "/word/document.xml",
+              "XPath": "/w:document[1]/w:body[1]/w:tbl[1]/w:tblPr[1]/w:tblLook[1]"
+            }
+          ]
+        },
+        "Office2013": {
+          "status": "Pass",
+          "errors": []
+        }
+      },
+      "ordinary_features": {
+        "p": 18,
+        "tbl": 2
+      },
+      "policy": "Refused",
+      "first_blocker": "Word graph coverage gap: opaque XML namespace/extension (including AlternateContent or VML): word/styles.xml",
+      "first_class": "Unknown",
+      "graph_blockers": [
+        "opaque XML namespace/extension (including AlternateContent or VML): word/styles.xml",
+        "opaque XML namespace/extension (including AlternateContent or VML): word/document.xml",
+        "opaque XML namespace/extension (including AlternateContent or VML): word/settings.xml",
+        "opaque XML namespace/extension (including AlternateContent or VML): word/fontTable.xml",
+        "opaque XML namespace/extension (including AlternateContent or VML): word/webSettings.xml"
+      ],
+      "graph_error": null,
+      "independent_signals": [],
+      "formulas": [],
+      "output": null
+    },
+    {
+      "name": "VariousPictures.docx",
+      "format": "docx",
+      "sha256": "c1eecbca7de9f99e21c677e1d5b045eaa1d5a442eff4c82f0cbe9af93726a070",
+      "original_schema": {
+        "Office2007": {
+          "status": "Pass",
+          "errors": []
+        },
+        "Office2013": {
+          "status": "Pass",
+          "errors": []
+        }
+      },
+      "ordinary_features": {
+        "drawing": 5,
+        "p": 7
+      },
+      "policy": "Refused",
+      "first_blocker": "Word relationship/content-type conflict",
+      "first_class": "FormatOrAmbiguity",
+      "graph_blockers": [],
+      "graph_error": null,
+      "independent_signals": [],
+      "formulas": [],
+      "output": null
+    },
+    {
+      "name": "headerPic.docx",
+      "format": "docx",
+      "sha256": "50d9b17f7575c8a91129fd8a3e6a70feec886480ab9f089e29a7f8ac7e5ed51a",
+      "original_schema": {
+        "Office2007": {
+          "status": "Pass",
+          "errors": []
+        },
+        "Office2013": {
+          "status": "Pass",
+          "errors": []
+        }
+      },
+      "ordinary_features": {
+        "drawing": 1,
+        "noProof": 1,
+        "p": 7,
+        "srcRect": 1
+      },
+      "policy": "Refused",
+      "first_blocker": "unsupported Word XML feature or placement: noProof",
+      "first_class": "ProfileGap",
+      "graph_blockers": [],
+      "graph_error": null,
+      "independent_signals": [],
+      "formulas": [],
+      "output": null
+    },
+    {
+      "name": "ComplexNumberedLists.docx",
+      "format": "docx",
+      "sha256": "297a085a7d433af2eeee7661e8db21539452cb585096484774a1e9f5f258b0b6",
+      "original_schema": {
+        "Office2007": {
+          "status": "Pass",
+          "errors": []
+        },
+        "Office2013": {
+          "status": "Pass",
+          "errors": []
+        }
+      },
+      "ordinary_features": {
+        "numFmt": 54,
+        "numPr": 14,
+        "p": 17
+      },
+      "policy": "Refused",
+      "first_blocker": "Word graph coverage gap: unsupported relationship semantics: word/document.xml#rId3",
+      "first_class": "ProfileGap",
+      "graph_blockers": [
+        "unsupported relationship semantics: word/document.xml#rId3"
+      ],
+      "graph_error": null,
+      "independent_signals": [],
+      "formulas": [],
+      "output": null
+    },
+    {
+      "name": "sample.docx",
+      "format": "docx",
+      "sha256": "be4fc1bf778ad8183f714e09b9df40669de34e9ecbc3adecfc8953f00749036f",
+      "original_schema": {
+        "Office2007": {
+          "status": "Pass",
+          "errors": []
+        },
+        "Office2013": {
+          "status": "Pass",
+          "errors": []
+        }
+      },
+      "ordinary_features": {
+        "p": 13
+      },
+      "policy": "Success",
+      "first_blocker": null,
+      "first_class": null,
+      "graph_blockers": [],
+      "graph_error": null,
+      "independent_signals": [],
+      "formulas": [],
+      "output": {
+        "sha256": "be4fc1bf778ad8183f714e09b9df40669de34e9ecbc3adecfc8953f00749036f",
+        "same_archive": true,
+        "same_payloads": true,
+        "changed_parts": []
+      }
+    },
+    {
+      "name": "Booleans.xlsx",
+      "format": "xlsx",
+      "sha256": "5803ffe3c16185b195d81bb475ed8b63623a4a19060f69165d97150708ec59da",
+      "original_schema": {
+        "Office2007": {
+          "status": "Pass",
+          "errors": []
+        },
+        "Office2013": {
+          "status": "Pass",
+          "errors": []
+        }
+      },
+      "ordinary_features": {
+        "c": 10
+      },
+      "policy": "Refused",
+      "first_blocker": "graph coverage gap: unsupported relationship semantics: xl/workbook.xml#rId7",
+      "first_class": "Formula",
+      "graph_blockers": [
+        "unsupported relationship semantics: xl/workbook.xml#rId7"
+      ],
+      "graph_error": null,
+      "independent_signals": [
+        {
+          "class": "Formula",
+          "part": "xl/_rels/workbook.xml.rels",
+          "kind": "calcChain",
+          "id": "rId7",
+          "target": "calcChain.xml",
+          "mode": "Internal"
+        },
+        {
+          "class": "Formula",
+          "part": "xl/calcChain.xml",
+          "kind": "calcChain",
+          "entries": [
+            {
+              "r": "A4",
+              "i": "1"
+            },
+            {
+              "r": "A1"
+            }
+          ]
+        }
+      ],
+      "formulas": [
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "A1",
+          "text": "TRUE()",
+          "attributes": {},
+          "cached": "1",
+          "cell_type": "b"
+        },
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "A4",
+          "text": "FALSE()",
+          "attributes": {},
+          "cached": "0",
+          "cell_type": "b"
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "DateFormatTests.xlsx",
+      "format": "xlsx",
+      "sha256": "16445dc0deba00671ee4315015a970d415ce9886da59c974532d946e99276c66",
+      "original_schema": {
+        "Office2007": {
+          "status": "Pass",
+          "errors": []
+        },
+        "Office2013": {
+          "status": "Pass",
+          "errors": []
+        }
+      },
+      "ordinary_features": {
+        "c": 240,
+        "numFmt": 1,
+        "phoneticPr": 38
+      },
+      "policy": "Refused",
+      "first_blocker": "graph coverage gap: unsupported relationship semantics: xl/workbook.xml#rId6",
+      "first_class": "Formula",
+      "graph_blockers": [
+        "unsupported relationship semantics: xl/workbook.xml#rId6",
+        "opaque XML namespace/extension (including AlternateContent or VML): xl/styles.xml",
+        "opaque XML namespace/extension (including AlternateContent or VML): xl/workbook.xml",
+        "opaque XML namespace/extension (including AlternateContent or VML): xl/worksheets/sheet1.xml",
+        "opaque XML namespace/extension (including AlternateContent or VML): xl/worksheets/sheet2.xml"
+      ],
+      "graph_error": null,
+      "independent_signals": [
+        {
+          "class": "Formula",
+          "part": "xl/_rels/workbook.xml.rels",
+          "kind": "calcChain",
+          "id": "rId6",
+          "target": "calcChain.xml",
+          "mode": "Internal"
+        },
+        {
+          "class": "Formula",
+          "part": "xl/calcChain.xml",
+          "kind": "calcChain",
+          "entries": [
+            {
+              "r": "A43",
+              "i": "1",
+              "l": "1"
+            },
+            {
+              "r": "A44",
+              "i": "1"
+            },
+            {
+              "r": "A45",
+              "i": "1"
+            },
+            {
+              "r": "A46",
+              "i": "1"
+            },
+            {
+              "r": "A42",
+              "i": "1"
+            },
+            {
+              "r": "A40",
+              "i": "1"
+            },
+            {
+              "r": "A39",
+              "i": "1"
+            },
+            {
+              "r": "A38",
+              "i": "1"
+            },
+            {
+              "r": "A37",
+              "i": "1"
+            },
+            {
+              "r": "A36",
+              "i": "1"
+            },
+            {
+              "r": "A35",
+              "i": "1"
+            },
+            {
+              "r": "A34",
+              "i": "1"
+            },
+            {
+              "r": "A33",
+              "i": "1"
+            },
+            {
+              "r": "A32",
+              "i": "1"
+            },
+            {
+              "r": "A31",
+              "i": "1"
+            },
+            {
+              "r": "A30",
+              "i": "1"
+            },
+            {
+              "r": "A29",
+              "i": "1"
+            },
+            {
+              "r": "A28",
+              "i": "1"
+            },
+            {
+              "r": "A27",
+              "i": "1"
+            },
+            {
+              "r": "A26",
+              "i": "1"
+            },
+            {
+              "r": "A25",
+              "i": "1"
+            },
+            {
+              "r": "A24",
+              "i": "1"
+            },
+            {
+              "r": "A23",
+              "i": "1"
+            },
+            {
+              "r": "A22",
+              "i": "1"
+            },
+            {
+              "r": "A21",
+              "i": "1"
+            },
+            {
+              "r": "A14",
+              "i": "1"
+            },
+            {
+              "r": "A13",
+              "i": "1"
+            },
+            {
+              "r": "A12",
+              "i": "1"
+            },
+            {
+              "r": "A11",
+              "i": "1"
+            },
+            {
+              "r": "A10",
+              "i": "1"
+            },
+            {
+              "r": "A9",
+              "i": "1"
+            },
+            {
+              "r": "A8",
+              "i": "1"
+            },
+            {
+              "r": "A7",
+              "i": "1"
+            },
+            {
+              "r": "A6",
+              "i": "1"
+            },
+            {
+              "r": "A19",
+              "i": "1"
+            },
+            {
+              "r": "A41",
+              "i": "1"
+            },
+            {
+              "r": "A5",
+              "i": "1"
+            },
+            {
+              "r": "A3",
+              "i": "1"
+            },
+            {
+              "r": "A2",
+              "i": "1"
+            },
+            {
+              "r": "A4",
+              "i": "1"
+            },
+            {
+              "r": "A20",
+              "i": "1"
+            },
+            {
+              "r": "A18",
+              "i": "1"
+            },
+            {
+              "r": "A17",
+              "i": "1"
+            },
+            {
+              "r": "A16",
+              "i": "1"
+            },
+            {
+              "r": "A15",
+              "i": "1"
+            }
+          ]
+        }
+      ],
+      "formulas": [
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A2",
+          "text": "TEXT(C2, B2)",
+          "attributes": {
+            "t": "shared",
+            "ref": "A2:A20",
+            "si": "0"
+          },
+          "cached": "11-10-52",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A3",
+          "text": "TEXT(C3, B3)",
+          "attributes": {
+            "t": "shared",
+            "ref": "A3",
+            "si": "1"
+          },
+          "cached": "11-10-52",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A4",
+          "text": "TEXT(C4, B4)",
+          "attributes": {
+            "t": "shared",
+            "ref": "A4:A7",
+            "si": "2"
+          },
+          "cached": "Sat-Oct-1952",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A5",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "2"
+          },
+          "cached": "Saturday-October-1952",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A6",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "2"
+          },
+          "cached": "11-10-52",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A7",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "2"
+          },
+          "cached": "11-10-52",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A8",
+          "text": "TEXT(C8, B8)",
+          "attributes": {
+            "t": "shared",
+            "ref": "A8:A14",
+            "si": "3"
+          },
+          "cached": "Sat-Oct-1952",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A9",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "3"
+          },
+          "cached": "Saturday-October-1952",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A10",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "3"
+          },
+          "cached": "14:35:27",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A11",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "3"
+          },
+          "cached": "02:35:27 p",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A12",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "3"
+          },
+          "cached": "2:35:27.000 P",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A13",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "3"
+          },
+          "cached": "02:35:27.000 PM",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A14",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "3"
+          },
+          "cached": "11-10-52 14:35:27",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A15",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "0"
+          },
+          "cached": "14:35:27",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A16",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "0"
+          },
+          "cached": "02:35:27 P",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A17",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "0"
+          },
+          "cached": "2:35:27.00 p",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A18",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "0"
+          },
+          "cached": "02:35:27.000 PM",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A19",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "0"
+          },
+          "cached": "11-10-52 14:35:27",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A20",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "0"
+          },
+          "cached": "Saturday-October-1952 2:35:27 PM",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A21",
+          "text": "TEXT(C21, B21)",
+          "attributes": {
+            "t": "shared",
+            "ref": "A21:A39",
+            "si": "4"
+          },
+          "cached": "1-2-03",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A22",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "01-02-03",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A23",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "Sat-Feb-2003",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A24",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "Saturday-February-2003",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A25",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "1-2-03",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A26",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "01-02-03",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A27",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "Sat-Feb-2003",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A28",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "Saturday-February-2003",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A29",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "4:5:6",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A30",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "04:05:06 a",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A31",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "4:5:6.01 A",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A32",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "04:05:06.009 AM",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A33",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "1-2-03 4:5:6",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A34",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "4:5:6",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A35",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "04:05:06 A",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A36",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "4:5:6.01 a",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A37",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "04:05:06.009 AM",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A38",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "1-2-03 4:5:6",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A39",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "Saturday-February-2003 4:5:6 AM",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A40",
+          "text": "TEXT(C40, B40)",
+          "attributes": {
+            "t": "shared",
+            "ref": "A40:A46",
+            "si": "5"
+          },
+          "cached": "4:5:6.01",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A41",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "5"
+          },
+          "cached": "01-01-2025",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A42",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "5"
+          },
+          "cached": "14:35",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A43",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "5"
+          },
+          "cached": "11 days 14",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A44",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "5"
+          },
+          "cached": "11 days 14",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A45",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "5"
+          },
+          "cached": "11 days 2 p",
+          "cell_type": "str"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A46",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "5"
+          },
+          "cached": "11 days 2 PM",
+          "cell_type": "str"
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "InlineString.xlsx",
+      "format": "xlsx",
+      "sha256": "c92383b48d5141248c7fb37e077b1aa02f716a995d57b779c357758b8afb5478",
+      "original_schema": {
+        "Office2007": {
+          "status": "Pass",
+          "errors": []
+        },
+        "Office2013": {
+          "status": "Pass",
+          "errors": []
+        }
+      },
+      "ordinary_features": {
+        "c": 1
+      },
+      "policy": "Refused",
+      "first_blocker": "graph coverage gap: opaque XML namespace/extension (including AlternateContent or VML): xl/styles.xml",
+      "first_class": "Unknown",
+      "graph_blockers": [
+        "opaque XML namespace/extension (including AlternateContent or VML): xl/styles.xml",
+        "opaque XML namespace/extension (including AlternateContent or VML): xl/workbook.xml",
+        "opaque XML namespace/extension (including AlternateContent or VML): xl/theme/theme1.xml"
+      ],
+      "graph_error": null,
+      "independent_signals": [],
+      "formulas": [],
+      "output": null
+    },
+    {
+      "name": "InlineStrings.xlsx",
+      "format": "xlsx",
+      "sha256": "bdfd54e82e7eec3a16bc12708dd2fbb8ebee12921215f6ed78fd32a84bfbfd74",
+      "original_schema": {
+        "Office2007": {
+          "status": "Fail",
+          "errors": [
+            {
+              "Id": "Sch_UnexpectedElementContentExpectingComplex",
+              "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/spreadsheetml/2006/main:sz'.",
+              "Part": "/xl/styles.xml",
+              "XPath": "/x:styleSheet[1]/x:fonts[1]/x:font[4]"
+            },
+            {
+              "Id": "Sch_UnexpectedElementContentExpectingComplex",
+              "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/spreadsheetml/2006/main:sz'.",
+              "Part": "/xl/styles.xml",
+              "XPath": "/x:styleSheet[1]/x:fonts[1]/x:font[3]"
+            },
+            {
+              "Id": "Sch_UnexpectedElementContentExpectingComplex",
+              "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/spreadsheetml/2006/main:sz'.",
+              "Part": "/xl/styles.xml",
+              "XPath": "/x:styleSheet[1]/x:fonts[1]/x:font[2]"
+            },
+            {
+              "Id": "Sch_UnexpectedElementContentExpectingComplex",
+              "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/spreadsheetml/2006/main:sz'.",
+              "Part": "/xl/styles.xml",
+              "XPath": "/x:styleSheet[1]/x:fonts[1]/x:font[1]"
+            }
+          ]
+        },
+        "Office2013": {
+          "status": "Fail",
+          "errors": [
+            {
+              "Id": "Sch_UnexpectedElementContentExpectingComplex",
+              "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/spreadsheetml/2006/main:sz'.",
+              "Part": "/xl/styles.xml",
+              "XPath": "/x:styleSheet[1]/x:fonts[1]/x:font[4]"
+            },
+            {
+              "Id": "Sch_UnexpectedElementContentExpectingComplex",
+              "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/spreadsheetml/2006/main:sz'.",
+              "Part": "/xl/styles.xml",
+              "XPath": "/x:styleSheet[1]/x:fonts[1]/x:font[3]"
+            },
+            {
+              "Id": "Sch_UnexpectedElementContentExpectingComplex",
+              "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/spreadsheetml/2006/main:sz'.",
+              "Part": "/xl/styles.xml",
+              "XPath": "/x:styleSheet[1]/x:fonts[1]/x:font[2]"
+            },
+            {
+              "Id": "Sch_UnexpectedElementContentExpectingComplex",
+              "Description": "The element has unexpected child element 'http://schemas.openxmlformats.org/spreadsheetml/2006/main:sz'.",
+              "Part": "/xl/styles.xml",
+              "XPath": "/x:styleSheet[1]/x:fonts[1]/x:font[1]"
+            }
+          ]
+        }
+      },
+      "ordinary_features": {
+        "c": 28,
+        "headerFooter": 3,
+        "numFmt": 2
+      },
+      "policy": "Refused",
+      "first_blocker": "ambiguous or unsupported part URI",
+      "first_class": "FormatOrAmbiguity",
+      "graph_blockers": null,
+      "graph_error": "ambiguous or unsupported part URI",
+      "independent_signals": [],
+      "formulas": [
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "D2",
+          "text": "A2",
+          "attributes": {
+            "aca": "false"
+          },
+          "cached": "12",
+          "cell_type": "n"
+        },
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "D3",
+          "text": "A3+A2",
+          "attributes": {
+            "aca": "false"
+          },
+          "cached": "44",
+          "cell_type": "n"
+        },
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "D4",
+          "text": "A4-A$2",
+          "attributes": {
+            "aca": "false"
+          },
+          "cached": "31",
+          "cell_type": "n"
+        },
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "D5",
+          "text": "A5-A$2",
+          "attributes": {
+            "aca": "false"
+          },
+          "cached": "30",
+          "cell_type": "n"
+        },
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "D6",
+          "text": "A6-A$2",
+          "attributes": {
+            "aca": "false"
+          },
+          "cached": "10",
+          "cell_type": "n"
+        },
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "D7",
+          "text": "A7-A$2",
+          "attributes": {
+            "aca": "false"
+          },
+          "cached": "9",
+          "cell_type": "n"
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "SimpleMultiCell.xlsx",
+      "format": "xlsx",
+      "sha256": "119b6e70c5bbca6ca3e46f981e0719c154d87203adb4b5b61210d726deab9f7a",
+      "original_schema": {
+        "Office2007": {
+          "status": "Pass",
+          "errors": []
+        },
+        "Office2013": {
+          "status": "Pass",
+          "errors": []
+        }
+      },
+      "ordinary_features": {
+        "c": 15,
+        "headerFooter": 3,
+        "phoneticPr": 3
+      },
+      "policy": "Success",
+      "first_blocker": null,
+      "first_class": null,
+      "graph_blockers": [],
+      "graph_error": null,
+      "independent_signals": [],
+      "formulas": [],
+      "output": {
+        "sha256": "119b6e70c5bbca6ca3e46f981e0719c154d87203adb4b5b61210d726deab9f7a",
+        "same_archive": true,
+        "same_payloads": true,
+        "changed_parts": []
+      }
+    },
+    {
+      "name": "SimpleNormal.xlsx",
+      "format": "xlsx",
+      "sha256": "6b300c76d7b6ba32e45c40086f5c8cea4b269946f7786a73e0d6f08c3acfe1e4",
+      "original_schema": {
+        "Office2007": {
+          "status": "Pass",
+          "errors": []
+        },
+        "Office2013": {
+          "status": "Pass",
+          "errors": []
+        }
+      },
+      "ordinary_features": {
+        "c": 21
+      },
+      "policy": "Refused",
+      "first_blocker": "graph coverage gap: unsupported relationship semantics: xl/workbook.xml#rId6",
+      "first_class": "Formula",
+      "graph_blockers": [
+        "unsupported relationship semantics: xl/workbook.xml#rId6",
+        "opaque XML namespace/extension (including AlternateContent or VML): xl/styles.xml",
+        "opaque XML namespace/extension (including AlternateContent or VML): xl/worksheets/sheet1.xml",
+        "opaque XML namespace/extension (including AlternateContent or VML): xl/worksheets/sheet2.xml"
+      ],
+      "graph_error": null,
+      "independent_signals": [
+        {
+          "class": "Formula",
+          "part": "xl/_rels/workbook.xml.rels",
+          "kind": "calcChain",
+          "id": "rId6",
+          "target": "calcChain.xml",
+          "mode": "Internal"
+        },
+        {
+          "class": "Formula",
+          "part": "xl/calcChain.xml",
+          "kind": "calcChain",
+          "entries": [
+            {
+              "r": "C7",
+              "i": "2",
+              "l": "1"
+            },
+            {
+              "r": "A7",
+              "i": "2"
+            }
+          ]
+        }
+      ],
+      "formulas": [
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A7",
+          "text": "SUM(A3:D3)",
+          "attributes": {},
+          "cached": "10",
+          "cell_type": null
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "C7",
+          "text": "C3",
+          "attributes": {},
+          "cached": "3",
+          "cell_type": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "styles.xlsx",
+      "format": "xlsx",
+      "sha256": "4b544c197c391a8eb1711e9c6a962fd6371a96815dded21aa2461d71e27a046c",
+      "original_schema": {
+        "Office2007": {
+          "status": "Pass",
+          "errors": []
+        },
+        "Office2013": {
+          "status": "Pass",
+          "errors": []
+        }
+      },
+      "ordinary_features": {
+        "c": 21,
+        "numFmt": 1
+      },
+      "policy": "Success",
+      "first_blocker": null,
+      "first_class": null,
+      "graph_blockers": [],
+      "graph_error": null,
+      "independent_signals": [],
+      "formulas": [],
+      "output": {
+        "sha256": "4b544c197c391a8eb1711e9c6a962fd6371a96815dded21aa2461d71e27a046c",
+        "same_archive": true,
+        "same_payloads": true,
+        "changed_parts": []
+      }
+    },
+    {
+      "name": "SimpleMacro.xlsm",
+      "format": "xlsm",
+      "sha256": "f76c986f4ebc25c2cc57c088b2511a1269f4bd61d6223a2ab58db351da348ba6",
+      "original_schema": {
+        "Office2007": {
+          "status": "Pass",
+          "errors": []
+        },
+        "Office2013": {
+          "status": "Pass",
+          "errors": []
+        }
+      },
+      "ordinary_features": {
+        "c": 1
+      },
+      "policy": "Refused",
+      "first_blocker": "graph coverage gap: opaque XML namespace/extension (including AlternateContent or VML): xl/styles.xml",
+      "first_class": "Unknown",
+      "graph_blockers": [
+        "opaque XML namespace/extension (including AlternateContent or VML): xl/styles.xml",
+        "opaque XML namespace/extension (including AlternateContent or VML): xl/worksheets/sheet1.xml",
+        "opaque XML namespace/extension (including AlternateContent or VML): xl/worksheets/sheet2.xml",
+        "opaque XML namespace/extension (including AlternateContent or VML): xl/worksheets/sheet3.xml"
+      ],
+      "graph_error": null,
+      "independent_signals": [
+        {
+          "class": "ActiveCapability",
+          "part": "xl/_rels/workbook.xml.rels",
+          "kind": "vbaProject",
+          "id": "rId7",
+          "target": "vbaProject.bin",
+          "mode": "Internal"
+        }
+      ],
+      "formulas": [],
+      "output": null
+    }
+  ]
+}

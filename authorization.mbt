@@ -1,10 +1,11 @@
 ///|
+#derive(Eq, Debug)
 pub(all) enum ChangeKind {
   VbaRemoval
   OleRemoval
   TemplateRemoval
   MacroFormatConversion
-} derive(Eq, Debug)
+}
 
 ///|
 pub extend ChangeKind with Eq::{equal, not_equal}
@@ -27,16 +28,17 @@ pub fn ChangeKind::label(self : ChangeKind) -> String {
 
 ///|
 pub impl ToJson for ChangeKind with fn to_json(self) -> Json {
-  self.label().to_json()
+  Json::string(self.label())
 }
 
 ///|
+#derive(Eq, Debug, ToJson)
 pub(all) struct ContentChange {
   kind : ChangeKind
-  count : Int
+  count : Int32
   removed_parts : Array[String]
   effect : String
-} derive(Eq, Debug, ToJson)
+}
 
 ///|
 pub extend ContentChange with Eq::{equal, not_equal}
@@ -48,11 +50,12 @@ pub extend ContentChange with Debug::{to_repr}
 pub extend ContentChange with ToJson::{to_json}
 
 ///|
+#derive(Eq, Debug, ToJson)
 pub(all) struct ChangeSummary {
   changes : Array[ContentChange]
   removed_parts : Array[String]
   rewritten_parts : Array[String]
-} derive(Eq, Debug, ToJson)
+}
 
 ///|
 pub extend ChangeSummary with Eq::{equal, not_equal}
@@ -65,12 +68,13 @@ pub extend ChangeSummary with ToJson::{to_json}
 
 ///|
 /// These flags cover only the exact reviewed plan, never arbitrary future inputs.
+#derive(Eq, Debug, ToJson)
 pub(all) struct RemovalPermissions {
   remove_vba : Bool
   remove_ole : Bool
   remove_remote_template : Bool
   convert_macro_format : Bool
-} derive(Eq, Debug, ToJson)
+}
 
 ///|
 pub extend RemovalPermissions with Eq::{equal, not_equal}
@@ -142,6 +146,7 @@ pub struct DocumentAuthorization {
 }
 
 ///|
+#derive(Eq, Debug, ToJson)
 pub(all) struct AuthorizationRecord {
   schema : String
   input_hash : String
@@ -149,7 +154,7 @@ pub(all) struct AuthorizationRecord {
   output_hash : String
   permissions : RemovalPermissions
   summary : ChangeSummary
-} derive(Eq, Debug, ToJson)
+}
 
 ///|
 pub extend AuthorizationRecord with Eq::{equal, not_equal}
@@ -208,7 +213,7 @@ pub fn DocumentPreview::to_json(self : DocumentPreview) -> Json {
     "plan_hash": self.plan_hash,
     "input_format": self.plan.input_format,
     "output_format": self.plan.output_format,
-    "summary": self.changes.to_json(),
+    "summary": ToJson::to_json(self.changes),
   }
 }
 
@@ -316,8 +321,8 @@ fn reviewed_plan_hash(
 ///|
 pub fn preview_document(
   input : Bytes,
-  limits? : Limits = Limits::default(),
-  control? : WorkControl = WorkControl::default(),
+  limits~ : Limits = Limits::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> Result[DocumentPreview, SdkFailure] {
   let operation = PreviewDocument
   if sdk_preflight(input, None, limits, control, operation) is Some(error) {
@@ -363,7 +368,7 @@ pub fn authorize_document(
 pub fn execute_authorized_document(
   input : Bytes,
   authorization : DocumentAuthorization,
-  control? : WorkControl = WorkControl::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> Result[AuthorizedRebuilt, SdkFailure] {
   let operation = ExecuteAuthorizedDocument
   let limits = authorization.plan.limits

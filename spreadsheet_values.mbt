@@ -1,6 +1,6 @@
 ///|
 // Bounded decimal indices. Never coerce booleans, signs or floating values.
-fn checked_index(text : String, exclusive : Int) -> Int raise {
+fn checked_index(text : String, exclusive : Int32) -> Int32 raise {
   guard text.length() > 0 && text.length() <= 10 else {
     raise Invalid("missing/oversized spreadsheet index")
   }

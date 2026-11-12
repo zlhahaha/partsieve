@@ -9,15 +9,19 @@ $taskRunReport = [ordered]@{ schema = 'partsieve.check-run.v1'; result = 'Runnin
 $taskRunReport | ConvertTo-Json | Set-Content -LiteralPath "$taskRun/run.json" -Encoding utf8
 Write-Output "Check results: $taskRun"
 try {
+  $taskLock = Get-Content -Raw -LiteralPath docs/dependency-lock.json | ConvertFrom-Json
   $taskVersion = moon version --all
-  if ($LASTEXITCODE -ne 0 -or ($taskVersion -join "`n") -notmatch 'moonc v0\.10\.14\+7d59c7ec9') {
+  if ($LASTEXITCODE -ne 0 -or
+      -not ($taskVersion -match ('^moon ' + [regex]::Escape($taskLock.moon) + ' ')) -or
+      -not ($taskVersion -match ('^moonc ' + [regex]::Escape($taskLock.moonc) + ' '))) {
     throw 'Toolchain differs from dependency evidence; review before upgrading'
   }
+  $taskRunReport['toolchain'] = @($taskVersion)
   if (-not $Offline) {
     moon update
     if ($LASTEXITCODE -ne 0) { throw 'Registry update failed' }
-    moon install
-    if ($LASTEXITCODE -ne 0) { throw 'Dependency installation failed' }
+    moon check --target native
+    if ($LASTEXITCODE -ne 0) { throw 'Dependency synchronization or initial check failed' }
   }
   .\tools\check-dependencies.ps1
   if ($LASTEXITCODE -ne 0) { throw 'Dependency source drift' }

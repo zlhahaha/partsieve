@@ -1,5 +1,8 @@
 ///|
-fn multi_ole_nodes(count : Int, shape_type? : String = "") -> Array[Node] raise {
+fn multi_ole_nodes(
+  count : Int32,
+  shape_type~ : String = "",
+) -> Array[Node] raise {
   let objects = Array::makei(count, fn(i) {
     let id = i.to_string()
     "<w:r><w:object><v:shape id='s" +

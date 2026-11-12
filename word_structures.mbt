@@ -74,7 +74,7 @@ fn word_attr(node : Node, name : String) -> String raise {
 }
 
 ///|
-fn word_id(value : String, negative? : Bool = false) -> String raise {
+fn word_id(value : String, negative~ : Bool = false) -> String raise {
   if negative && value == "-1" {
     return "-1"
   }
@@ -543,7 +543,7 @@ fn validate_word_markers(pkg : Package) -> Unit raise {
   for nodes in pkg.xml_nodes.values() {
     let bookmarks : Map[String, Bool] = Map([])
     let names : Map[String, Bool] = Map([])
-    let proof : Map[String, Int] = Map([("spell", 0), ("gram", 0)])
+    let proof : Map[String, Int32] = Map([("spell", 0), ("gram", 0)])
     for node in nodes {
       pkg.control.checkpoint("word-range-marker", 1)
       if node.element.name.namespace_uri != Some(word_ns) {

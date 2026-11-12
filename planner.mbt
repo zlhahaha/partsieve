@@ -324,8 +324,8 @@ fn make_prepared_plan(pkg : Package, limits : Limits) -> PreparedPlan raise {
 ///|
 pub fn prepare(
   input : Bytes,
-  limits? : Limits = Limits::default(),
-  control? : WorkControl = WorkControl::default(),
+  limits~ : Limits = Limits::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> PreparedPlan raise {
   make_prepared_plan(load_package(input, limits, control~), limits)
 }
@@ -440,8 +440,8 @@ fn execute_supplied_plan(
 pub fn rebuild_with_plan(
   input : Bytes,
   supplied : Json,
-  limits? : Limits = Limits::default(),
-  control? : WorkControl = WorkControl::default(),
+  limits~ : Limits = Limits::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> Rebuilt raise {
   let bytes = execute_supplied_plan(input, supplied, limits, control)
   { bytes, receipt: verify(bytes, input, limits~, control~), }

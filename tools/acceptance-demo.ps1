@@ -41,7 +41,8 @@ if (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'demo-inputs.json')) {
   Push-Location -LiteralPath $demoRepo
   try {
     $module = [IO.File]::ReadAllText((Join-Path $demoRepo 'moon.mod'))
-    if ($module -notmatch 'version\s*=\s*"0\.8\.0-spike"') { throw 'This fixed demonstration targets PartSieve 0.8.0-spike' }
+    if ($module -notmatch '(?m)^version\s*=\s*"([^"]+)"') { throw 'Module version missing' }
+    $demoVersion = $Matches[1]
     moon build --release --target native --deny-warn
     if ($LASTEXITCODE -ne 0) { throw 'Native Release build failed' }
     $multiSource = Join-Path $demoRepo 'tests/fixtures/business/demo-word-three-objects.docm'
@@ -86,7 +87,7 @@ if (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'demo-inputs.json')) {
       $sourceKind = 'git-checkout'
     }
     $manifest = [ordered]@{
-      schema = 'partsieve.acceptance-demo.v1'; tool = 'partsieve/0.8.0-spike'
+      schema = 'partsieve.acceptance-demo.v1'; tool = 'partsieve/0.8.0-spike'; module_version = $demoVersion
       source_revision = $revision; source_worktree_dirty = $dirty; source_kind = $sourceKind
       platform = [Runtime.InteropServices.RuntimeInformation]::OSDescription
       architecture = [Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString()
@@ -216,7 +217,7 @@ Write-Output '05-batch : 2 verified successes, 2 expected refusals, 1 skip; exis
 @"
 # 验收演示结果
 
-- 模块：$($demoManifest.tool)
+- 模块版本：$($demoManifest.module_version)
 - 来源类型：$($demoManifest.source_kind)；Git源码：$($demoManifest.source_revision)，准备时存在未提交修改：$($demoManifest.source_worktree_dirty)。注册表/源码包无Git元数据时留空，以模块版本和文件摘要记录。
 - 报表去宏与实际文件核验：通过；输出 01-report.xlsx。
 - Word三个独立OLE移除、保存计划执行及实际文件核验：通过；输出 02-word.docx。

@@ -1,22 +1,26 @@
 ///|
+#derive(Eq, Debug)
 pub(all) enum PreservationKind {
   BytePreservedKind
   SemanticallyRewrittenKind
   RemovedByPolicyKind
   RegeneratedMetadataKind
-} derive(Eq, Debug)
-
-///|
-impl ToJson for PreservationKind with fn to_json(self) -> Json {
-  (match self {
-    BytePreservedKind => "BytePreserved"
-    SemanticallyRewrittenKind => "SemanticallyRewritten"
-    RemovedByPolicyKind => "RemovedByPolicy"
-    RegeneratedMetadataKind => "RegeneratedMetadata"
-  }).to_json()
 }
 
 ///|
+impl ToJson for PreservationKind with fn to_json(self) -> Json {
+  Json::string(
+    match self {
+      BytePreservedKind => "BytePreserved"
+      SemanticallyRewrittenKind => "SemanticallyRewritten"
+      RemovedByPolicyKind => "RemovedByPolicy"
+      RegeneratedMetadataKind => "RegeneratedMetadata"
+    },
+  )
+}
+
+///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct ContractDisposition {
   part : String
   classification : PreservationKind
@@ -25,17 +29,19 @@ pub(all) struct ContractDisposition {
   decision_id : String?
   rule_id : String?
   reason : String
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct VerificationCheck {
   check_id : String
   state : CheckState
   result : ResultStatus?
   detail : String
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct VerifiedReceipt {
   schema : String
   tool : String
@@ -44,8 +50,8 @@ pub(all) struct VerifiedReceipt {
   profile : String
   input_hash : String
   output_hash : String
-  input_size : Int
-  output_size : Int
+  input_size : Int32
+  output_size : Int32
   input_format : String
   output_format : String
   limits : Limits
@@ -62,7 +68,7 @@ pub(all) struct VerifiedReceipt {
   independent_validation : CheckState
   independent_tools : Array[String]
   limitations : Array[String]
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
 pub(all) struct VerifiedRebuilt {

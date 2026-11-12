@@ -32,7 +32,7 @@ test "pre-cancelled control refuses every document API without reading bytes" {
     ignore(
       rebuild_with_plan(
         input,
-        (Map([]) : Map[String, Json]).to_json(),
+        ToJson::to_json((Map([]) : Map[String, Json])),
         control~,
       ),
     )
@@ -41,7 +41,7 @@ test "pre-cancelled control refuses every document API without reading bytes" {
     ignore(
       rebuild_verified_with_plan(
         input,
-        (Map([]) : Map[String, Json]).to_json(),
+        ToJson::to_json((Map([]) : Map[String, Json])),
         control~,
       ),
     )

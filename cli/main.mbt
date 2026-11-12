@@ -7,7 +7,7 @@ priv struct Workspace {
 ///|
 fn Workspace::directory(
   self : Workspace,
-  parent? : String = "",
+  parent~ : String = "",
 ) -> String raise {
   let path = @host.temp_dir(parent~)
   self.dirs.push(path)
@@ -44,8 +44,8 @@ fn run_worker(
   exe : String,
   command : String,
   paths : Array[String],
-  timeout : Int,
-) -> (Json, Int) raise {
+  timeout : Int32,
+) -> (Json, Int32) raise {
   let result = @host.run(exe, ["_worker", command] + paths, timeout_ms=timeout)
   let report = parse_json(result.stdout)
   if command == "assess" &&
@@ -83,7 +83,7 @@ fn hash(bytes : Bytes) -> String {
 }
 
 ///|
-pub fn execute(args : Array[String]) -> (Json, Int) raise {
+pub fn execute(args : Array[String]) -> (Json, Int32) raise {
   let options = parse_args(args)
   if options.command == "batch" {
     return execute_batch(options)

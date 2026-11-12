@@ -1,0 +1,1227 @@
+{
+  "schema": "partsieve.formula-spike.v1",
+  "decision": "KILL for this release",
+  "classification_scope": "Selected fixture strings and OPC signals; diagnostic only",
+  "cases": [
+    {
+      "sample": "SimpleNormal.xlsx",
+      "sha256": "6b300c76d7b6ba32e45c40086f5c8cea4b269946f7786a73e0d6f08c3acfe1e4",
+      "generated": false,
+      "signals": [
+        {
+          "class": "Formula",
+          "part": "xl/_rels/workbook.xml.rels",
+          "kind": "calcChain",
+          "id": "rId6",
+          "target": "calcChain.xml",
+          "mode": "Internal"
+        },
+        {
+          "class": "Formula",
+          "part": "xl/calcChain.xml",
+          "kind": "calcChain",
+          "entries": [
+            {
+              "r": "C7",
+              "i": "2",
+              "l": "1"
+            },
+            {
+              "r": "A7",
+              "i": "2"
+            }
+          ]
+        }
+      ],
+      "formulas": [
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A7",
+          "text": "SUM(A3:D3)",
+          "attributes": {},
+          "cached": "10",
+          "cell_type": null,
+          "class": "Formula"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "C7",
+          "text": "C3",
+          "attributes": {},
+          "cached": "3",
+          "cell_type": null,
+          "class": "Formula"
+        }
+      ],
+      "decision": 3,
+      "diagnostic": {
+        "schema": "partsieve.error.spike-v1",
+        "status": "Unsupported",
+        "error": "graph coverage gap: unsupported relationship semantics: xl/workbook.xml#rId6"
+      },
+      "output": false,
+      "receipt": false
+    },
+    {
+      "sample": "Booleans.xlsx",
+      "sha256": "5803ffe3c16185b195d81bb475ed8b63623a4a19060f69165d97150708ec59da",
+      "generated": false,
+      "signals": [
+        {
+          "class": "Formula",
+          "part": "xl/_rels/workbook.xml.rels",
+          "kind": "calcChain",
+          "id": "rId7",
+          "target": "calcChain.xml",
+          "mode": "Internal"
+        },
+        {
+          "class": "Formula",
+          "part": "xl/calcChain.xml",
+          "kind": "calcChain",
+          "entries": [
+            {
+              "r": "A4",
+              "i": "1"
+            },
+            {
+              "r": "A1"
+            }
+          ]
+        }
+      ],
+      "formulas": [
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "A1",
+          "text": "TRUE()",
+          "attributes": {},
+          "cached": "1",
+          "cell_type": "b",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "A4",
+          "text": "FALSE()",
+          "attributes": {},
+          "cached": "0",
+          "cell_type": "b",
+          "class": "Unknown"
+        }
+      ],
+      "decision": 3,
+      "diagnostic": {
+        "schema": "partsieve.error.spike-v1",
+        "status": "Unsupported",
+        "error": "graph coverage gap: unsupported relationship semantics: xl/workbook.xml#rId7"
+      },
+      "output": false,
+      "receipt": false
+    },
+    {
+      "sample": "DateFormatTests.xlsx",
+      "sha256": "16445dc0deba00671ee4315015a970d415ce9886da59c974532d946e99276c66",
+      "generated": false,
+      "signals": [
+        {
+          "class": "Formula",
+          "part": "xl/_rels/workbook.xml.rels",
+          "kind": "calcChain",
+          "id": "rId6",
+          "target": "calcChain.xml",
+          "mode": "Internal"
+        },
+        {
+          "class": "Formula",
+          "part": "xl/calcChain.xml",
+          "kind": "calcChain",
+          "entries": [
+            {
+              "r": "A43",
+              "i": "1",
+              "l": "1"
+            },
+            {
+              "r": "A44",
+              "i": "1"
+            },
+            {
+              "r": "A45",
+              "i": "1"
+            },
+            {
+              "r": "A46",
+              "i": "1"
+            },
+            {
+              "r": "A42",
+              "i": "1"
+            },
+            {
+              "r": "A40",
+              "i": "1"
+            },
+            {
+              "r": "A39",
+              "i": "1"
+            },
+            {
+              "r": "A38",
+              "i": "1"
+            },
+            {
+              "r": "A37",
+              "i": "1"
+            },
+            {
+              "r": "A36",
+              "i": "1"
+            },
+            {
+              "r": "A35",
+              "i": "1"
+            },
+            {
+              "r": "A34",
+              "i": "1"
+            },
+            {
+              "r": "A33",
+              "i": "1"
+            },
+            {
+              "r": "A32",
+              "i": "1"
+            },
+            {
+              "r": "A31",
+              "i": "1"
+            },
+            {
+              "r": "A30",
+              "i": "1"
+            },
+            {
+              "r": "A29",
+              "i": "1"
+            },
+            {
+              "r": "A28",
+              "i": "1"
+            },
+            {
+              "r": "A27",
+              "i": "1"
+            },
+            {
+              "r": "A26",
+              "i": "1"
+            },
+            {
+              "r": "A25",
+              "i": "1"
+            },
+            {
+              "r": "A24",
+              "i": "1"
+            },
+            {
+              "r": "A23",
+              "i": "1"
+            },
+            {
+              "r": "A22",
+              "i": "1"
+            },
+            {
+              "r": "A21",
+              "i": "1"
+            },
+            {
+              "r": "A14",
+              "i": "1"
+            },
+            {
+              "r": "A13",
+              "i": "1"
+            },
+            {
+              "r": "A12",
+              "i": "1"
+            },
+            {
+              "r": "A11",
+              "i": "1"
+            },
+            {
+              "r": "A10",
+              "i": "1"
+            },
+            {
+              "r": "A9",
+              "i": "1"
+            },
+            {
+              "r": "A8",
+              "i": "1"
+            },
+            {
+              "r": "A7",
+              "i": "1"
+            },
+            {
+              "r": "A6",
+              "i": "1"
+            },
+            {
+              "r": "A19",
+              "i": "1"
+            },
+            {
+              "r": "A41",
+              "i": "1"
+            },
+            {
+              "r": "A5",
+              "i": "1"
+            },
+            {
+              "r": "A3",
+              "i": "1"
+            },
+            {
+              "r": "A2",
+              "i": "1"
+            },
+            {
+              "r": "A4",
+              "i": "1"
+            },
+            {
+              "r": "A20",
+              "i": "1"
+            },
+            {
+              "r": "A18",
+              "i": "1"
+            },
+            {
+              "r": "A17",
+              "i": "1"
+            },
+            {
+              "r": "A16",
+              "i": "1"
+            },
+            {
+              "r": "A15",
+              "i": "1"
+            }
+          ]
+        }
+      ],
+      "formulas": [
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A2",
+          "text": "TEXT(C2, B2)",
+          "attributes": {
+            "t": "shared",
+            "ref": "A2:A20",
+            "si": "0"
+          },
+          "cached": "11-10-52",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A3",
+          "text": "TEXT(C3, B3)",
+          "attributes": {
+            "t": "shared",
+            "ref": "A3",
+            "si": "1"
+          },
+          "cached": "11-10-52",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A4",
+          "text": "TEXT(C4, B4)",
+          "attributes": {
+            "t": "shared",
+            "ref": "A4:A7",
+            "si": "2"
+          },
+          "cached": "Sat-Oct-1952",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A5",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "2"
+          },
+          "cached": "Saturday-October-1952",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A6",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "2"
+          },
+          "cached": "11-10-52",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A7",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "2"
+          },
+          "cached": "11-10-52",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A8",
+          "text": "TEXT(C8, B8)",
+          "attributes": {
+            "t": "shared",
+            "ref": "A8:A14",
+            "si": "3"
+          },
+          "cached": "Sat-Oct-1952",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A9",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "3"
+          },
+          "cached": "Saturday-October-1952",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A10",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "3"
+          },
+          "cached": "14:35:27",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A11",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "3"
+          },
+          "cached": "02:35:27 p",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A12",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "3"
+          },
+          "cached": "2:35:27.000 P",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A13",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "3"
+          },
+          "cached": "02:35:27.000 PM",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A14",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "3"
+          },
+          "cached": "11-10-52 14:35:27",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A15",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "0"
+          },
+          "cached": "14:35:27",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A16",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "0"
+          },
+          "cached": "02:35:27 P",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A17",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "0"
+          },
+          "cached": "2:35:27.00 p",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A18",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "0"
+          },
+          "cached": "02:35:27.000 PM",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A19",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "0"
+          },
+          "cached": "11-10-52 14:35:27",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A20",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "0"
+          },
+          "cached": "Saturday-October-1952 2:35:27 PM",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A21",
+          "text": "TEXT(C21, B21)",
+          "attributes": {
+            "t": "shared",
+            "ref": "A21:A39",
+            "si": "4"
+          },
+          "cached": "1-2-03",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A22",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "01-02-03",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A23",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "Sat-Feb-2003",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A24",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "Saturday-February-2003",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A25",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "1-2-03",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A26",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "01-02-03",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A27",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "Sat-Feb-2003",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A28",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "Saturday-February-2003",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A29",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "4:5:6",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A30",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "04:05:06 a",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A31",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "4:5:6.01 A",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A32",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "04:05:06.009 AM",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A33",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "1-2-03 4:5:6",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A34",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "4:5:6",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A35",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "04:05:06 A",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A36",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "4:5:6.01 a",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A37",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "04:05:06.009 AM",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A38",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "1-2-03 4:5:6",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A39",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "4"
+          },
+          "cached": "Saturday-February-2003 4:5:6 AM",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A40",
+          "text": "TEXT(C40, B40)",
+          "attributes": {
+            "t": "shared",
+            "ref": "A40:A46",
+            "si": "5"
+          },
+          "cached": "4:5:6.01",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A41",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "5"
+          },
+          "cached": "01-01-2025",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A42",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "5"
+          },
+          "cached": "14:35",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A43",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "5"
+          },
+          "cached": "11 days 14",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A44",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "5"
+          },
+          "cached": "11 days 14",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A45",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "5"
+          },
+          "cached": "11 days 2 p",
+          "cell_type": "str",
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet2.xml",
+          "cell": "A46",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "5"
+          },
+          "cached": "11 days 2 PM",
+          "cell_type": "str",
+          "class": "Unknown"
+        }
+      ],
+      "decision": 3,
+      "diagnostic": {
+        "schema": "partsieve.error.spike-v1",
+        "status": "Unsupported",
+        "error": "graph coverage gap: unsupported relationship semantics: xl/workbook.xml#rId6"
+      },
+      "output": false,
+      "receipt": false
+    },
+    {
+      "sample": "FormulaSheetRange.xlsx",
+      "sha256": "1943a81a9d439e3bb843b66fd2f9bcdcf37e31232c850ea31d47681b5d5efa12",
+      "generated": false,
+      "signals": [
+        {
+          "class": "Formula",
+          "part": "xl/_rels/workbook.xml.rels",
+          "kind": "calcChain",
+          "id": "rId9",
+          "target": "calcChain.xml",
+          "mode": "Internal"
+        },
+        {
+          "class": "Formula",
+          "part": "xl/calcChain.xml",
+          "kind": "calcChain",
+          "entries": [
+            {
+              "r": "D12",
+              "i": "1"
+            },
+            {
+              "r": "D11"
+            }
+          ]
+        }
+      ],
+      "formulas": [
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "D11",
+          "text": "SUM(Sheet2:Sheet5!A11)",
+          "attributes": {
+            "ca": "1"
+          },
+          "cached": "10",
+          "cell_type": null,
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "D12",
+          "text": "SUM(Sheet2:Sheet5!A12:C12)",
+          "attributes": {
+            "ca": "1"
+          },
+          "cached": "60",
+          "cell_type": null,
+          "class": "Unknown"
+        }
+      ],
+      "decision": 3,
+      "diagnostic": {
+        "schema": "partsieve.error.spike-v1",
+        "status": "Unsupported",
+        "error": "graph coverage gap: unsupported relationship semantics: xl/workbook.xml#rId9"
+      },
+      "output": false,
+      "receipt": false
+    },
+    {
+      "sample": "TestShiftRowSharedFormula.xlsx",
+      "sha256": "21f222c39b70fee2aad244b70a06123aa3bbd2e99ba29cfbc2ed157bcae095cd",
+      "generated": false,
+      "signals": [
+        {
+          "class": "Formula",
+          "part": "xl/_rels/workbook.xml.rels",
+          "kind": "calcChain",
+          "id": "rId5",
+          "target": "calcChain.xml",
+          "mode": "Internal"
+        },
+        {
+          "class": "Formula",
+          "part": "xl/calcChain.xml",
+          "kind": "calcChain",
+          "entries": [
+            {
+              "r": "E6",
+              "i": "1",
+              "l": "1"
+            },
+            {
+              "r": "D6",
+              "i": "1"
+            },
+            {
+              "r": "C6",
+              "i": "1"
+            },
+            {
+              "r": "E5",
+              "i": "1"
+            },
+            {
+              "r": "D5",
+              "i": "1"
+            },
+            {
+              "r": "C5",
+              "i": "1",
+              "l": "1"
+            }
+          ]
+        }
+      ],
+      "formulas": [
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "C5",
+          "text": "SUM(C2:C4)",
+          "attributes": {},
+          "cached": "12",
+          "cell_type": null,
+          "class": "Formula"
+        },
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "D5",
+          "text": "SUM(D2:D4)",
+          "attributes": {
+            "t": "shared",
+            "ref": "D5:E5",
+            "si": "0"
+          },
+          "cached": "15",
+          "cell_type": null,
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "E5",
+          "text": null,
+          "attributes": {
+            "t": "shared",
+            "si": "0"
+          },
+          "cached": "18",
+          "cell_type": null,
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "C6",
+          "text": "SUM(C3:C5)",
+          "attributes": {},
+          "cached": "23",
+          "cell_type": null,
+          "class": "Formula"
+        },
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "D6",
+          "text": "SUM(D3:D5)",
+          "attributes": {
+            "t": "shared",
+            "ref": "D6",
+            "si": "1"
+          },
+          "cached": "28",
+          "cell_type": null,
+          "class": "Unknown"
+        },
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "E6",
+          "text": "SUM(E3:E5)",
+          "attributes": {
+            "t": "shared",
+            "ref": "E6",
+            "si": "2"
+          },
+          "cached": "33",
+          "cell_type": null,
+          "class": "Unknown"
+        }
+      ],
+      "decision": 3,
+      "diagnostic": {
+        "schema": "partsieve.error.spike-v1",
+        "status": "Unsupported",
+        "error": "graph coverage gap: unsupported relationship semantics: xl/workbook.xml#rId5"
+      },
+      "output": false,
+      "receipt": false
+    },
+    {
+      "sample": "link-external-workbook-b.xlsx",
+      "sha256": "6e0e5c2aa3bf870cfeba03cb2350c312c639f2875b6501029d0bc134916b2361",
+      "generated": false,
+      "signals": [
+        {
+          "class": "ExternalData",
+          "part": "xl/externalLinks/externalLink0.xml",
+          "kind": "externalLink"
+        },
+        {
+          "class": "ExternalData",
+          "part": "xl/externalLinks/externalLink0.xml",
+          "kind": "externalBook"
+        },
+        {
+          "class": "ExternalData",
+          "part": "xl/externalLinks/_rels/externalLink0.xml.rels",
+          "kind": "externalLinkPath",
+          "id": "rId1",
+          "target": "link-external-workbook-a.xlsx",
+          "mode": "External"
+        },
+        {
+          "class": "ExternalData",
+          "part": "xl/workbook.xml",
+          "kind": "externalReferences"
+        },
+        {
+          "class": "ExternalData",
+          "part": "xl/_rels/workbook.xml.rels",
+          "kind": "externalLink",
+          "id": "rId4",
+          "target": "externalLinks/externalLink0.xml",
+          "mode": "Internal"
+        }
+      ],
+      "formulas": [
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "A1",
+          "text": "SUM('[link-external-workbook-a.xlsx]Sheet0'!A1:B1)",
+          "attributes": {},
+          "cached": "30.0",
+          "cell_type": "n",
+          "class": "ExternalData"
+        }
+      ],
+      "decision": 3,
+      "diagnostic": {
+        "schema": "partsieve.error.spike-v1",
+        "status": "Unsupported",
+        "error": "graph coverage gap: unsupported relationship semantics: xl/workbook.xml#rId4"
+      },
+      "output": false,
+      "receipt": false
+    },
+    {
+      "sample": "local-reference.xlsx",
+      "sha256": "ebc9398b374e962c99ed23118a288bc5f74ce6d0417968664751d53b9cf38d8c",
+      "generated": true,
+      "signals": [],
+      "formulas": [
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "A1",
+          "text": "A1",
+          "attributes": {},
+          "cached": "0",
+          "cell_type": null,
+          "class": "Formula"
+        }
+      ],
+      "decision": 3,
+      "diagnostic": {
+        "schema": "partsieve.error.spike-v1",
+        "status": "Unsupported",
+        "error": "unsupported worksheet element placement"
+      },
+      "output": false,
+      "receipt": false
+    },
+    {
+      "sample": "network.xlsx",
+      "sha256": "a6a79b5d4b493da38f17b9832c566418685913ec378222d2421f58c87a2b9335",
+      "generated": true,
+      "signals": [],
+      "formulas": [
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "A1",
+          "text": "WEBSERVICE(\"https://example.invalid/test\")",
+          "attributes": {},
+          "cached": "0",
+          "cell_type": null,
+          "class": "ExternalData"
+        }
+      ],
+      "decision": 3,
+      "diagnostic": {
+        "schema": "partsieve.error.spike-v1",
+        "status": "Unsupported",
+        "error": "unsupported worksheet element placement"
+      },
+      "output": false,
+      "receipt": false
+    },
+    {
+      "sample": "dde.xlsx",
+      "sha256": "71c70f019f5e00a2535a28afece1321eb2f2bb2d86040779b515ffe658b9e5e8",
+      "generated": true,
+      "signals": [],
+      "formulas": [
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "A1",
+          "text": "example|topic!A1",
+          "attributes": {},
+          "cached": "0",
+          "cell_type": null,
+          "class": "ExternalData"
+        }
+      ],
+      "decision": 3,
+      "diagnostic": {
+        "schema": "partsieve.error.spike-v1",
+        "status": "Unsupported",
+        "error": "unsupported worksheet element placement"
+      },
+      "output": false,
+      "receipt": false
+    },
+    {
+      "sample": "dynamic.xlsx",
+      "sha256": "d8c62ad540751fd6b386939d2176e6063fb906b260b4154e2fae085a99f871ee",
+      "generated": true,
+      "signals": [],
+      "formulas": [
+        {
+          "part": "xl/worksheets/sheet1.xml",
+          "cell": "A1",
+          "text": "INDIRECT(\"A1\")",
+          "attributes": {},
+          "cached": "0",
+          "cell_type": null,
+          "class": "Unknown"
+        }
+      ],
+      "decision": 3,
+      "diagnostic": {
+        "schema": "partsieve.error.spike-v1",
+        "status": "Unsupported",
+        "error": "unsupported worksheet element placement"
+      },
+      "output": false,
+      "receipt": false
+    }
+  ]
+}

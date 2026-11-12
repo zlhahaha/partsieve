@@ -45,9 +45,11 @@ foreach ($taskCase in @('word-1m', 'word-4m', 'word-7m', 'sheet-5000', 'sheet-20
   $taskProcess.Dispose()
   Write-Output ("Resource Pass: {0}, {1} ms" -f $taskCase, $taskWatch.ElapsedMilliseconds)
 }
+$taskManifest = Get-Content -Raw -LiteralPath moon.mod
+if ($taskManifest -notmatch '(?m)^version\s*=\s*"([^"]+)"') { throw 'Module version missing' }
 $taskEvidence = [ordered]@{
   tool = 'PartSieve Native resource regression'
-  version = '0.8.0-spike'
+  version = $Matches[1]
   os = [Runtime.InteropServices.RuntimeInformation]::OSDescription
   architecture = [Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString()
   build = 'Release'

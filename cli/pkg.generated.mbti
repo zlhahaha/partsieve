@@ -3,23 +3,25 @@ package "zlhahaha/partsieve/cli"
 
 import {
   "moonbitlang/core/debug",
+  "moonbitlang/core/json",
 }
 
 // Values
-pub fn bounded_report(Json) -> String raise
+pub fn bounded_report(@json.Json) -> String raise
 
-pub fn diagnostic(Error) -> (Json, Int)
+pub fn diagnostic(Error) -> (@json.Json, Int32)
 
-pub fn execute(Array[String]) -> (Json, Int) raise
+pub fn execute(Array[String]) -> (@json.Json, Int32) raise
 
-pub fn parse_json(Bytes) -> Json raise
+pub fn parse_json(Bytes) -> @json.Json raise
 
-pub fn worker(Array[String]) -> (Json, Int) raise
+pub fn worker(Array[String]) -> (@json.Json, Int32) raise
 
 // Errors
+#derive(@debug.Debug)
 pub(all) suberror Usage {
   Usage(String)
-} derive(@debug.Debug)
+}
 pub fn Usage::to_repr(Self) -> @debug.Repr
 
 // Types and methods

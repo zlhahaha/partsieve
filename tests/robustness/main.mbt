@@ -9,9 +9,9 @@ priv struct Run {
   directory : String
   executable : String
   cases : Array[Json]
-  mut cli_checks : Int
-  mut positive_cli_checks : Int
-  mut publication_guards : Int
+  mut cli_checks : Int32
+  mut positive_cli_checks : Int32
+  mut publication_guards : Int32
 }
 
 ///|
@@ -27,7 +27,7 @@ fn Run::save(self : Run, status : String) -> Unit raise {
         "cli_rejection_checks": self.cli_checks,
         "positive_cli_checks": self.positive_cli_checks,
         "publication_guards": self.publication_guards,
-        "cases": self.cases.to_json(),
+        "cases": ToJson::to_json(self.cases),
       } : Json).stringify(),
   )
 }
@@ -82,16 +82,16 @@ fn Run::reject(
   category : String,
   name : String,
   input : Bytes,
-  cli? : Bool = false,
+  cli~ : Bool = false,
 ) -> Unit raise {
   let assessment = @sieve.assess(input)
   // Persist the observation before asserting, so CI failures retain the counterexample hash.
   self.cases.push({
-    "category": category.to_json(),
-    "name": name.to_json(),
-    "input_sha256": @sieve.digest(input[:]).to_json(),
+    "category": ToJson::to_json(category),
+    "name": ToJson::to_json(name),
+    "input_sha256": ToJson::to_json(@sieve.digest(input[:])),
     "assessment": assessment.decision.result.to_json(),
-    "reason": assessment.decision.reason.to_json(),
+    "reason": ToJson::to_json(assessment.decision.reason),
     "expected": "Reject",
   })
   self.save("Running")
@@ -131,7 +131,7 @@ fn Run::accept(
   self : Run,
   name : String,
   input : Bytes,
-  cli? : Bool = false,
+  cli~ : Bool = false,
 ) -> Unit raise {
   let assessed = @sieve.assess(input)
   assert_true(assessed.decision.rebuild_allowed, msg=name)
@@ -185,9 +185,9 @@ fn Run::accept(
   }
   self.cases.push({
     "category": "positive-control",
-    "name": name.to_json(),
-    "input_sha256": @sieve.digest(input[:]).to_json(),
-    "output_sha256": rebuilt.receipt.output_hash.to_json(),
+    "name": ToJson::to_json(name),
+    "input_sha256": ToJson::to_json(@sieve.digest(input[:])),
+    "output_sha256": ToJson::to_json(rebuilt.receipt.output_hash),
     "expected": "Pass",
     "actual": rebuilt.receipt.result.to_json(),
   })
@@ -236,15 +236,15 @@ fn Run::publication_guard(
   self.publication_guards += 1
   self.cases.push({
     "category": "publication-guard",
-    "name": name.to_json(),
+    "name": ToJson::to_json(name),
     "expected_exit": 4,
-    "actual_exit": process.code.to_json(),
+    "actual_exit": ToJson::to_json(process.code),
   })
   self.save("Running")
 }
 
 ///|
-fn find(input : Bytes, needle : Bytes) -> Int raise {
+fn find(input : Bytes, needle : Bytes) -> Int32 raise {
   for i in 0..<(input.length() - needle.length() + 1) {
     if input[i:i + needle.length()] == needle[:] {
       return i
@@ -254,7 +254,7 @@ fn find(input : Bytes, needle : Bytes) -> Int raise {
 }
 
 ///|
-fn changed_byte(input : Bytes, position : Int, value : Byte) -> Bytes {
+fn changed_byte(input : Bytes, position : Int32, value : Byte) -> Bytes {
   Bytes::makei(input.length(), i => if i == position { value } else { input[i] })
 }
 
@@ -327,7 +327,7 @@ fn main raise {
     seed = seed * 48271 % 2147483647
     offsets.push((seed % (word.length() - 1).to_int64()).to_int())
   }
-  let seen : Map[Int, Bool] = Map([])
+  let seen : Map[Int32, Bool] = Map([])
   for index, offset in offsets {
     if !seen.contains(offset) {
       seen[offset] = true
@@ -345,7 +345,7 @@ fn main raise {
     .unwrap()
     .to_owned()
   let start = find(stored, payload)
-  let positions : Map[Int, Bool] = Map([])
+  let positions : Map[Int32, Bool] = Map([])
   for index in 0..<32 {
     seed = seed * 48271 % 2147483647
     let offset = (seed % payload.length().to_int64()).to_int()
@@ -462,7 +462,7 @@ fn main raise {
     )
     run.cases.push({
       "category": "plan-binding",
-      "name": name.to_json(),
+      "name": ToJson::to_json(name),
       "expected": "Reject",
       "actual": "Reject",
     })
@@ -482,8 +482,8 @@ fn main raise {
     )
     run.cases.push({
       "category": "output-preservation",
-      "name": name.to_json(),
-      "input_sha256": @sieve.digest(changed[:]).to_json(),
+      "name": ToJson::to_json(name),
+      "input_sha256": ToJson::to_json(@sieve.digest(changed[:])),
       "expected": "Reject",
       "actual": "Reject",
     })
@@ -499,7 +499,7 @@ fn main raise {
     assert_eq(control.used(), used)
     run.cases.push({
       "category": "sticky-cancellation",
-      "name": stage.to_json(),
+      "name": ToJson::to_json(stage),
       "expected": "Incomplete",
       "actual": "Incomplete",
     })

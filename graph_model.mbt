@@ -1,39 +1,44 @@
 ///|
 // Stable, serializable facts. Indices refer to this graph's ordered arrays.
+#derive(ToJson, Eq, Debug)
 pub(all) struct XmlReference {
   source : String
-  element_index : Int
-  depth : Int
+  element_index : Int32
+  depth : Int32
   element_namespace : String
   element_name : String
   attribute_name : String
   relationship_id : String
-  relationship_index : Int
-} derive(ToJson, Eq, Debug)
+  relationship_index : Int32
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct ImplicitReference {
   source : String
-  relationship_index : Int
+  relationship_index : Int32
   semantics : String
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct GraphNode {
   part : String
-  inbound : Array[Int]
-  outbound : Array[Int]
-  xml_references : Array[Int]
+  inbound : Array[Int32]
+  outbound : Array[Int32]
+  xml_references : Array[Int32]
   reachable : Bool
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct ContentTypeIndex {
   content_type : String
   parts : Array[String]
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct PackageGraph {
   schema : String
   root : String
@@ -46,7 +51,7 @@ pub(all) struct PackageGraph {
   reachable : Array[String]
   orphan_candidates : Array[String]
   coverage_gaps : Array[String]
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
 pub extend XmlReference with ToJson::{to_json}

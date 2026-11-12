@@ -1,84 +1,100 @@
 ///|
+#derive(Eq, Debug)
 pub(all) enum ResultStatus {
   Pass
   Fail
   IncompleteResult
   Unsupported
-} derive(Eq, Debug)
-
-///|
-impl ToJson for ResultStatus with fn to_json(self) -> Json {
-  (match self {
-    Pass => "Pass"
-    Fail => "Fail"
-    IncompleteResult => "Incomplete"
-    Unsupported => "Unsupported"
-  }).to_json()
 }
 
 ///|
+impl ToJson for ResultStatus with fn to_json(self) -> Json {
+  Json::string(
+    match self {
+      Pass => "Pass"
+      Fail => "Fail"
+      IncompleteResult => "Incomplete"
+      Unsupported => "Unsupported"
+    },
+  )
+}
+
+///|
+#derive(Eq, Debug)
 pub(all) enum CheckState {
   Checked
   NotChecked
   IncompleteCheck
   Opaque
-} derive(Eq, Debug)
-
-///|
-impl ToJson for CheckState with fn to_json(self) -> Json {
-  (match self {
-    Checked => "Checked"
-    NotChecked => "NotChecked"
-    IncompleteCheck => "Incomplete"
-    Opaque => "Opaque"
-  }).to_json()
 }
 
 ///|
+impl ToJson for CheckState with fn to_json(self) -> Json {
+  Json::string(
+    match self {
+      Checked => "Checked"
+      NotChecked => "NotChecked"
+      IncompleteCheck => "Incomplete"
+      Opaque => "Opaque"
+    },
+  )
+}
+
+///|
+#derive(Eq, Debug)
 pub(all) enum Presence {
   Present
   Absent
   Unknown
-} derive(Eq, Debug)
+}
 
 ///|
 impl ToJson for Presence with fn to_json(self) -> Json {
-  (match self {
-    Present => "Present"
-    Absent => "Absent"
-    Unknown => "Unknown"
-  }).to_json()
+  Json::string(
+    match self {
+      Present => "Present"
+      Absent => "Absent"
+      Unknown => "Unknown"
+    },
+  )
 }
 
 ///|
+#derive(Eq, Debug)
 pub(all) enum Certainty {
   Declared
   Uncertain
-} derive(Eq, Debug)
+}
 
 ///|
 impl ToJson for Certainty with fn to_json(self) -> Json {
-  (match self {
-    Declared => "Declared"
-    Uncertain => "Unknown"
-  }).to_json()
+  Json::string(
+    match self {
+      Declared => "Declared"
+      Uncertain => "Unknown"
+    },
+  )
 }
 
 ///|
+#derive(Eq, Debug)
 pub(all) enum RebuildSupport {
   Supported
   NotSupported
-} derive(Eq, Debug)
-
-///|
-impl ToJson for RebuildSupport with fn to_json(self) -> Json {
-  (match self {
-    Supported => "Supported"
-    NotSupported => "Unsupported"
-  }).to_json()
 }
 
 ///|
+impl ToJson for RebuildSupport with fn to_json(self) -> Json {
+  Json::string(
+    match self {
+      Supported => "Supported"
+      NotSupported => "Unsupported"
+    },
+  )
+}
+
+///|
+#derive(Eq, Debug)
 pub(all) enum Capability {
   Vba
   HttpHyperlink
@@ -89,7 +105,7 @@ pub(all) enum Capability {
   ActiveX
   UnknownExternalRelationship
   UnknownPotentiallyActiveExtension
-} derive(Eq, Debug)
+}
 
 ///|
 fn Capability::label(self : Capability) -> String {
@@ -108,10 +124,11 @@ fn Capability::label(self : Capability) -> String {
 
 ///|
 impl ToJson for Capability with fn to_json(self) -> Json {
-  self.label().to_json()
+  Json::string(self.label())
 }
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct CapabilityFinding {
   rule_id : String
   capability : Capability
@@ -120,9 +137,10 @@ pub(all) struct CapabilityFinding {
   certainty : Certainty
   rebuild_support : RebuildSupport
   evidence : Array[String]
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct RuleCoverage {
   rule_id : String
   capability : Capability
@@ -130,9 +148,10 @@ pub(all) struct RuleCoverage {
   presence : Presence
   rebuild_support : RebuildSupport
   reason : String
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct Coverage {
   declared_profile : String
   rules : Array[RuleCoverage]
@@ -140,17 +159,19 @@ pub(all) struct Coverage {
   unchecked_features : Array[String]
   parse_complete : Bool
   parse_error : String?
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct Decision {
   result : ResultStatus
   rebuild_allowed : Bool
   profile : String
   reason : String
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct Assessment {
   schema : String
   input_hash : String?
@@ -158,7 +179,7 @@ pub(all) struct Assessment {
   coverage : Coverage
   decision : Decision
   graph : PackageGraph?
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
 pub extend ResultStatus with ToJson::{to_json}

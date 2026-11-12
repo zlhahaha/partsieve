@@ -31,7 +31,7 @@ fn Run::save(self : Run, result : String) -> Unit raise {
   let report : Json = {
     "schema": "partsieve.authorization-regression.v1",
     "result": result,
-    "cases": self.cases.to_json(),
+    "cases": ToJson::to_json(self.cases),
     "case_count": self.cases.length(),
   }
   // Test-only report replacement in a freshly created directory.
@@ -53,7 +53,7 @@ fn fixture(name : String) -> Bytes raise {
 }
 
 ///|
-fn count(summary : @sieve.ChangeSummary, kind : @sieve.ChangeKind) -> Int {
+fn count(summary : @sieve.ChangeSummary, kind : @sieve.ChangeKind) -> Int32 {
   summary.changes
   .filter(change => change.kind == kind)
   .fold(init=0, (sum, change) => sum + change.count)
@@ -117,7 +117,7 @@ fn main raise {
   }
   match review.to_json() {
     Object(fields) => {
-      fields["input_hash"] = "0".repeat(64).to_json()
+      fields["input_hash"] = ToJson::to_json("0".repeat(64))
       fields["summary"] = Json::null()
     }
     _ => fail("preview object")

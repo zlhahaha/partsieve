@@ -1,10 +1,10 @@
 ///|
 priv struct GraphFacts {
   graph : PackageGraph
-  part_index : Map[String, Int]
-  node_index : Map[String, Int]
-  local_relationships : Map[String, Map[String, Int]]
-  ole_objects : Map[String, Map[String, Array[Int]]]
+  part_index : Map[String, Int32]
+  node_index : Map[String, Int32]
+  local_relationships : Map[String, Map[String, Int32]]
+  ole_objects : Map[String, Map[String, Array[Int32]]]
 }
 
 ///|
@@ -31,7 +31,7 @@ fn build_graph(
   parts : Array[PartRecord],
   relationships : Array[Relationship],
   xml_nodes : Map[String, Array[Node]],
-  control? : WorkControl = WorkControl::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> GraphFacts raise {
   for nodes in xml_nodes.values() {
     control.pairs(
@@ -41,12 +41,12 @@ fn build_graph(
     )
   }
   let ole_objects = ole_catalog(parts, xml_nodes)
-  let part_index : Map[String, Int] = Map([])
-  let node_index : Map[String, Int] = Map([("/", 0)])
+  let part_index : Map[String, Int32] = Map([])
+  let node_index : Map[String, Int32] = Map([("/", 0)])
   let names : Array[String] = ["/"]
-  let inbound : Array[Array[Int]] = [[]]
-  let outbound : Array[Array[Int]] = [[]]
-  let source_refs : Array[Array[Int]] = [[]]
+  let inbound : Array[Array[Int32]] = [[]]
+  let outbound : Array[Array[Int32]] = [[]]
+  let source_refs : Array[Array[Int32]] = [[]]
   let type_parts : Map[String, Array[String]] = Map([])
   for i, part in parts {
     control.checkpoint("graph-part", 1)
@@ -65,7 +65,7 @@ fn build_graph(
     }
   }
   control.pairs("graph-source-scans", parts.length(), relationships.length())
-  let local_relationships : Map[String, Map[String, Int]] = Map([])
+  let local_relationships : Map[String, Map[String, Int32]] = Map([])
   let implicit : Array[ImplicitReference] = []
   let gaps : Array[String] = []
   for i, r in relationships {
@@ -76,7 +76,7 @@ fn build_graph(
     let ids = match local_relationships.get(r.source) {
       Some(ids) => ids
       None => {
-        let ids : Map[String, Int] = Map([])
+        let ids : Map[String, Int32] = Map([])
         local_relationships[r.source] = ids
         ids
       }
@@ -333,8 +333,8 @@ fn build_graph(
 // Structural inspection may report gaps. It does not authorize a rebuild.
 pub fn inspect_graph(
   input : Bytes,
-  limits? : Limits = Limits::default(),
-  control? : WorkControl = WorkControl::default(),
+  limits~ : Limits = Limits::default(),
+  control~ : WorkControl = WorkControl::default(),
 ) -> PackageGraph raise {
   load_package(input, limits, enforce_profile=false, control~).graph.graph
 }

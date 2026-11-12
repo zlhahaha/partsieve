@@ -1,7 +1,8 @@
 ///|
+#derive(Debug)
 pub(all) suberror Usage {
   Usage(String)
-} derive(Debug)
+}
 
 ///|
 pub extend Usage with Debug::{to_repr}
@@ -17,7 +18,7 @@ priv struct Options {
   v2 : Bool
   dry_run : Bool
   release : Bool
-  timeout_ms : Int
+  timeout_ms : Int32
 }
 
 ///|

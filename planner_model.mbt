@@ -1,4 +1,5 @@
 ///|
+#derive(Eq, Debug)
 pub(all) enum PlanOperationKind {
   RemovePart
   RemoveRelationship
@@ -6,7 +7,7 @@ pub(all) enum PlanOperationKind {
   RewriteRelationshipPart
   RewriteContentTypes
   ChangeMainContentType
-} derive(Eq, Debug)
+}
 
 ///|
 fn PlanOperationKind::label(self : PlanOperationKind) -> String {
@@ -22,36 +23,41 @@ fn PlanOperationKind::label(self : PlanOperationKind) -> String {
 
 ///|
 impl ToJson for PlanOperationKind with fn to_json(self) -> Json {
-  self.label().to_json()
+  Json::string(self.label())
 }
 
 ///|
+#derive(Eq, Debug)
 pub(all) enum PolicyAction {
   AllowAction
   RemoveAction
   RefuseAction
-} derive(Eq, Debug)
-
-///|
-impl ToJson for PolicyAction with fn to_json(self) -> Json {
-  (match self {
-    AllowAction => "Allow"
-    RemoveAction => "Remove"
-    RefuseAction => "Refuse"
-  }).to_json()
 }
 
 ///|
+impl ToJson for PolicyAction with fn to_json(self) -> Json {
+  Json::string(
+    match self {
+      AllowAction => "Allow"
+      RemoveAction => "Remove"
+      RefuseAction => "Refuse"
+    },
+  )
+}
+
+///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct PolicyDecision {
   decision_id : String
-  finding_index : Int?
+  finding_index : Int32?
   action : PolicyAction
   rule_id : String
   part : String
   reason : String
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct CheckedOperation {
   operation_id : String
   kind : PlanOperationKind
@@ -64,9 +70,10 @@ pub(all) struct CheckedOperation {
   expected_after_hash : String?
   depends_on : Array[String]
   reason : String
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
+#derive(ToJson, Eq, Debug)
 pub(all) struct PreparedPlan {
   schema : String
   tool : String
@@ -86,7 +93,7 @@ pub(all) struct PreparedPlan {
   coverage : Coverage
   gate : Decision
   unavailable_handlers : Array[String]
-} derive(ToJson, Eq, Debug)
+}
 
 ///|
 pub extend PlanOperationKind with ToJson::{to_json}
