@@ -1,6 +1,6 @@
 param(
   [Parameter(Mandatory)][string]$OutputDirectory,
-  [string]$Version = '0.9.0'
+  [string]$Version = '0.9.1'
 )
 $ErrorActionPreference = 'Stop'
 $output = [IO.Path]::GetFullPath($OutputDirectory)
@@ -12,13 +12,7 @@ name = "consumer/partsieve-check"
 version = "0.1.0"
 preferred_target = "native"
 '@ | Set-Content moon.mod
-  @'
-import {
-  "zlhahaha/partsieve" @sieve,
-  "zlhahaha/partsieve/native_host" @host,
-}
-pkgtype(kind: "executable")
-'@ | Set-Content moon.pkg
+  'pkgtype(kind: "executable")' | Set-Content moon.pkg
   'fn main { println("registry dependency synchronized") }' | Set-Content main.mbt
   moon add "zlhahaha/partsieve@$Version"
   if ($LASTEXITCODE) { throw 'Registry dependency could not be added' }
@@ -29,6 +23,13 @@ pkgtype(kind: "executable")
   if ($manifest -notmatch ('(?m)^version\s*=\s*"' + [regex]::Escape($Version) + '"')) {
     throw 'Unexpected installed package version'
   }
+  @'
+import {
+  "zlhahaha/partsieve" @sieve,
+  "zlhahaha/partsieve/native_host" @host,
+}
+pkgtype(kind: "executable")
+'@ | Set-Content moon.pkg
   foreach ($example in @('workflows','authorization')) {
     New-Item -ItemType Directory $example | Out-Null
     Copy-Item -LiteralPath "$package/examples/$example/main.mbt" -Destination "$example/main.mbt"
@@ -48,6 +49,8 @@ fn[T] value(result : Result[T, @sieve.SdkFailure]) -> T raise {
 ///|
 fn main raise {
   let source = @host.read_bounded("tests/fixtures/business/document-template.docm", 33554432)
+  let audit = @sieve.audit(source)
+  assert_eq(audit.format, "DOCM")
   let preview = value(@sieve.preview_document(source))
   let approval = value(@sieve.authorize_document(preview, @sieve.RemovalPermissions::all_supported()))
   let result = value(@sieve.execute_authorized_document(source, approval))

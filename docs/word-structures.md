@@ -1,8 +1,8 @@
-# Word 脚注、尾注、编号与常见样式（0.9.0）
+# Word 脚注、尾注、编号与常见样式（0.9.1）
 
 本轮补齐普通 Word 结构的有界保留支持。核心实现是 MoonBit 的
 [`word_structures.mbt`](../word_structures.mbt)，不是对其他语言 Office 库的封装。
-Mooncakes 0.9.0 提供本页的 Word 支持范围。
+Mooncakes 0.9.1 提供本页的 Word 支持范围。
 
 ## 范围与引用契约
 

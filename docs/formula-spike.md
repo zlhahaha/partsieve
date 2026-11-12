@@ -1,6 +1,6 @@
 # 公式与计算链决策
 
-0.9.0 维持公式和 calcChain 拒绝。固定语料中的 `SimpleNormal.xlsx` 包含同表引用
+0.9.1 维持公式和 calcChain 拒绝。固定语料中的 `SimpleNormal.xlsx` 包含同表引用
 与 `SUM(A3:D3)`，`Booleans.xlsx` 包含布尔函数，`DateFormatTests.xlsx` 包含带
 缓存的共享 `TEXT` 公式和计算链。即使去掉首个 calcChain 关系，公式仍需独立处理。
 其余研究样本 `FormulaSheetRange.xlsx`、`TestShiftRowSharedFormula.xlsx`、

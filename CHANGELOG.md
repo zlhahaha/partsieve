@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.1
+
+- Fix the standalone registry consumer bootstrap under strict warning checks and verify the public audit API. The runtime and document profile match 0.9.0.
+
 ## 0.9.0
 
 - Pin MoonBit 0.10.20 for Windows and Linux Native. Preserve a single bounded Excel extended editing-time property without modifying its payload.

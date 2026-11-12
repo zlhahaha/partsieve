@@ -1,8 +1,8 @@
 # Native 工具链复现
 
-0.9.0 支持 Windows x86-64/MSVC 和 Linux x86-64 的 Native 构建。
+0.9.1 支持 Windows x86-64/MSVC 和 Linux x86-64 的 Native 构建。
 两个 CI 作业使用 `moonc v0.10.20+65efd5b93` 与 `moon 0.1.20261104 (940aa18)`。
-从 0.9.0 开始停止支持旧的 0.10.14 工具链。0.8.0-spike 的历史构建固定为 0.10.14。
+从 0.9.1 开始停止支持旧的 0.10.14 工具链。0.8.0-spike 的历史构建固定为 0.10.14。
 安装后运行 `moon version --all` 核对版本，完整检查还会核对安装依赖的文件数和内容哈希。
 
 Windows PowerShell 7，在 VS Developer PowerShell 中运行：
