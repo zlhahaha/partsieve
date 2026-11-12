@@ -71,8 +71,20 @@ fn validate_header_picture_no_fill(
       raise Refused("unsupported Word header picture outline")
     }
   }
-  ignore(checked_index(attr(nodes[ordinal + 1], "w"), 127001))
-  ignore(checked_index(attr(nodes[ordinal + 3], "lim"), 1000001))
+  ignore(
+    checked_word_decimal(
+      attr(nodes[ordinal + 1], "w"),
+      127001,
+      "header outline width",
+    ),
+  )
+  ignore(
+    checked_word_decimal(
+      attr(nodes[ordinal + 3], "lim"),
+      1000001,
+      "header outline miter limit",
+    ),
+  )
   let end = ordinal + shape_tail.length()
   guard end == nodes.length() || nodes[end].depth < depth else {
     raise Refused("extra Word header picture outline content")

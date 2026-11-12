@@ -311,6 +311,7 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
   let mut validated_end = 0
   let mut allow_png_seen = false
   let mut no_proof_seen = false
+  let mut header_run_properties = 0
   let layout_settings : Map[String, Bool] = Map([])
   let modern = word_modern_catalog(part, nodes, pkg.control)
   let mask = if part.name == pkg.audit.main_part &&
@@ -365,11 +366,19 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
       continue
     }
     if root == "hdr" {
-      if ns == word_ns && name == "rPr" {
+      if ns == word_ns && name == "r" {
         no_proof_seen = false
+        header_run_properties = 0
+      }
+      if ns == word_ns && name == "rPr" && parent == "r" {
+        guard !no_proof_seen else {
+          raise Refused("duplicate run properties in Word header")
+        }
+        header_run_properties += 1
       }
       if ns == word_ns && name == "noProof" {
         guard !no_proof_seen &&
+          header_run_properties == 1 &&
           parent == "rPr" &&
           parents.length() >= 2 &&
           parents[parents.length() - 2] == "r" &&
@@ -418,13 +427,13 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
       }
       match name {
         "drawingGridHorizontalSpacing" => {
-          guard checked_index(word_attr(node, "val"), 31681) > 0 else {
+          guard checked_word_decimal(word_attr(node, "val"), 31681, name) > 0 else {
             raise Invalid("Word drawing grid spacing must be positive")
           }
         }
         "displayHorizontalDrawingGridEvery"
         | "displayVerticalDrawingGridEvery" =>
-          ignore(checked_index(word_attr(node, "val"), 256))
+          ignore(checked_word_decimal(word_attr(node, "val"), 256, name))
         _ => {
           // embedTrueTypeFonts and font payload relationships still refuse.
           guard ["0", "1", "true", "false", "on", "off"].contains(
@@ -680,6 +689,18 @@ fn word_val_leaf(nodes : Array[Node], ordinal : Int32) -> Bool {
 }
 
 ///|
+fn checked_word_decimal(
+  value : String,
+  exclusive : Int32,
+  property : String,
+) -> Int32 raise {
+  checked_index(value, exclusive) catch {
+    Invalid(_) => raise Invalid("invalid or out-of-range Word " + property)
+    error => raise error
+  }
+}
+
+///|
 fn validate_word_table_style_borders(
   nodes : Array[Node],
   ordinal : Int32,
@@ -703,12 +724,12 @@ fn validate_word_table_style_borders(
       raise Refused("unsupported, duplicate or out-of-order Word table border")
     }
     if word_attr_opt(side, "sz") is Some(size) {
-      guard checked_index(size, 97) >= 2 else {
+      guard checked_word_decimal(size, 97, "table border size") >= 2 else {
         raise Invalid("Word table border size out of range")
       }
     }
     if word_attr_opt(side, "space") is Some(space) {
-      ignore(checked_index(space, 32))
+      ignore(checked_word_decimal(space, 32, "table border spacing"))
     }
     if word_attr_opt(side, "color") is Some(color) {
       guard color == "auto" || hex_text(color, 6) else {

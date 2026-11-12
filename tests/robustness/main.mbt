@@ -337,6 +337,10 @@ fn main raise {
         "header-proofing-child", "word/header1.xml", "<w:noProof/>", "<w:noProof><w:b/></w:noProof>",
       ),
       (
+        "header-proofing-duplicate-run-properties", "word/header1.xml", "<w:noProof/>",
+        "<w:noProof/></w:rPr><w:rPr>",
+      ),
+      (
         "header-picture-dangling", "word/header1.xml", "r:embed=\"rId1\"", "r:embed=\"rId999\"",
       ),
       (
