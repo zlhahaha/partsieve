@@ -25,7 +25,9 @@ $taskCases = @(
   @('tests/fixtures/poi/word-modern/endnotes.docx','docs/evidence/word-modern/endnotes.docx','v2',''),
   @('tests/fixtures/poi/word-modern/Numbering.docx','docs/evidence/word-modern/Numbering.docx','v2',''),
   @('tests/fixtures/poi/word-modern/NumberingWOverrides.docx','docs/evidence/word-modern/NumberingWOverrides.docx','v2',''),
-  @('tests/fixtures/poi/word-modern/NumberingWithOutOfOrderId.docx','docs/evidence/word-modern/NumberingWithOutOfOrderId.docx','v2','')
+  @('tests/fixtures/poi/word-modern/NumberingWithOutOfOrderId.docx','docs/evidence/word-modern/NumberingWithOutOfOrderId.docx','v2',''),
+  @('tests/fixtures/poi/word-modern/TestTableCellAlign.docx','docs/evidence/word-modern/TestTableCellAlign.docx','v2','2968d4a5d5de21dce1cbeae3235e545cdf4bfd7ae508fe0eed3a9b032773ce17'),
+  @('tests/fixtures/poi/word-modern/headerPic.docx','docs/evidence/word-modern/headerPic.docx','v2','50d9b17f7575c8a91129fd8a3e6a70feec886480ab9f089e29a7f8ac7e5ed51a')
 )
 foreach ($taskCase in $taskCases) {
   $taskSource = Join-Path $taskRoot $taskCase[0]
