@@ -1222,6 +1222,169 @@
       },
       "output": false,
       "receipt": false
+    },
+    {
+      "sample": "connection.xlsx",
+      "sha256": "5d29336f7868f0f6b08a7e79ff73fbd0a8d0c3f20fa946037013db48f302109f",
+      "generated": true,
+      "signals": [
+        {
+          "class": "ExternalData",
+          "part": "xl/_rels/workbook.xml.rels",
+          "kind": "connections",
+          "id": "p0Connection",
+          "target": "connections.xml",
+          "mode": "Internal"
+        },
+        {
+          "class": "ExternalData",
+          "part": "xl/connections.xml",
+          "kind": "connections"
+        },
+        {
+          "class": "ExternalData",
+          "part": "xl/connections.xml",
+          "kind": "connection"
+        }
+      ],
+      "formulas": [],
+      "decision": 3,
+      "diagnostic": {
+        "schema": "partsieve.error.spike-v1",
+        "status": "Unsupported",
+        "error": "graph coverage gap: unsupported relationship semantics: xl/workbook.xml#p0Connection"
+      },
+      "output": false,
+      "receipt": false
     }
-  ]
+  ],
+  "client_original_roundtrips": {
+    "source": "SimpleNormal.xlsx",
+    "windows": "10.0.22631",
+    "observations": [
+      {
+        "client": "Excel.Application",
+        "version": "16.0",
+        "build": 20527.0,
+        "before": [
+          {
+            "address": "$A$7",
+            "formula": "=SUM(A3:D3)",
+            "value": 10.0
+          },
+          {
+            "address": "$C$7",
+            "formula": "=C3",
+            "value": 3.0
+          }
+        ],
+        "after": [
+          {
+            "address": "$A$7",
+            "formula": "=SUM(A3:D3)",
+            "value": 10.0
+          },
+          {
+            "address": "$C$7",
+            "formula": "=C3",
+            "value": 3.0
+          }
+        ],
+        "saved_sha256": "317FE3D5E150F5390B83C341F7491E3D3DA85584D1BF6798702846C091258C5A",
+        "saved_formulas": [
+          {
+            "part": "xl/worksheets/sheet2.xml",
+            "cell": "A7",
+            "text": "SUM(A3:D3)",
+            "attributes": {},
+            "cached": "10",
+            "cell_type": null
+          },
+          {
+            "part": "xl/worksheets/sheet2.xml",
+            "cell": "C7",
+            "text": "C3",
+            "attributes": {},
+            "cached": "3",
+            "cell_type": null
+          }
+        ],
+        "saved_calc_chain_and_relationships": [
+          {
+            "class": "Formula",
+            "part": "xl/_rels/workbook.xml.rels",
+            "kind": "calcChain",
+            "id": "rId6",
+            "target": "calcChain.xml",
+            "mode": "Internal"
+          },
+          {
+            "class": "Formula",
+            "part": "xl/calcChain.xml",
+            "kind": "calcChain",
+            "entries": [
+              {
+                "r": "C7",
+                "i": "2",
+                "l": "1"
+              },
+              {
+                "r": "A7",
+                "i": "2"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "client": "KET.Application",
+        "version": "12.0",
+        "build": 29161.0,
+        "before": [
+          {
+            "address": "$A$7",
+            "formula": "=SUM(A3:D3)",
+            "value": 10.0
+          },
+          {
+            "address": "$C$7",
+            "formula": "=C3",
+            "value": 3.0
+          }
+        ],
+        "after": [
+          {
+            "address": "$A$7",
+            "formula": "=SUM(A3:D3)",
+            "value": 10.0
+          },
+          {
+            "address": "$C$7",
+            "formula": "=C3",
+            "value": 3.0
+          }
+        ],
+        "saved_sha256": "7FE8D52843E0A261F131B560862B90277F440D8C34091EF4034BE21A56F7011F",
+        "saved_formulas": [
+          {
+            "part": "xl/worksheets/sheet2.xml",
+            "cell": "A7",
+            "text": "SUM(A3:D3)",
+            "attributes": {},
+            "cached": "10",
+            "cell_type": null
+          },
+          {
+            "part": "xl/worksheets/sheet2.xml",
+            "cell": "C7",
+            "text": "C3",
+            "attributes": {},
+            "cached": "3",
+            "cell_type": null
+          }
+        ],
+        "saved_calc_chain_and_relationships": []
+      }
+    ]
+  }
 }

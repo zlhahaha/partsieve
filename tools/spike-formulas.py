@@ -39,6 +39,30 @@ def mutate(source, target, formula):
             variant.writestr(member, data)
 
 
+def connection_variant(source, target):
+    relation = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/"
+    package_rel = "{http://schemas.openxmlformats.org/package/2006/relationships}"
+    package_type = "{http://schemas.openxmlformats.org/package/2006/content-types}"
+    with zipfile.ZipFile(source) as original, zipfile.ZipFile(target, "x") as variant:
+        for member in original.infolist():
+            data = original.read(member)
+            if member.filename == "xl/_rels/workbook.xml.rels":
+                root = ET.fromstring(data)
+                ET.SubElement(root, package_rel + "Relationship", Id="p0Connection",
+                              Type=relation + "connections", Target="connections.xml")
+                data = ET.tostring(root, encoding="utf-8")
+            elif member.filename == "[Content_Types].xml":
+                root = ET.fromstring(data)
+                ET.SubElement(root, package_type + "Override", PartName="/xl/connections.xml",
+                              ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.connections+xml")
+                data = ET.tostring(root, encoding="utf-8")
+            variant.writestr(member, data)
+        info = zipfile.ZipInfo("xl/connections.xml")
+        ns = SHEET[1:-1]
+        variant.writestr(info, f'<connections xmlns="{ns}"><connection id="1" name="Web" type="4">'
+                              '<webPr url="https://example.invalid/probe"/></connection></connections>')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cli", type=Path, required=True)
@@ -57,6 +81,9 @@ def main():
         sample = args.output / (name + ".xlsx")
         mutate(args.ordinary_base, sample, formula)
         samples.append(sample)
+    connected = args.output / "connection.xlsx"
+    connection_variant(args.ordinary_base, connected)
+    samples.append(connected)
     rows = []
     for sample in samples:
         _, signals, formulas, _ = inventory(sample)
@@ -65,8 +92,7 @@ def main():
         result = subprocess.run([str(args.cli.resolve()), "rebuild", str(sample), "-o", str(target),
                                  "--receipt", str(receipt), "--receipt-format", "v2"],
                                 capture_output=True, encoding="utf-8", check=False)
-        if sample.name != "link-external-workbook-a.xlsx":
-            assert result.returncode == 3 and not target.exists() and not receipt.exists(), sample
+        assert result.returncode == 3 and not target.exists() and not receipt.exists(), sample
         rows.append({"sample": sample.name, "sha256": hashlib.sha256(sample.read_bytes()).hexdigest(),
                      "generated": sample.parent == args.output, "signals": signals,
                      "formulas": [{**formula, "class": classify_formula(formula)} for formula in formulas],
