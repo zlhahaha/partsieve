@@ -97,6 +97,20 @@
       "sha256": "fa2843a6297bb3e874f9c6dc8aac944704fba4d0d631b94627be7dbeaf12ed0f",
       "license": "Apache-2.0; preserve full upstream LICENSE and NOTICE",
       "source": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/NumberingWithOutOfOrderId.docx"
+    },
+    {
+      "path": "tests/fixtures/poi/word-modern/TestTableCellAlign.docx",
+      "bytes": 11712,
+      "sha256": "2968d4a5d5de21dce1cbeae3235e545cdf4bfd7ae508fe0eed3a9b032773ce17",
+      "license": "Apache-2.0; preserve full upstream LICENSE and NOTICE",
+      "source": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/TestTableCellAlign.docx"
+    },
+    {
+      "path": "tests/fixtures/poi/word-modern/headerPic.docx",
+      "bytes": 16206,
+      "sha256": "50d9b17f7575c8a91129fd8a3e6a70feec886480ab9f089e29a7f8ac7e5ed51a",
+      "license": "Apache-2.0; preserve full upstream LICENSE and NOTICE",
+      "source": "https://raw.githubusercontent.com/apache/poi/12c3688d130035f3dc2ca2a0f50d929456435a93/test-data/document/headerPic.docx"
     }
   ],
   "usage": "Real benign Word DOCM VBA handler fixture. Original is never opened in Office. Macro is only statically extracted, never executed."

@@ -93,3 +93,49 @@ LICENSE/NOTICE 沿用 `tests/fixtures/poi/` 的完整上游记录，下载时随
 
 五份 [脚注、尾注及编号保留组](https://github.com/zlhahaha/partsieve/blob/main/tests/external/poi-notes-numbering-manifest.json) 独立于固定基线，
 可复跑现有 `tools/check.ps1` 与独立验证。新的公式研究样本及生成负例来源见 [公式 Spike](formula-spike.md)。
+
+## Word 普通表格增量（开发源码）
+
+按原清单重跑同一批 20 份 Apache POI 原件，结果为 9 成功、11 拒绝、0 处理失败。
+新通过的 `TestTableCellAlign.docx` 来源、Apache-2.0 许可和 SHA-256 均沿用固定清单。
+发布版 0.9.1 的历史矩阵保留原结果。此次 9 份成功输出的整包及内部文件字节均与各自原件一致，
+其余 11 份保留原首因，拒绝时未生成文件或成功回执。
+
+表格样式只识别 `styles/style[@type="table"]/tblPr/tblBorders` 中按顺序排列的单线边。
+每个样式最多一个边框容器，边框仅含六种位置且每种最多一次，尺寸范围 2–96（八分之一磅），
+间距 0–31，颜色为 `auto` 或六位十六进制。容器与边框禁止关系引用、未知属性和扩展内容。
+部件所有权沿用已有内部 styles 关系校验。为保留同一原件，还处理两个独立的普通属性：
+仅在表格行上的八位十六进制 `rsidTr`，以及 webSettings 的单个布尔叶节点 `allowPNG`。
+负例覆盖错放、错命名空间、重复、未知内容、关系注入和越界。
+[表格边框](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.wordprocessing.tableborders)、
+[行修订标识](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.wordprocessing.tablerow)、
+[PNG 保存选项](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.wordprocessing.allowpng)。
+
+原件和工具输出的整包 SHA-256 均为
+`2968d4a5d5de21dce1cbeae3235e545cdf4bfd7ae508fe0eed3a9b032773ce17`。
+Open XML SDK 3.3.0 / Office2013 均通过，Office2007 均报告同样的六个错误。
+CI 从固定夹具重建、读盘验证并检查整包 SHA-256，还在真实 CLI 上运行五个异常变体，
+检查拒绝后没有发布文档或回执。用 [固定语料脚本](../tools/check-external-corpus.ps1) 的原始清单复跑。
+客户端编辑和另存结果见 [客户端复测](office-clients.md)。
+
+## Word 页眉内嵌图片增量（开发源码）
+
+同一批 20 份原件增至 10 成功、10 拒绝、0 处理失败。新增 `headerPic.docx`，
+整包 SHA-256 为 `50d9b17f7575c8a91129fd8a3e6a70feec886480ab9f089e29a7f8ac7e5ed51a`，
+原件与输出完全一致。其余十份拒绝保留原首因，十份通过的输出逐个内部文件和整包均与原件一致。
+
+页眉图只扩大已支持的内嵌 PNG/JPEG 路径。保留页眉 run 的单一布尔 `noProof`，
+单张图片的空 `srcRect`、`bwMode="auto"`，以及矩形上无填充、无着色线条的固定子元素顺序。
+边线宽度与斜接值受限，子元素不接收关系或扩展属性。
+图片继续由 `a:blip` 的 `r:embed` 绑定同一页眉部件的内部图片关系。
+
+原件另外含六项设置。直接位于设置根下的断字、字距和系统字体布尔标记，以及绘图网格间距和显示间隔，
+均经叶节点、唯一性和值域检查后保留。`embedSystemFonts` 在未启用 TrueType 嵌入时无效，
+实际字体嵌入开关和载荷关系仍拒绝。
+[Word 设置](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.wordprocessing.settings)、
+[字体标记](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.wordprocessing.embedsystemfonts)、
+[图片形状属性](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.drawing.pictures.shapeproperties)。
+
+两份原件都固定于 `tests/fixtures/poi/word-modern/`，并沿用固定语料的 POI 提交、Apache-2.0 许可和哈希。
+`tools/check.ps1` 重建并核验实际文件，独立验证再检查表格布局和页眉的所有者本地 JPEG 关系。
+页眉负例覆盖非默认裁切、未知轮廓、越界、重复、外部或错绑图片、悬空引用和开启字体嵌入。

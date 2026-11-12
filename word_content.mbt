@@ -5,6 +5,82 @@ let word_drawing_ns = "http://schemas.openxmlformats.org/drawingml/2006/wordproc
 let picture_ns = "http://schemas.openxmlformats.org/drawingml/2006/picture"
 
 ///|
+fn word_picture_node(
+  nodes : Array[Node],
+  ordinal : Int32,
+  ns : String,
+  name : String,
+  depth : Int32,
+) -> Bool {
+  ordinal >= 0 &&
+  ordinal < nodes.length() &&
+  nodes[ordinal].depth == depth &&
+  nodes[ordinal].element.name.namespace_uri == Some(ns) &&
+  nodes[ordinal].element.name.local_name == name
+}
+
+///|
+fn validate_header_source_rectangle(
+  nodes : Array[Node],
+  ordinal : Int32,
+) -> Unit raise {
+  let node = nodes[ordinal]
+  let depth = node.depth
+  // An empty source rectangle is the default crop of one embedded picture.
+  guard word_picture_node(nodes, ordinal - 2, picture_ns, "blipFill", depth - 1) &&
+    word_picture_node(nodes, ordinal - 1, drawing_ns, "blip", depth) &&
+    node.element.attributes.is_empty() &&
+    empty_node(node) &&
+    word_picture_node(nodes, ordinal + 1, drawing_ns, "stretch", depth) &&
+    word_picture_node(nodes, ordinal + 2, drawing_ns, "fillRect", depth + 1) &&
+    (ordinal + 3 == nodes.length() || nodes[ordinal + 3].depth < depth) else {
+    raise Refused("unsupported Word header picture source rectangle")
+  }
+}
+
+///|
+fn validate_header_picture_no_fill(
+  nodes : Array[Node],
+  ordinal : Int32,
+) -> Int32 raise {
+  let depth = nodes[ordinal].depth
+  guard word_picture_node(nodes, ordinal - 2, drawing_ns, "prstGeom", depth) &&
+    attr(nodes[ordinal - 2], "prst") == "rect" &&
+    word_picture_node(nodes, ordinal - 1, drawing_ns, "avLst", depth + 1) &&
+    empty_node(nodes[ordinal - 1]) else {
+    raise Refused("unsupported Word header picture geometry")
+  }
+  let shape_tail = [
+    ("noFill", depth, ""),
+    ("ln", depth, "w"),
+    ("noFill", depth + 1, ""),
+    ("miter", depth + 1, "lim"),
+    ("headEnd", depth + 1, ""),
+    ("tailEnd", depth + 1, ""),
+  ]
+  for offset, (name, level, attribute) in shape_tail {
+    let index = ordinal + offset
+    guard word_picture_node(nodes, index, drawing_ns, name, level) &&
+      empty_node(nodes[index]) &&
+      (if attribute == "" {
+        nodes[index].element.attributes.is_empty()
+      } else {
+        nodes[index].element.attributes.length() == 1 &&
+        exact_node_attributes(nodes[index], None, [attribute])
+      }) else {
+      raise Refused("unsupported Word header picture outline")
+    }
+  }
+  ignore(checked_index(attr(nodes[ordinal + 1], "w"), 127001))
+  ignore(checked_index(attr(nodes[ordinal + 3], "lim"), 1000001))
+  let end = ordinal + shape_tail.length()
+  guard end == nodes.length() || nodes[end].depth < depth else {
+    raise Refused("extra Word header picture outline content")
+  }
+  end
+}
+
+///|
 fn word_passive_element(node : Node, parent : String, root : String) -> Bool {
   let ns = node.element.name.namespace_uri.unwrap_or("")
   let name = node.element.name.local_name

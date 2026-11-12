@@ -288,6 +288,85 @@ fn main raise {
   run.save("Running")
   let word = fixture("demo-word-three-objects.docm")
   let sheet = fixture("report-1900.xlsm")
+  let table = @host.read_bounded(
+    "tests/fixtures/poi/word-modern/TestTableCellAlign.docx", 33554432,
+  )
+  run.accept("poi-word-table", table, cli=true)
+  for
+    (name, border) in [
+      ("table-border-external-attribute", "<w:tblBorders r:id='dangling'>"),
+      ("table-border-unknown-edge", "<w:tblBorders><w:start w:val='single'/>"),
+      ("table-border-duplicate-edge", "<w:tblBorders><w:top w:val='single'/>"),
+      (
+        "table-border-foreign-namespace", "<w:tblBorders><w:top xmlns:w='urn:other'/>",
+      ),
+      ("table-border-width", "<w:tblBorders><w:top w:val='single' w:sz='97'/>"),
+    ] {
+    run.reject(
+      "word-table-style",
+      name,
+      edit(table, "word/styles.xml", "<w:tblBorders>", border),
+      cli=true,
+    )
+  }
+  let header_picture = @host.read_bounded(
+    "tests/fixtures/poi/word-modern/headerPic.docx", 33554432,
+  )
+  run.accept("poi-header-picture", header_picture, cli=true)
+  for
+    (name, part, old, replacement) in [
+      (
+        "header-crop-nondefault", "word/header1.xml", "<a:srcRect/>", "<a:srcRect l='1'/>",
+      ),
+      (
+        "header-crop-duplicate", "word/header1.xml", "<a:srcRect/>", "<a:srcRect/><a:srcRect/>",
+      ),
+      (
+        "header-crop-namespace", "word/header1.xml", "<a:srcRect/>", "<a:srcRect xmlns:a='urn:other'/>",
+      ),
+      (
+        "header-outline-unknown", "word/header1.xml", "<a:headEnd/>", "<a:headEnd type='triangle'/>",
+      ),
+      (
+        "header-outline-bound", "word/header1.xml", "lim=\"800000\"", "lim=\"1000001\"",
+      ),
+      (
+        "header-proofing-duplicate", "word/header1.xml", "<w:noProof/>", "<w:noProof/><w:noProof/>",
+      ),
+      (
+        "header-proofing-child", "word/header1.xml", "<w:noProof/>", "<w:noProof><w:b/></w:noProof>",
+      ),
+      (
+        "header-picture-dangling", "word/header1.xml", "r:embed=\"rId1\"", "r:embed=\"rId999\"",
+      ),
+      (
+        "header-picture-wrong-kind", "word/_rels/header1.xml.rels", "relationships/image",
+        "relationships/styles",
+      ),
+      (
+        "header-picture-external", "word/_rels/header1.xml.rels", "Target=\"media/image1.jpeg\"",
+        "Target=\"https://example.invalid/photo.jpeg\" TargetMode=\"External\"",
+      ),
+      (
+        "word-layout-grid-bound", "word/settings.xml", "<w:drawingGridHorizontalSpacing w:val=\"100\"/>",
+        "<w:drawingGridHorizontalSpacing w:val=\"31681\"/>",
+      ),
+      (
+        "word-layout-flag-duplicate", "word/settings.xml", "<w:doNotHyphenateCaps/>",
+        "<w:doNotHyphenateCaps/><w:doNotHyphenateCaps/>",
+      ),
+      (
+        "word-layout-font-embedding", "word/settings.xml", "<w:embedSystemFonts/>",
+        "<w:embedTrueTypeFonts/><w:embedSystemFonts/>",
+      ),
+    ] {
+    run.reject(
+      "word-header-picture",
+      name,
+      edit(header_picture, part, old, replacement),
+      cli=true,
+    )
+  }
   run.accept("word-three-objects", word, cli=true)
   run.accept("spreadsheet-business", sheet, cli=true)
   run.accept(

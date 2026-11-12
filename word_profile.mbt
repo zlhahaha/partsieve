@@ -305,6 +305,13 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
     raise Refused("Word XML root/content type mismatch")
   }
   let parents : Array[String] = []
+  let mut table_style = false
+  let mut style_table_properties = 0
+  let mut style_border_seen = false
+  let mut validated_end = 0
+  let mut allow_png_seen = false
+  let mut no_proof_seen = false
+  let layout_settings : Map[String, Bool] = Map([])
   let modern = word_modern_catalog(part, nodes, pkg.control)
   let mask = if part.name == pkg.audit.main_part &&
     ole_relationships(pkg).length() > 0 {
@@ -317,7 +324,9 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
       "word-profile-node",
       1 + node.element.attributes.length(),
     )
-    if mask.contains(ordinal) || modern.contains(ordinal) {
+    if ordinal < validated_end ||
+      mask.contains(ordinal) ||
+      modern.contains(ordinal) {
       continue
     }
     let ns = node.element.name.namespace_uri.unwrap_or("")
@@ -329,6 +338,104 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
       parents[parents.length() - 1]
     } else {
       ""
+    }
+    if root == "styles" && node.depth == 1 {
+      table_style = ns == word_ns &&
+        name == "style" &&
+        word_attr_opt(node, "type") == Some("table")
+      style_table_properties = 0
+      style_border_seen = false
+    }
+    if table_style && node.depth == 2 && ns == word_ns && name == "tblPr" {
+      guard !style_border_seen else {
+        raise Refused("duplicate table properties in bordered Word style")
+      }
+      style_table_properties += 1
+    }
+    if root == "styles" && ns == word_ns && name == "tblBorders" {
+      guard table_style &&
+        style_table_properties == 1 &&
+        node.depth == 3 &&
+        parent == "tblPr" &&
+        !style_border_seen else {
+        raise Refused("misplaced or duplicate Word table style borders")
+      }
+      validated_end = validate_word_table_style_borders(nodes, ordinal)
+      style_border_seen = true
+      continue
+    }
+    if root == "hdr" {
+      if ns == word_ns && name == "rPr" {
+        no_proof_seen = false
+      }
+      if ns == word_ns && name == "noProof" {
+        guard !no_proof_seen &&
+          parent == "rPr" &&
+          parents.length() >= 2 &&
+          parents[parents.length() - 2] == "r" &&
+          word_val_leaf(nodes, ordinal) &&
+          ["0", "1", "true", "false", "on", "off"].contains(
+            word_attr_opt(node, "val").unwrap_or("true"),
+          ) else {
+          raise Refused("invalid or duplicate Word header run proofing flag")
+        }
+        no_proof_seen = true
+        continue
+      }
+      if ns == drawing_ns && name == "srcRect" && parent == "blipFill" {
+        validate_header_source_rectangle(nodes, ordinal)
+        continue
+      }
+      if ns == drawing_ns && name == "noFill" && parent == "spPr" {
+        validated_end = validate_header_picture_no_fill(nodes, ordinal)
+        continue
+      }
+    }
+    if root == "webSettings" && ns == word_ns && name == "allowPNG" {
+      guard !allow_png_seen &&
+        node.depth == 1 &&
+        parent == "webSettings" &&
+        word_val_leaf(nodes, ordinal) &&
+        ["0", "1", "true", "false", "on", "off"].contains(
+          word_attr_opt(node, "val").unwrap_or("true"),
+        ) else {
+        raise Refused("invalid or duplicate Word allowPNG setting")
+      }
+      allow_png_seen = true
+      continue
+    }
+    if root == "settings" &&
+      ns == word_ns &&
+      [
+        "embedSystemFonts", "doNotHyphenateCaps", "noPunctuationKerning", "drawingGridHorizontalSpacing",
+        "displayHorizontalDrawingGridEvery", "displayVerticalDrawingGridEvery",
+      ].contains(name) {
+      guard node.depth == 1 &&
+        parent == "settings" &&
+        !layout_settings.contains(name) &&
+        word_val_leaf(nodes, ordinal) else {
+        raise Refused("misplaced, malformed or duplicate Word layout setting")
+      }
+      match name {
+        "drawingGridHorizontalSpacing" => {
+          guard checked_index(word_attr(node, "val"), 31681) > 0 else {
+            raise Invalid("Word drawing grid spacing must be positive")
+          }
+        }
+        "displayHorizontalDrawingGridEvery"
+        | "displayVerticalDrawingGridEvery" =>
+          ignore(checked_index(word_attr(node, "val"), 256))
+        _ => {
+          // embedTrueTypeFonts and font payload relationships still refuse.
+          guard ["0", "1", "true", "false", "on", "off"].contains(
+            word_attr_opt(node, "val").unwrap_or("true"),
+          ) else {
+            raise Refused("unsupported Word layout flag value")
+          }
+        }
+      }
+      layout_settings[name] = true
+      continue
     }
     let permitted = if ["document", "hdr", "ftr", "footnotes", "endnotes"].contains(
         root,
@@ -485,7 +592,16 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
         validate_word_reference_attribute(pkg, part, node, a)
       } else if [word_drawing_ns, picture_ns, drawing_ns].contains(ns) {
         guard ans == "" &&
-          passive_drawing_attribute(ns, name, a.name.local_name) else {
+          (
+            passive_drawing_attribute(ns, name, a.name.local_name) ||
+            (
+              root == "hdr" &&
+              ns == picture_ns &&
+              name == "spPr" &&
+              a.name.local_name == "bwMode" &&
+              a.value == "auto"
+            )
+          ) else {
           raise Refused("unsupported drawing attribute")
         }
         if ns == drawing_ns &&
@@ -532,7 +648,10 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
           ) else {
           raise Refused("unsupported Word relationship attribute")
         }
-        let permitted_attribute = if ns == word_macro_ns {
+        let permitted_attribute = if ns == word_ns &&
+          a.name.local_name == "rsidTr" {
+          name == "tr" && parent == "tbl" && hex_text(a.value, 8)
+        } else if ns == word_macro_ns {
           ["macroName", "name", "bEncrypt", "cmg"].contains(a.name.local_name)
         } else if ns == word_ns && name == "hyperlink" {
           ["history", "tooltip", "tgtFrame"].contains(a.name.local_name)
@@ -550,4 +669,55 @@ fn validate_word_xml_part(pkg : Package, part : PartRecord) -> Unit raise {
       }
     }
   }
+}
+
+///|
+fn word_val_leaf(nodes : Array[Node], ordinal : Int32) -> Bool {
+  let node = nodes[ordinal]
+  exact_node_attributes(node, Some(word_ns), ["val"]) &&
+  empty_node(node) &&
+  (ordinal + 1 == nodes.length() || nodes[ordinal + 1].depth <= node.depth)
+}
+
+///|
+fn validate_word_table_style_borders(
+  nodes : Array[Node],
+  ordinal : Int32,
+) -> Int32 raise {
+  let container = nodes[ordinal]
+  guard container.element.attributes.is_empty() && empty_node(container) else {
+    raise Refused("unsupported Word table style borders attributes or text")
+  }
+  let sides = ["top", "left", "bottom", "right", "insideH", "insideV"]
+  let mut last_side = -1
+  let mut cursor = ordinal + 1
+  while cursor < nodes.length() && nodes[cursor].depth > container.depth {
+    let side = nodes[cursor]
+    guard side.depth == container.depth + 1 &&
+      side.element.name.namespace_uri == Some(word_ns) &&
+      sides.search(side.element.name.local_name) is Some(index) &&
+      index > last_side &&
+      exact_node_attributes(side, Some(word_ns), ["val", "sz", "space", "color"]) &&
+      word_attr_opt(side, "val") == Some("single") &&
+      empty_node(side) else {
+      raise Refused("unsupported, duplicate or out-of-order Word table border")
+    }
+    if word_attr_opt(side, "sz") is Some(size) {
+      guard checked_index(size, 97) >= 2 else {
+        raise Invalid("Word table border size out of range")
+      }
+    }
+    if word_attr_opt(side, "space") is Some(space) {
+      ignore(checked_index(space, 32))
+    }
+    if word_attr_opt(side, "color") is Some(color) {
+      guard color == "auto" || hex_text(color, 6) else {
+        raise Invalid("invalid Word table border color")
+      }
+    }
+    last_side = index
+    cursor += 1
+  }
+  guard last_side >= 0 else { raise Refused("empty Word table style borders") }
+  cursor
 }

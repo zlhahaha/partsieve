@@ -69,7 +69,7 @@ moon run cmd/main --target native -- batch INPUT_DIR -o tests/generated/NEW_OUTP
 
 ## 验证与复现
 
-当前源码的离线验收通过 80 个 MoonBit 测试，包含 293 次历史 CLI 调用。独立 ZIP/XML 检查通过 21 组。五份固定 Apache POI 脚注、尾注和编号文档的输出哈希与原件一致，全部通过 Office 2013 格式校验。Office 2007 校验中，`NumberingWOverrides.docx` 的原件和输出均有相同的样式属性错误。另有 20 份兼容性基线，当前 8 份支持、12 份拒绝。见 [Word 结构验证](docs/word-structures.md)、[兼容性语料](docs/external-corpus.md)与[实际 Office 客户端复测](docs/office-clients.md)。
+当前源码的离线验收通过 82 个 MoonBit 测试，包含 293 次历史 CLI 调用。独立 ZIP/XML 检查通过 23 组。五份固定 Apache POI 脚注、尾注和编号文档的输出哈希与原件一致，全部通过 Office 2013 格式校验。Office 2007 校验中，`NumberingWOverrides.docx` 的原件和输出均有相同的样式属性错误。固定 20 份兼容性语料在 0.9.1 中为 8 份支持、12 份拒绝，开发源码补齐普通 Word 表格样式与页眉图片后为 10 份支持、10 份拒绝。见 [Word 结构验证](docs/word-structures.md)、[兼容性语料](docs/external-corpus.md)与[实际 Office 客户端复测](docs/office-clients.md)。
 
 ```powershell
 ./tools/check.ps1

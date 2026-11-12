@@ -1,7 +1,9 @@
 param(
   [Parameter(Mandatory)][string]$Cli,
   [Parameter(Mandatory)][string]$OutputDirectory,
-  [string]$WordLinkInput
+  [string]$WordLinkInput,
+  [string]$WordTableInput,
+  [string]$WordHeaderPictureInput
 )
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
@@ -21,11 +23,17 @@ $cases = @(
 if ($WordLinkInput) {
   $cases += @{name='word-links'; extension='docm'; fixture=(Resolve-Path -LiteralPath $WordLinkInput).Path}
 }
+if ($WordTableInput) {
+  $cases += @{name='word-table'; extension='docx'; fixture=(Resolve-Path -LiteralPath $WordTableInput).Path}
+}
+if ($WordHeaderPictureInput) {
+  $cases += @{name='word-header-picture'; extension='docx'; fixture=(Resolve-Path -LiteralPath $WordHeaderPictureInput).Path}
+}
 function Hash([string]$Path) {
   (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()
 }
 foreach ($case in $cases) {
-  $case.kind = if ($case.extension -eq 'docm') { 'Word' } else { 'Excel' }
+  $case.kind = if ($case.extension -in @('docm','docx')) { 'Word' } else { 'Excel' }
   $suffix = if ($case.kind -eq 'Word') { 'docx' } else { 'xlsx' }
   $case.source = Join-Path $original "$($case.name).$($case.extension)"
   $case.clean = Join-Path $clean "$($case.name).$suffix"
@@ -69,6 +77,30 @@ function ExcelState($book) {
     fill = $sheet.Range('A1').Interior.Color
   }
 }
+function WordTableState($document) {
+  if ($document.Tables.Count -ne 1) { throw 'Expected one table in the public table fixture' }
+  $table = $document.Tables.Item(1)
+  [ordered]@{
+    rows = $table.Rows.Count; columns = $table.Columns.Count
+    borders = @(foreach ($index in -1,-2,-3,-4,-5,-6) {
+      $border = $table.Borders.Item($index)
+      [ordered]@{ side = $index; style = $border.LineStyle; width = $border.LineWidth }
+    })
+    cells = @(foreach ($cell in $table.Range.Cells) {
+      [ordered]@{ text = $cell.Range.Text; vertical_alignment = $cell.VerticalAlignment }
+    })
+  }
+}
+function WordHeaderPictureState($document) {
+  $header = $document.Sections.Item(1).Headers.Item(1).Range
+  if ($header.InlineShapes.Count -ne 1) { throw 'Expected one inline header picture' }
+  $picture = $header.InlineShapes.Item(1)
+  [ordered]@{
+    width_points = [Math]::Round([double]$picture.Width, 1)
+    height_points = [Math]::Round([double]$picture.Height, 1)
+    alignment = $picture.Range.ParagraphFormat.Alignment
+  }
+}
 $rows = [Collections.Generic.List[object]]::new()
 $marker = 'PartSieve client edit'
 foreach ($client in @(
@@ -98,13 +130,31 @@ foreach ($client in @(
           if ($client.kind -eq 'Word') {
             $document = $app.Documents.Open($source, $false, $true, $false)
             $row.before = WordState $document
-            $end = $document.Content.End - 1
-            $document.Range($end, $end).InsertAfter($marker)
+            if ($case.name -eq 'word-header-picture') {
+              $row.before.header_picture = WordHeaderPictureState $document
+            }
+            if ($case.name -eq 'word-table') {
+              $row.before.table_layout = WordTableState $document
+              $start = $document.Tables.Item(1).Cell(1, 1).Range.Start
+              $document.Range($start, $start).InsertAfter($marker)
+            } else {
+              $end = $document.Content.End - 1
+              $document.Range($end, $end).InsertAfter($marker)
+            }
             $document.SaveAs($save, 12)
             $document.Close($false)
             $document = $app.Documents.Open($save, $false, $true, $false)
             $row.after = WordState $document
+            if ($case.name -eq 'word-header-picture') {
+              $row.after.header_picture = WordHeaderPictureState $document
+            }
             $row.edit_persisted = $row.after.text.Contains($marker)
+            if ($case.name -eq 'word-table') {
+              $row.after.table_layout = WordTableState $document
+              $firstCell = $row.after.table_layout.cells[0]
+              $row.edit_persisted = $firstCell.text.Contains($marker)
+              $firstCell.text = $firstCell.text.Replace($marker, '')
+            }
             $row.after.text = $row.after.text.Replace($marker, '')
           } else {
             $document = $app.Workbooks.Open($source, 0, $true)

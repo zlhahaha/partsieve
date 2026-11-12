@@ -72,6 +72,7 @@ fn structured_word_fixture(
   numbering~ : String = "",
   settings~ : String = "",
   styles~ : String = "",
+  web_settings~ : String = "",
 ) -> Bytes raise {
   let archive = @zip.Archive()
   let mut types = "<Types xmlns='" +
@@ -87,6 +88,7 @@ fn structured_word_fixture(
       ("numbering", numbering),
       ("settings", settings),
       ("styles", styles),
+      ("webSettings", web_settings),
     ] {
     let (kind, text) = pair
     if text == "" {
@@ -124,6 +126,106 @@ fn structured_word_fixture(
     "</w:body></w:document>"
   archive.add("word/document.xml", @utf8.encode(document[:])[:])
   @zip.write(archive)
+}
+
+///|
+test "single-line Word table style borders are preserved in their original part" {
+  let edge = "<w:top w:val='single' w:sz='4' w:space='0' w:color='auto'/>"
+  let borders = "<w:tblBorders>" + edge + "</w:tblBorders>"
+  let open_style = "<w:style w:type='table' w:styleId='Grid'>"
+  let table = "<w:tbl><w:tblPr><w:tblStyle w:val='Grid'/></w:tblPr><w:tr w:rsidTr='A1B2C3D4'><w:tc><w:p/></w:tc></w:tr></w:tbl>"
+  let styles = note_xml(
+    "styles",
+    open_style + "<w:tblPr>" + borders + "</w:tblPr></w:style>",
+  )
+  let web_settings = note_xml("webSettings", "<w:allowPNG/>")
+  let source = structured_word_fixture(table, styles~, web_settings~)
+  let rebuilt = rebuild_verified(source)
+  assert_eq(rebuilt.receipt.result, Pass)
+  assert_eq(rebuilt.bytes, source)
+
+  for
+    fragment in [
+      open_style + borders + "</w:style>",
+      open_style + "<w:tblPr>" + borders + borders + "</w:tblPr></w:style>",
+      open_style + "<w:tblPr/>" + "<w:tblPr>" + borders + "</w:tblPr></w:style>",
+      open_style + "<w:tblPr>" + borders + "</w:tblPr><w:tblPr/></w:style>",
+      "<w:style w:type='paragraph' w:styleId='Grid'><w:tblPr>" +
+      borders +
+      "</w:tblPr></w:style>",
+      open_style +
+      "<w:tblPr><w:tblBorders>" +
+      edge +
+      edge +
+      "</w:tblBorders></w:tblPr></w:style>",
+      open_style +
+      "<w:tblPr><w:tblBorders><w:bottom w:val='single'/>" +
+      edge +
+      "</w:tblBorders></w:tblPr></w:style>",
+      open_style +
+      "<w:tblPr><w:tblBorders><w:top w:val='single'><w:top/></w:top></w:tblBorders></w:tblPr></w:style>",
+      open_style +
+      "<w:tblPr><w:tblBorders><w:top xmlns:w='urn:other'/></w:tblBorders></w:tblPr></w:style>",
+      open_style +
+      "<w:tblPr><w:tblBorders><w:top w:val='single' xmlns:r='" +
+      office_rel[0:office_rel.length() - 1].to_owned() +
+      "' r:id='missing'/></w:tblBorders></w:tblPr></w:style>",
+    ] {
+    expect_refused(fn() raise {
+      ignore(
+        rebuild_verified(
+          structured_word_fixture(table, styles=note_xml("styles", fragment)),
+        ),
+      )
+    })
+  }
+
+  for attrs in ["w:sz='1'", "w:sz='97'", "w:space='32'", "w:color='bad'"] {
+    expect_invalid(fn() raise {
+      ignore(
+        rebuild_verified(
+          structured_word_fixture(
+            table,
+            styles=note_xml(
+              "styles",
+              open_style +
+              "<w:tblPr><w:tblBorders><w:top w:val='single' " +
+              attrs +
+              "/></w:tblBorders></w:tblPr></w:style>",
+            ),
+          ),
+        ),
+      )
+    })
+  }
+}
+
+///|
+test "Word table row revision and PNG preference reject wrong scope and values" {
+  for
+    body in [
+      "<w:p w:rsidTr='001848E1'/>", "<w:tbl><w:tr w:rsidTr='1234567Z'><w:tc><w:p/></w:tc></w:tr></w:tbl>",
+    ] {
+    expect_refused(fn() raise {
+      ignore(rebuild_verified(structured_word_fixture(body)))
+    })
+  }
+  for
+    fragment in [
+      "<w:allowPNG/><w:allowPNG/>", "<w:allowPNG w:val='maybe'/>", "<w:allowPNG w:src='https://example.invalid'/>",
+      "<w:allowPNG><w:allowPNG/></w:allowPNG>", "<w:allowPNG xmlns:w='urn:other'/>",
+    ] {
+    expect_refused(fn() raise {
+      ignore(
+        rebuild_verified(
+          structured_word_fixture(
+            "<w:p/>",
+            web_settings=note_xml("webSettings", fragment),
+          ),
+        ),
+      )
+    })
+  }
 }
 
 ///|

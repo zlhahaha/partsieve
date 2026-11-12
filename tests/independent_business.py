@@ -273,8 +273,11 @@ if options.next_dir:
         reports.append({'name':name,'status':'Pass','sha256':receipt['output_hash'],'click_links':len(clicks),'ole_objects':object_count,'removed_parts':sorted(removed)})
 if options.word_modern:
     pinned=json.loads((ROOT/'tests/external/poi-notes-numbering-manifest.json').read_text(encoding='utf8'))
+    baseline=json.loads((ROOT/'tests/external/poi-manifest.json').read_text(encoding='utf8'))
+    cases=pinned['cases']+[case for case in baseline['cases']
+                           if case['name'] in ('TestTableCellAlign.docx','headerPic.docx')]
     mc='{http://schemas.openxmlformats.org/markup-compatibility/2006}'
-    for case in pinned['cases']:
+    for case in cases:
         name=case['name']
         source=ROOT/'tests/fixtures/poi/word-modern'/name
         output=options.word_modern/name
@@ -299,6 +302,37 @@ if options.word_modern:
             note=ids[refs[0].attrib['{'+W+'}id']]
             assert ''.join(note.itertext()).strip()
             facts[kind+'_references']=len(refs)
+        elif name=='TestTableCellAlign.docx':
+            style_id=document.find('.//w:tbl/w:tblPr/w:tblStyle',NS).attrib['{'+W+'}val']
+            styles=E.fromstring(after['word/styles.xml'])
+            style=next(s for s in styles.findall('w:style',NS)
+                       if s.get('{'+W+'}styleId')==style_id)
+            assert style.get('{'+W+'}type')=='table'
+            edges=list(style.find('w:tblPr/w:tblBorders',NS))
+            assert [edge.tag.rsplit('}',1)[1] for edge in edges]==[
+                'top','left','bottom','right','insideH','insideV']
+            assert all(edge.get('{'+W+'}val')=='single' for edge in edges)
+            rows=document.findall('.//w:tbl/w:tr',NS)
+            assert len(rows)==2 and all(len(row.findall('w:tc',NS))==2 for row in rows)
+            facts.update(style=style_id, table_rows=len(rows), single_line_edges=len(edges))
+        elif name=='headerPic.docx':
+            drawing='{http://schemas.openxmlformats.org/drawingml/2006/main}'
+            picture='{http://schemas.openxmlformats.org/drawingml/2006/picture}'
+            relation='{http://schemas.openxmlformats.org/officeDocument/2006/relationships}'
+            header=E.fromstring(after['word/header1.xml'])
+            link=header.find('.//'+drawing+'blip').attrib[relation+'embed']
+            rels=E.fromstring(after['word/_rels/header1.xml.rels'])
+            bound=[r for r in rels if r.get('Id')==link]
+            assert len(bound)==1 and bound[0].get('Type').endswith('/image')
+            assert bound[0].get('TargetMode','Internal')=='Internal'
+            assert bound[0].get('Target')=='media/image1.jpeg'
+            image=after['word/media/image1.jpeg']
+            assert image.startswith(b'\xff\xd8\xff')
+            assert header.find('.//'+drawing+'srcRect').attrib=={}
+            shape=header.find('.//'+picture+'spPr')
+            assert shape.get('bwMode')=='auto'
+            assert shape.find(drawing+'ln/'+drawing+'noFill') is not None
+            facts.update(header='word/header1.xml', image_sha256=hashlib.sha256(image).hexdigest())
         else:
             number=E.fromstring(after['word/numbering.xml'])
             counts=(len(number.findall('w:abstractNum',NS)),len(number.findall('w:num',NS)),len(number.findall('.//w:lvlOverride',NS)))
