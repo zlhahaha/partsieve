@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.2
+
+- Preserve bounded Word table style borders, row revision metadata and the PNG web-save setting.
+- Preserve default crop and outline metadata for internal inline header pictures and bounded Word layout settings.
+- Add the pinned Apache POI table and header picture originals and 19 CLI rejection variants to CI. The fixed corpus now has 10 successes, all byte-identical, and 10 refusals.
+
 ## 0.9.1
 
 - Fix the standalone registry consumer bootstrap under strict warning checks and verify the public audit API. The runtime and document profile match 0.9.0.

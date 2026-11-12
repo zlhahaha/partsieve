@@ -6,13 +6,13 @@ PartSieve 是 MoonBit 实现的 Office 文档清理与保留验证库。它面�
 
 | 使用方式 | 功能 |
 | --- | --- |
-| Mooncakes `0.9.1` | 下表中的清理与保留、Word 脚注/尾注/多级编号、内容损失预览和应用授权、结构化错误、实际文件验证与目录批处理。 |
+| Mooncakes `0.9.2` | 下表中的清理与保留，含 Word 表格样式边框、页眉内嵌图片、脚注/尾注/多级编号，以及内容损失预览、应用授权、结构化错误、实际文件验证与目录批处理。 |
 | Mooncakes `0.8.0-spike` | 旧版 SDK 和基础清理。可通过旧版文档复现其固定工具链与支持范围。 |
 
 在独立 MoonBit 项目中设置 `preferred_target = "native"`，安装包并在消费包的 `moon.pkg` 里导入 `"zlhahaha/partsieve" @sieve`。
 
 ```powershell
-moon add zlhahaha/partsieve@0.9.1
+moon add zlhahaha/partsieve@0.9.2
 moon check --target native --deny-warn
 ```
 
@@ -26,10 +26,10 @@ pwsh -File .mooncakes/zlhahaha/partsieve/tools/check-registry-consumer.ps1 -Outp
 
 ## 支持范围
 
-| 输入或内容 | 0.9.1 的处理 |
+| 输入或内容 | 0.9.2 的处理 |
 | --- | --- |
 | XLSX / XLSM | 保留共享及内联文本、数字、布尔值、1900/1904 日期系统、工作表顺序、常见单元格样式、合并区域和符合配置的编辑时长属性。移除受支持的 VBA，输出 XLSX。 |
-| DOCX / DOCM | 保留段落、表格、合并单元格、内嵌 PNG/JPEG、分节页眉页脚、受支持的脚注、尾注及显式多级编号。移除受支持的 VBA，输出 DOCX。 |
+| DOCX / DOCM | 保留段落、表格、合并单元格、内嵌 PNG/JPEG、分节页眉页脚、受支持的脚注、尾注及显式多级编号，并保留符合配置的单线表格样式边框与页眉内嵌图片显示属性。移除受支持的 VBA，输出 DOCX。 |
 | Word 外部模板 | 移除受支持的 HTTP(S) 附加模板及其设置引用。 |
 | Word / Excel 点击链接 | 保留符合配置的 HTTP(S) 链接及目标，在回执中列出。 |
 | Word 嵌入 OLE | 支持最多 32 个独立正文对象，删除对象、专属预览、载荷及引用。共享、链接型和嵌套对象会触发拒绝。 |
@@ -45,7 +45,7 @@ pwsh -File .mooncakes/zlhahaha/partsieve/tools/check-registry-consumer.ps1 -Outp
 | Word 文档接收 | [DOCM](tests/fixtures/business/document-template.docm) | [DOCX](examples/business/preview/document-template.docx) | 合并表格、PNG/JPEG、两节的页眉页脚。清理移除了 VBA 和外部模板引用。 |
 | Excel 报表交付 | [XLSM](tests/fixtures/business/report-1900.xlsm) | [XLSX](examples/business/preview/report-1900.xlsx) | 三张工作表、中英文、日期、货币格式和合并单元格。清理移除了 VBA。 |
 
-这两组业务样例使用项目自建内容，宏来源和许可见[业务样本来源](tests/fixtures/business/README.md)。0.9.1 还支持重建 Apache POI 的脚注文档和多级编号文档，输出与原件字节一致。样本来源、其他原件和验证命令见 [Word 结构验证](docs/word-structures.md)。
+这两组业务样例使用项目自建内容，宏来源和许可见[业务样本来源](tests/fixtures/business/README.md)。0.9.2 还支持重建固定的 Apache POI 表格、页眉图片、脚注和多级编号原件，输出与原件字节一致。样本来源、其他原件和验证命令见 [Word 结构验证](docs/word-structures.md)。
 
 ## 从源码运行
 
@@ -69,7 +69,7 @@ moon run cmd/main --target native -- batch INPUT_DIR -o tests/generated/NEW_OUTP
 
 ## 验证与复现
 
-当前源码的离线验收通过 82 个 MoonBit 测试，包含 293 次历史 CLI 调用。独立 ZIP/XML 检查通过 23 组。五份固定 Apache POI 脚注、尾注和编号文档的输出哈希与原件一致，全部通过 Office 2013 格式校验。Office 2007 校验中，`NumberingWOverrides.docx` 的原件和输出均有相同的样式属性错误。固定 20 份兼容性语料在 0.9.1 中为 8 份支持、12 份拒绝，开发源码补齐普通 Word 表格样式与页眉图片后为 10 份支持、10 份拒绝。见 [Word 结构验证](docs/word-structures.md)、[兼容性语料](docs/external-corpus.md)与[实际 Office 客户端复测](docs/office-clients.md)。
+当前源码的离线验收通过 82 个 MoonBit 测试，包含 293 次历史 CLI 调用。独立 ZIP/XML 检查通过 23 组。五份固定 Apache POI 脚注、尾注和编号文档的输出哈希与原件一致，全部通过 Office 2013 格式校验。Office 2007 校验中，`NumberingWOverrides.docx` 的原件和输出均有相同的样式属性错误。固定 20 份兼容性语料在 0.9.2 中为 10 份支持、10 份拒绝，十份成功输出均与原件字节一致。见 [Word 结构验证](docs/word-structures.md)、[兼容性语料](docs/external-corpus.md)与[实际 Office 客户端复测](docs/office-clients.md)。
 
 ```powershell
 ./tools/check.ps1

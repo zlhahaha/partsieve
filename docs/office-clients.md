@@ -31,7 +31,7 @@ WPS Writer 另存 `document-template` 与 `document-notes-lists` 的两条输入
 
 [机器可读结果](https://github.com/zlhahaha/partsieve/blob/main/tests/external/office-clients-0.9.0.json)
 
-## 固定表格原件（开发源码）
+## 固定表格原件（0.9.2）
 
 在同一平台和客户端版本下，把固定 Apache POI 原件 `TestTableCellAlign.docx` 传给
 `tools/check-office-clients.ps1 -WordTableInput`。Word 和 WPS Writer 对原件和
@@ -43,7 +43,7 @@ PartSieve 清理件分别编辑第一格、另存并重开。四次编辑均持�
 `uiPriority` 的元素顺序问题，原件另存为 5 项，清理件另存为 6 项。
 该错误在客户端保存前的两个文件中均未出现。
 
-## 固定页眉图片原件（开发源码）
+## 固定页眉图片原件（0.9.2）
 
 使用 `tools/check-office-clients.ps1 -WordHeaderPictureInput tests/fixtures/poi/word-modern/headerPic.docx`。
 在 Word 16.0.20527 和 WPS Writer 12.1.0.29161 中，对原件与 PartSieve 输出分别编辑正文、另存、重开。

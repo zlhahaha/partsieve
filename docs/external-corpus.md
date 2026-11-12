@@ -94,7 +94,7 @@ LICENSE/NOTICE 沿用 `tests/fixtures/poi/` 的完整上游记录，下载时随
 五份 [脚注、尾注及编号保留组](https://github.com/zlhahaha/partsieve/blob/main/tests/external/poi-notes-numbering-manifest.json) 独立于固定基线，
 可复跑现有 `tools/check.ps1` 与独立验证。新的公式研究样本及生成负例来源见 [公式 Spike](formula-spike.md)。
 
-## Word 普通表格增量（开发源码）
+## Word 普通表格增量（0.9.2）
 
 按原清单重跑同一批 20 份 Apache POI 原件，结果为 9 成功、11 拒绝、0 处理失败。
 新通过的 `TestTableCellAlign.docx` 来源、Apache-2.0 许可和 SHA-256 均沿用固定清单。
@@ -118,7 +118,7 @@ CI 从固定夹具重建、读盘验证并检查整包 SHA-256，还在真实 CL
 检查拒绝后没有发布文档或回执。用 [固定语料脚本](../tools/check-external-corpus.ps1) 的原始清单复跑。
 客户端编辑和另存结果见 [客户端复测](office-clients.md)。
 
-## Word 页眉内嵌图片增量（开发源码）
+## Word 页眉内嵌图片增量（0.9.2）
 
 同一批 20 份原件增至 10 成功、10 拒绝、0 处理失败。新增 `headerPic.docx`，
 整包 SHA-256 为 `50d9b17f7575c8a91129fd8a3e6a70feec886480ab9f089e29a7f8ac7e5ed51a`，
